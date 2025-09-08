@@ -23,7 +23,7 @@ A compact, modern and feature-rich custom card for your robotic lawn mower in Ho
 ## ✨ Features
 
 * **Dynamic Mower View:**   
-A mower with an Status LED indicating the current state, a graphical battery indicator and animations based on the current Lawn mower state - mowing, pausing, returning or charging
+A graphical view of your robotic lawn mower with an Status LED indicating the current state, a graphical battery indicator and animations based on the current state - mowing, pausing, returning or charging
 * **Multiple Views:**   
 Switch between multiple views - the mower UI, a live video stream from your mower's camera or track your mower's location on map (Google Maps or HA Map)
 * **Custom Action Buttons:**   
@@ -31,7 +31,7 @@ Define up to 3 customizable action buttons to trigger any Home Assistant service
 * **Status Display:**   
 Status text & icons with optional battery level and mowing progress
 * **Powerful UI Editor:**   
-A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower model or the mower view colors etc.
+A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the mower view colors
 * **Localization:**   
 Comes with English and German translation - ready to be extended with more languages
 
@@ -45,7 +45,7 @@ Ideas for future development - no guarantee, but candidates for upcoming feature
 * **Support for additional service-call parameters** at the action buttons
 * **More than 3 custom actions** (but card would need a slighlty different layout)
 * **Improved graphics + animations** for the default mower graphic
-* **Additional Mower Models / Graphics** - which is technically prepared with a modular file structure for models, including an model selection within the UI editor
+* **Additional Mower Models / Graphics** - technically prepared with a modular file structure for models including an model selection within the UI editor
 * **Support for more languages** if contributed by the community
 * **A more advanced map view** with mowing paths, mower maps, no-go zones etc. (Need to validated with individual lawn mower integrations)
 * **More customization options** like default map zoom levels and more
