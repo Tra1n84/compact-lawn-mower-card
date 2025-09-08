@@ -124,6 +124,7 @@ enable_map: true
 google_maps_api_key: YOUR_GOOGLE_API_KEY
 use_google_maps: true
 map_type: hybrid
+mower_model: default
 sky_color_top:
   - 41
   - 128
@@ -180,6 +181,8 @@ custom_actions:
 | `use_google_maps`    | boolean  | No           | Use Google Maps instead of Home Assistant map (Google Maps API key is required)                            |
 | `google_maps_api_key`| string   | No           | Your Google Maps Static API key                                                             |
 | `map_type`           | string   | No           | Map type for Google Maps: `roadmap`, `satellite`, `hybrid` (Default: `hybrid`)              |
+| `mower_model`        | string   | No           | Mower Model (Default: 
+`default`)                            |
 | `sky_color_top`      | list     | No           | RGB value for the top sky color                                        |
 | `sky_color_bottom`   | list     | No           | RGB value for the bottom sky color                                                          |
 | `grass_color_top`    | list     | No           | RGB value for the top grass color                                                           |
