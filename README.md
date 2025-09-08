@@ -169,25 +169,24 @@ custom_actions:
 
 | Name                 | Type     | Required     | Description                                                                                  |
 |----------------------|----------|--------------|----------------------------------------------------------------------------------------------|
-| `entity`             | string   | Yes          | The main entity of your lawn mower                                                          |
-| `camera_entity`      | string   | No           | Camera entity for the camera view                                                           |
-| `camera_fit_mode`    | string   | No           | How to fit the camera image: `cover` or `contain`                                           |
-| `map_entity`         | string   | No           | Device tracker entity for the map view                                                      |
-| `battery_entity`     | string   | No           | Optional sensor for battery level                                                           |
-| `progress_entity`    | string   | No           | Optional sensor for mowing progress                                                         |
-| `charging_entity`    | string   | No           | Optional binary sensor or sensor for charging status                                        |
-| `default_view`       | string   | No           | Default view of the card: `mower`, `camera`, `map` (Default: `mower`)                       |
-| `enable_map`         | boolean  | No           | Enable or disable the map view (Default: `true` if `map_entity` is set)                     |
-| `use_google_maps`    | boolean  | No           | Use Google Maps instead of Home Assistant map (Google Maps API key is required)                            |
-| `google_maps_api_key`| string   | No           | Your Google Maps Static API key                                                             |
-| `map_type`           | string   | No           | Map type for Google Maps: `roadmap`, `satellite`, `hybrid` (Default: `hybrid`)              |
-| `mower_model`        | string   | No           | Mower Model (Default: 
-`default`)                            |
-| `sky_color_top`      | list     | No           | RGB value for the top sky color                                        |
-| `sky_color_bottom`   | list     | No           | RGB value for the bottom sky color                                                          |
-| `grass_color_top`    | list     | No           | RGB value for the top grass color                                                           |
-| `grass_color_bottom` | list     | No           | RGB value for the bottom grass color                                                        |
-| `custom_actions`     | list     | No           | Define up to 3 custom actions                         |
+| `entity`             | string   | Yes          | The main entity of your lawn mower                                                           |
+| `camera_entity`      | string   | No           | Camera entity for the camera view                                                            |
+| `camera_fit_mode`    | string   | No           | How to fit the camera image: `cover` or `contain`                                            |
+| `map_entity`         | string   | No           | Device tracker entity for the map view                                                       |
+| `battery_entity`     | string   | No           | Optional sensor for battery level                                                            |
+| `progress_entity`    | string   | No           | Optional sensor for mowing progress                                                          |
+| `charging_entity`    | string   | No           | Optional binary sensor or sensor for charging status                                         |
+| `default_view`       | string   | No           | Default view of the card: `mower`, `camera`, `map` (Default: `mower`)                        |
+| `enable_map`         | boolean  | No           | Enable or disable the map view (Default: `true` if `map_entity` is set)                      |
+| `use_google_maps`    | boolean  | No           | Use Google Maps instead of Home Assistant map (Google Maps API key is required)              |
+| `google_maps_api_key`| string   | No           | Your Google Maps Static API key                                                              |
+| `map_type`           | string   | No           | Map type for Google Maps: `roadmap`, `satellite`, `hybrid` (Default: `hybrid`)               |
+| `mower_model`        | string   | No           | Select mower model graphic (Default: `default`)                                              |
+| `sky_color_top`      | list     | No           | RGB value for the top sky color                                                              |
+| `sky_color_bottom`   | list     | No           | RGB value for the bottom sky color                                                           |
+| `grass_color_top`    | list     | No           | RGB value for the top grass color                                                            |
+| `grass_color_bottom` | list     | No           | RGB value for the bottom grass color                                                         |
+| `custom_actions`     | list     | No           | Define up to 3 custom actions                                                                |
 
 
 ---
