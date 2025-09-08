@@ -1,0 +1,126 @@
+{
+  "mower": {
+    "start": "Start",
+    "stop": "Stop",
+    "dock": "Dock"
+  },
+  "status": {
+    "mowing": "Mowing",
+    "docked": "Docked",
+    "charging": "Charging",
+    "paused": "Paused",
+    "returning": "Returning to Dock",
+    "error": "Error",
+    "unavailable": "Unavailable",
+    "unknown": "Unknown"
+  },
+  "editor": {
+    "loading": "Loading editor...",
+    "loading_components": "Loading components...",
+    "entity": "Lawn Mower",
+    "camera_entity": "Camera Entity (Optional)",
+    "map_entity": "Map Entity (Optional, Device Tracker)",
+    "camera_fit_mode": "Camera Fit Mode",
+    "camera_fit_mode_label": {
+      "cover": "Cover (fill space, may crop)",
+      "contain": "Contain (fit inside, may show bars)"
+    },
+    "section": {
+      "main": "Lawn Mower & Camera",
+      "main_description": "Lawn Mower and optional camera",
+      "power": "Progress, Battery & Charging",
+      "power_description": "Optional entities for displaying additional lawn mower information such as battery level, charging status or the current progress",
+      "options": "Options",
+      "options_description": "Additional options"
+    },
+    "power": {
+      "battery_entity": "Battery Entity (Optional)",
+      "charging_entity": "Charging Entity (Optional, Binary Sensor: On/Off)",
+      "progress_entity": "Progress Entity (Optional)"
+    },
+    "options": {
+      "default_view": "Default View",
+      "google_maps_api_key": "Google Maps API Key (Optional)",
+      "use_google_maps": "Use Google Maps (with API Key)",
+      "enable_map": "Enable Map View",
+      "map_type": "Map Type",
+      "map_type_label": {
+        "roadmap": "Roadmap",
+        "satellite": "Satellite",
+        "hybrid": "Hybrid"
+      },
+      "map_options_title": "Map",
+      "color_options_title": "Color",
+      "appearance_options_title": "Appearance",
+      "mower_model": "Lawn Mower Model",
+      "mower_models": {
+        "default": "Default"
+      },
+      "color": {
+        "sky": "Sky",
+        "grass": "Grass",
+        "top": "Top",
+        "bottom": "Bottom"
+      }
+    },
+    "actions": {
+      "title": "Actions",
+      "description": "Custom Action Buttons. You can define up to 3 custom actions",
+      "confirm_reset": "Are you sure you want to reset to the default actions? This will overwrite your current actions",
+      "reset_to_defaults": "Restore Defaults",
+      "edit": "Edit Action",
+      "remove": "Remove Action",
+      "no_actions_configured": "No actions configured.",
+      "add": "Add New Action",
+      "name": "Action Name",
+      "icon": "Action Icon",
+      "icon_custom": "Custom Icon",
+      "icon_custom_helper": "e.g. mdi:robot-mower or mdi:grass",
+      "config": "Action Configuration",
+      "save": "Save",
+      "cancel": "Cancel",
+      "add_button": "Add Action",
+      "max_reached": "Maximum number of {MAX_ACTIONS} actions reached. Remove an action to add a new one",
+      "service": "Service",
+      "target": "Target",
+      "target_entity": "Target Entity (Optional)",
+      "use_custom_target": "Use different target entity",
+      "using_default_entity": "Using default entity",
+      "default_entity": "Default Entity",
+      "no_entity_selected": "no entity selected",
+      "not_set": "not set",
+      "action_type": {
+        "call_service": "Service",
+        "navigate": "Navigation",
+        "url": "URL",
+        "toggle": "Toggle Entity",
+        "more_info": "More Info",
+        "none": "No Action",
+        "not_configured": "Not Configured"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Please select a Lawn Mower entity",
+    "loading_components": "Error loading components",
+    "entity_not_found": "Entity not found."
+  },
+  "camera": {
+    "camera_title": "Camera",
+    "not_available": "Camera not available",
+    "not_reachable": "Camera not reachable"
+  },
+  "map": {
+    "not_available": "Map not available"
+  },
+  "view": {
+    "mower": "Lawn Mower",
+    "camera": "Camera",
+    "map": "Map"
+  },
+  "default_actions": {
+    "start_mowing": "Start Mowing",
+    "pause": "Pause",
+    "return_to_dock": "Return to Dock"
+  }
+}

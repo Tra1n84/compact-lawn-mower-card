@@ -1,0 +1,25 @@
+{
+  "name": "compact-lawn-mower-card",
+  "version": "0.8",
+  "description": "A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/estree": "^1.0.8",
+    "rollup": "^4.18.0",
+    "typescript": "^5.8.3"
+  },
+  "type": "module",
+  "dependencies": {
+    "@lit-labs/scoped-registry-mixin": "^1.0.4",
+    "@material/mwc-notched-outline": "^0.27.0",
+    "@material/mwc-select": "^0.27.0",
+    "@material/mwc-textfield": "^0.27.0",
+    "custom-card-helpers": "^1.9.0"
+  }
+}

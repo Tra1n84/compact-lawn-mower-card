@@ -1,0 +1,126 @@
+{
+  "mower": {
+    "start": "Start",
+    "stop": "Stop",
+    "dock": "Dock"
+  },
+  "status": {
+    "mowing": "Mäht",
+    "docked": "Angedockt",
+    "charging": "Lädt",
+    "paused": "Pausiert",
+    "returning": "Rückkehr zum Dock",
+    "error": "Fehler",
+    "unavailable": "Nicht verfügbar",
+    "unknown": "Unbekannt"
+  },
+  "editor": {
+    "loading": "Editor wird geladen...",
+    "loading_components": "Komponenten werden geladen...",
+    "entity": "Mähroboter",
+    "camera_entity": "Kameraentität (Optional)",
+    "map_entity": "Kartenentität (Optional, Device Tracker)",
+    "camera_fit_mode": "Kamera-Anpassung",
+    "camera_fit_mode_label": {
+      "cover": "Füllen (Zuschneiden)",
+      "contain": "Anpassen (mit Rändern)"
+    },
+    "section": {
+      "main": "Mähroboter & Kamera",
+      "main_description": "Mähroboter und optionale Kamera",
+      "power": "Fortschritt, Batterie & Ladung",
+      "power_description": "Optionale Entitäten zur Anzeige von weiteren Informationen wie den Batteriestand, den Ladestatus oder den aktuellen Fortschritt",
+      "options": "Optionen",
+      "options_description": "Zusätzliche Optionen"
+    },
+    "power": {
+      "battery_entity": "Batterieentität (Optional)",
+      "charging_entity": "Ladestatus Entität (Optional, Binärsensor: An/Aus)",
+      "progress_entity": "Fortschritt Entität (Optional)"
+    },
+    "options": {
+      "default_view": "Standardansicht",
+      "google_maps_api_key": "Google Maps API-Schlüssel (Optional)",
+      "use_google_maps": "Google Maps verwenden (mit API-Schlüssel)",
+      "enable_map": "Kartenansicht aktivieren",
+      "map_type": "Kartentyp",
+      "map_type_label": {
+        "roadmap": "Straßenkarte",
+        "satellite": "Satellit",
+        "hybrid": "Hybrid"
+      },
+      "map_options_title": "Karten",
+      "color_options_title": "Farben",
+      "appearance_options_title": "Erscheinungsbild",
+      "mower_model": "Mähroboter Modell",
+      "mower_models": {
+        "default": "Standard"
+      },
+      "color": {
+        "sky": "Himmel",
+        "grass": "Rasen",
+        "top": "Oben",
+        "bottom": "Unten"
+      }
+    },
+    "actions": {
+      "title": "Aktionen",
+      "description": "Benutzerdefinierte Aktions-Buttons. Du kannst bis zu 3 benutzerdefinierte Aktionen definieren",
+      "confirm_reset": "Möchten Sie wirklich die Standardaktionen wiederherstellen? Ihre aktuellen Aktionen werden überschrieben",
+      "reset_to_defaults": "Standard wiederherstellen",
+      "edit": "Aktion bearbeiten",
+      "remove": "Aktion entfernen",
+      "no_actions_configured": "Keine Aktionen konfiguriert.",
+      "add": "Neue Aktion hinzufügen",
+      "name": "Aktionsname",
+      "icon": "Icon",
+      "icon_custom": "Eigenes Icon",
+      "icon_custom_helper": "z.B. mdi:robot-mower oder mdi:grass",
+      "config": "Aktionskonfiguration",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "add_button": "Aktion hinzufügen",
+      "max_reached": "Maximale Anzahl von {MAX_ACTIONS} Aktionen erreicht. Entferne eine Aktion, um eine neue hinzuzufügen",
+      "service": "Service",
+      "target": "Ziel",
+      "target_entity": "Zielentität (Optional)",
+      "use_custom_target": "Andere Zielentität verwenden",
+      "using_default_entity": "Standardentität wird verwendet",
+      "default_entity": "Standardentität",
+      "no_entity_selected": "keine Entität ausgewählt",
+      "not_set": "nicht festgelegt",
+      "action_type": {
+        "call_service": "Service",
+        "navigate": "Navigation",
+        "url": "URL",
+        "toggle": "Entität umschalten",
+        "more_info": "Mehr Informationen",
+        "none": "Keine Aktion",
+        "not_configured": "Nicht konfiguriert"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Bitte wähle eine Mähroboter-Entität",
+    "loading_components": "Fehler beim Laden der Komponenten",
+    "entity_not_found": "Entität wurde nicht gefunden."
+  },
+  "camera": {
+    "camera_title": "Kamera",
+    "not_available": "Kamera nicht verfügbar",
+    "not_reachable": "Kamera nicht erreichbar"
+  },
+  "map": {
+    "not_available": "Karte nicht verfügbar"
+  },
+  "view": {
+    "mower": "Mähroboter",
+    "camera": "Kamera",
+    "map": "Karte"
+  },
+  "default_actions": {
+    "start_mowing": "Mähvorgang starten",
+    "pause": "Pause",
+    "return_to_dock": "Zurück zur Basis"
+  }
+}
