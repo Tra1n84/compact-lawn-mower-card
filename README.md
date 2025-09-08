@@ -23,17 +23,15 @@ A compact, modern and feature-rich custom card for your robotic lawn mower in Ho
 ## ✨ Features
 
 * **Dynamic Mower View:**   
-  - Status LEDs indicating the current state
-  - A graphical battery indicator
-  - Animations based on Lawn mower state - mowing, pausing, returning or charging
+A mower with an Status LED indicating the current state, a graphical battery indicator and animations based on the current Lawn mower state - mowing, pausing, returning or charging
 * **Multiple Views:**   
-Switch between the dynamic mower view, a video stream from your mower's camera or track your mower's location on map (Google Maps or HA Map)
+Switch between multiple views - the mower UI, a live video stream from your mower's camera or track your mower's location on map (Google Maps or HA Map)
 * **Custom Action Buttons:**   
-Define up to 3 custom buttons to trigger any Home Assistant service you choose
+Define up to 3 customizable action buttons to trigger any Home Assistant service you choose
 * **Status Display:**   
 Status text & icons with optional battery level and mowing progress
 * **Powerful UI Editor:**   
-A user-friendly UI editor for all card settings - no YAML required. Define additional entities, camera settings, map parameters, mower view colors etc.
+A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower model or the mower view colors etc.
 * **Localization:**   
 Comes with English and German translation - ready to be extended with more languages
 
