@@ -200,7 +200,7 @@ custom_actions:
 
 ## 🤝 How to Contribute
 
-Contributions are welcome! Whether you have ideas for new or optimized features, improvements to the mower design or animations (SVG), found a bug or want to add a new language file for the localization - feel free to open an [issue](https://github.com/Tra1n84/compact-lawn-mower-card/issues) or submit a [pull request](https://github.com/Tra1n84/compact-lawn-mower-card/pulls).
+Contributions are welcome! Whether it's new features, improvements to the mower design or animations, additional mower models / graphics, translations or bug reports - feel free to open an [issue](https://github.com/Tra1n84/compact-lawn-mower-card/issues) or submit a [pull request](https://github.com/Tra1n84/compact-lawn-mower-card/pulls).
 
 
 ---
