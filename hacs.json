@@ -1,6 +1,5 @@
 {
   "name": "Compact Lawn Mower Card",
   "content_in_root": false,
-  "render_readme": true,
-  "release": "v0.8"
+  "render_readme": true
 }
