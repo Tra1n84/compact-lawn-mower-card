@@ -28,8 +28,8 @@ A graphical view of your robotic lawn mower with an Status LED indicating the cu
 Switch between multiple views - the mower UI, a live video stream from your mower's camera or track your mower's location on map (Google Maps or HA Map)
 * **Custom Action Buttons:**   
 Define up to 3 customizable action buttons to trigger any Home Assistant service you choose
-* **Status Display:**   
-Status text & icons with optional battery level and mowing progress
+* **Info Badges:**   
+Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
 A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the mower view colors
 * **Localization:**   
