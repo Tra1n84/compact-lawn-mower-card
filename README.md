@@ -83,8 +83,8 @@ There are known issues / bugs that haven't been resolved yet
 
    * **Settings > Dashboards > Resources**
    * **ADD RESOURCE**
-   * URL: `/local/compact-lawn-mower-card.js`
-   * Type: **JavaScript Module**
+     - URL: `/local/compact-lawn-mower-card.js`
+     - Type: **JavaScript Module**
 
 
 ---
