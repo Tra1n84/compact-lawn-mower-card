@@ -466,12 +466,10 @@ export const compactLawnMowerCardStyles = css`
 
     .mower-svg.driving-to-dock .mower-body {
       animation: driveToDock 2s ease-in-out forwards;
-      will-change: transform;
     }
 
     .mower-svg.driving-from-dock .mower-body {
       animation: driveFromDock 2s ease-in-out forwards;
-      will-change: transform;
     }
 
     .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {

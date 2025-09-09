@@ -260,30 +260,45 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _updateAnimation(previousState: string, currentState: string, wasDocked: boolean): void {
     const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
 
-    const endAnimation = () => {
+    if (this._animationTimeout) {
+      clearTimeout(this._animationTimeout);
       this._animationTimeout = undefined;
+    }
+
+    const mowerBody = this.shadowRoot?.querySelector('.mower-svg .mower-body') as HTMLElement | null;
+
+    const onAnimationEnd = () => {
+      if (mowerBody) {
+        mowerBody.style.willChange = 'auto';
+      }
       this._setInitialAnimationState(this.mowerState);
     };
 
     if (wasDocked && !isDocked) {
       if (this._animationClass !== 'driving-from-dock') {
-        if (this._animationTimeout) clearTimeout(this._animationTimeout);
-        this._animationClass = 'driving-from-dock';
-        this._animationTimeout = window.setTimeout(endAnimation, 2000);
+        if (mowerBody) {
+          mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+          mowerBody.style.willChange = 'transform';
+          this._animationClass = 'driving-from-dock';
+        } else {
+          this._animationClass = 'driving-from-dock';
+          this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
+        }
       }
       return;
     }
 
     if (!wasDocked && isDocked) {
       if (this._animationClass !== 'driving-to-dock') {
-        if (this._animationTimeout) clearTimeout(this._animationTimeout);
-        this._animationClass = 'driving-to-dock';
-        this._animationTimeout = window.setTimeout(endAnimation, 2000);
+        if (mowerBody) {
+          mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+          mowerBody.style.willChange = 'transform';
+          this._animationClass = 'driving-to-dock';
+        } else {
+          this._animationClass = 'driving-to-dock';
+          this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
+        }
       }
-      return;
-    }
-
-    if (this._animationTimeout) {
       return;
     }
 
