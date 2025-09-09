@@ -1002,13 +1002,11 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .mower-svg.driving-to-dock .mower-body {
-      animation: driveToDock 2s ease-in-out forwards;
-      will-change: transform;
+      animation: driveToDock 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
     .mower-svg.driving-from-dock .mower-body {
       animation: driveFromDock 2s ease-in-out forwards;
-      will-change: transform;
     }
 
     .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
@@ -3251,29 +3249,43 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _updateAnimation(previousState, currentState, wasDocked) {
         const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
-        const endAnimation = () => {
+        if (this._animationTimeout) {
+            clearTimeout(this._animationTimeout);
             this._animationTimeout = undefined;
+        }
+        const mowerBody = this.shadowRoot?.querySelector('.mower-svg .mower-body');
+        const onAnimationEnd = () => {
+            if (mowerBody) {
+                mowerBody.style.willChange = 'auto';
+            }
             this._setInitialAnimationState(this.mowerState);
         };
         if (wasDocked && !isDocked) {
             if (this._animationClass !== 'driving-from-dock') {
-                if (this._animationTimeout)
-                    clearTimeout(this._animationTimeout);
-                this._animationClass = 'driving-from-dock';
-                this._animationTimeout = window.setTimeout(endAnimation, 2000);
+                if (mowerBody) {
+                    mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+                    mowerBody.style.willChange = 'transform';
+                    this._animationClass = 'driving-from-dock';
+                }
+                else {
+                    this._animationClass = 'driving-from-dock';
+                    this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
+                }
             }
             return;
         }
         if (!wasDocked && isDocked) {
             if (this._animationClass !== 'driving-to-dock') {
-                if (this._animationTimeout)
-                    clearTimeout(this._animationTimeout);
-                this._animationClass = 'driving-to-dock';
-                this._animationTimeout = window.setTimeout(endAnimation, 2000);
+                if (mowerBody) {
+                    mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+                    mowerBody.style.willChange = 'transform';
+                    this._animationClass = 'driving-to-dock';
+                }
+                else {
+                    this._animationClass = 'driving-to-dock';
+                    this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
+                }
             }
-            return;
-        }
-        if (this._animationTimeout) {
             return;
         }
         this._setInitialAnimationState(currentState);
