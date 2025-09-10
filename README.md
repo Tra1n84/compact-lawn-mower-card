@@ -199,3 +199,7 @@ Contributions are welcome! Whether it's new features, improvements to the mower 
 ## 📄 License
 
 MIT License – see `LICENSE` for details.
+
+## 💖 Support
+
+☕🍺 If you enjoy my work, [buy me a coffee *or* a beer](https://www.buymeacoffee.com/tra1n84)!
