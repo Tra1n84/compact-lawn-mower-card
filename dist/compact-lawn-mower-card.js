@@ -1002,7 +1002,7 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .mower-svg.driving-to-dock .mower-body {
-      animation: driveToDock 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      animation: driveToDock 2s ease-in-out forwards;
     }
 
     .mower-svg.driving-from-dock .mower-body {

@@ -1,7 +1,7 @@
 {
   "domain": "compact_lawn_mower_card",
   "name": "Compact Lawn Mower Card",
-  "version": "0.8",
+  "version": "0.8.1",
   "documentation": "https://github.com/Tra1n84/compact-lawn-mower-card",
   "dependencies": [],
   "codeowners": ["@Tra1n84"],
