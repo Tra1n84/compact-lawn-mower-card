@@ -3,20 +3,14 @@
 A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant!
 
 <div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_6Columns.png" height="300" alt="Compact Lawn Mower Card with 6 Columns"><br>
-        <sub>Grid Layout with 6 columns</sub>
-      </td>
-      <td align="center">
-        <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_12Columns.png" height="300" alt="Compact Lawn Mower Card with 12 Columns"><br>
-        <sub>Grid Layout with 12 columns</sub>
-      </td>
-    </tr>
-  </table>
+  <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_6Columns.png" height="300" alt="Compact Lawn Mower Card with 6 Columns"><br>
+  <sub>Grid Layout with 6 columns</sub>
+  
+  <br><br>
+  
+  <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_12Columns.png" height="300" alt="Compact Lawn Mower Card with 12 Columns"><br>
+  <sub>Grid Layout with 12 columns</sub>
 </div>
-
 
 ---
 
