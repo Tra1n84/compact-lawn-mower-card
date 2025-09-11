@@ -1125,6 +1125,16 @@ const compactLawnMowerCardStyles = i$3 `
       height: 100%;
       border-radius: 12px;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    .camera-container ha-camera-stream.fit-mode-contain {
+      align-items: center;
+    }
+
+    .camera-container ha-camera-stream.fit-mode-cover {
+      align-items: stretch;
     }
 
     .camera-error {
@@ -3033,7 +3043,7 @@ CompactLawnMowerCardEditor = __decorate([
 ], CompactLawnMowerCardEditor);
 
 var CompactLawnMowerCard_1;
-const CARD_VERSION = '0.8';
+const CARD_VERSION = '0.8.1';
 console.groupCollapsed(`%c COMPACT-LAWN-MOWER-CARD %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
 console.log("Github:", "https://github.com/Tra1n84/compact-lawn-mower-card");
 console.groupEnd();
@@ -3683,6 +3693,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
           </div>
         ` : ''}
         <ha-camera-stream
+          class="fit-mode-${fitMode}"
           .hass=${this.hass}
           .stateObj=${this.cameraEntity}
           .fitMode=${fitMode}

@@ -588,6 +588,16 @@ export const compactLawnMowerCardStyles = css`
       height: 100%;
       border-radius: 12px;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    .camera-container ha-camera-stream.fit-mode-contain {
+      align-items: center;
+    }
+
+    .camera-container ha-camera-stream.fit-mode-cover {
+      align-items: stretch;
     }
 
     .camera-error {

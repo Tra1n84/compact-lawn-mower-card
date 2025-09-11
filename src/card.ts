@@ -739,6 +739,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           </div>
         ` : ''}
         <ha-camera-stream
+          class="fit-mode-${fitMode}"
           .hass=${this.hass}
           .stateObj=${this.cameraEntity}
           .fitMode=${fitMode}
