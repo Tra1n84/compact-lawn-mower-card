@@ -14,7 +14,7 @@ import {
 } from './types';
 import { cameraPopupStyles, compactLawnMowerCardStyles } from './styles';
 
-const CARD_VERSION = '0.8.2';
+const CARD_VERSION = '0.8.3';
 
 console.groupCollapsed(
   `%c COMPACT-LAWN-MOWER-CARD %c Version ${CARD_VERSION}`,

@@ -737,7 +737,7 @@ const compactLawnMowerCardStyles = i$3 `
         to bottom, 
         var(--sky-color-top, rgb(41, 128, 185)) 0%,
         var(--sky-color-bottom, rgb(109, 213, 250)) var(--sky-percentage, 70%),
-        var(--grass-color-top, rgb(65, 150, 8)) var(--sky-percentage, 70%),    
+        var(--grass-color-top, rgb(88, 140, 54)) var(--sky-percentage, 70%),    
         var(--grass-color-bottom, rgb(133, 187, 88)) 100%   
       );
     }
@@ -2749,6 +2749,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                         custom_value: false,
                     },
                 },
+                disabled: !this.config.camera_entity,
             },
             { name: "map_entity", selector: { entity: { domain: "device_tracker" } }, required: false }
         ];
@@ -3043,7 +3044,7 @@ CompactLawnMowerCardEditor = __decorate([
 ], CompactLawnMowerCardEditor);
 
 var CompactLawnMowerCard_1;
-const CARD_VERSION = '0.8.1';
+const CARD_VERSION = '0.8.2';
 console.groupCollapsed(`%c COMPACT-LAWN-MOWER-CARD %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
 console.log("Github:", "https://github.com/Tra1n84/compact-lawn-mower-card");
 console.groupEnd();

@@ -200,7 +200,7 @@ export const compactLawnMowerCardStyles = css`
         to bottom, 
         var(--sky-color-top, rgb(41, 128, 185)) 0%,
         var(--sky-color-bottom, rgb(109, 213, 250)) var(--sky-percentage, 70%),
-        var(--grass-color-top, rgb(65, 150, 8)) var(--sky-percentage, 70%),    
+        var(--grass-color-top, rgb(88, 140, 54)) var(--sky-percentage, 70%),    
         var(--grass-color-bottom, rgb(133, 187, 88)) 100%   
       );
     }

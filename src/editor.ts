@@ -614,6 +614,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             custom_value: false,
           },
         },
+        disabled: !this.config.camera_entity,
       },
       { name: "map_entity", selector: { entity: { domain: "device_tracker" } }, required: false }
     ];

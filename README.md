@@ -54,15 +54,15 @@ There are known issues / bugs that haven't been resolved yet
 
 ## 🚀 Installation
 
-**Home Assistant Community Store (HACS)** is the recommended installation method.
+The recommended installation method is via the **Home Assistant Community Store (HACS)**. This card is **officially available in the HACS store**, so you can easily find and install it directly from there. Alternatively, you can install the card manually.  
 
 ### HACS (recommended)
 
-1. Go to **HACS > Frontend**.
-2. Click the three dots in the top right and select **Custom Repositories**.
-3. Add this repository URL: https://github.com/Tra1n84/compact-lawn-mower-card, select the **Dashboard** category, and click **ADD**.
-4. You can now find and install the **Compact Lawn Mower Card**.
-5. Follow the instructions of HACS to add the card to your resources.
+1. Open **HACS** from the sidebar in Home Assistant.  
+2. Use the **search bar** to find the **`Compact Lawn Mower Card`**.  
+3. Click on the card to open the detail page.  
+4. In the bottom-right corner, click **Download** to install the card.  
+5. HACS will automatically add the resource to Lovelace.  
 
 ### Manual
 
@@ -74,7 +74,6 @@ There are known issues / bugs that haven't been resolved yet
    * **ADD RESOURCE**
      - URL: `/local/compact-lawn-mower-card.js`
      - Type: **JavaScript Module**
-
 
 ---
 
