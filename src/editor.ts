@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
+import { CARD_NAME, CARD_VERSION } from './constants';
 import { getDefaultActions } from './defaults';
 import { getAvailableMowerModels } from './graphics';
 import { localize } from './localize';
@@ -31,6 +32,15 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   @state() private _newActionTarget = '';
   @state() private _useCustomTarget = false;
   private _resizeObserver?: ResizeObserver;
+  private _cachedServices?: {
+    services: Array<{ value: string; label: string }>;
+    hassServices: HomeAssistant['services'];
+  };
+
+  private _boundComputeLabel = this._computeLabel.bind(this);
+  private _boundComputePowerLabel = this._computePowerLabel.bind(this);
+  private _boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
+  private _boundComputeActionsLabel = this._computeActionsLabel.bind(this);
   
   private readonly MAX_ACTIONS = 3;
 
@@ -296,21 +306,27 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   }
 
   private _getAvailableServices(): Array<{ value: string; label: string }> {
+    if (this._cachedServices && this._cachedServices.hassServices === this.hass.services) {
+      return this._cachedServices.services;
+    }
+
     if (!this.hass?.services) return [];
     
     const services: Array<{ value: string; label: string }> = [];
     
-    Object.keys(this.hass.services).forEach(domain => {
-      Object.keys(this.hass.services[domain]).forEach(service => {
+    for (const domain of Object.keys(this.hass.services)) {
+      for (const service of Object.keys(this.hass.services[domain])) {
         const fullService = `${domain}.${service}`;
         services.push({
           value: fullService,
           label: fullService
         });
-      });
-    });
+      }
+    }
     
-    return services.sort((a, b) => a.label.localeCompare(b.label));
+    const sortedServices = services.sort((a, b) => a.label.localeCompare(b.label));
+    this._cachedServices = { services: sortedServices, hassServices: this.hass.services };
+    return sortedServices;
   }
 
   private get _actionFormData() {
@@ -367,6 +383,14 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     };
   }
 
+  private _handleIconClick(e: MouseEvent): void {
+    const target = e.target as HTMLElement;
+    const iconContainer = target.closest<HTMLElement>('.icon-option');
+    if (iconContainer?.dataset.icon) {
+      this._newActionIcon = iconContainer.dataset.icon;
+    }
+  }
+
   private _renderIconSelector() {
     return html`
       <div class="icon-selector">
@@ -375,11 +399,11 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
           <span>${this._newActionIcon}</span>
         </div>
         
-        <div class="icon-grid">
+        <div class="icon-grid" @click=${this._handleIconClick}>
           ${this.MOWER_ICONS.map(icon => html`
             <div 
               class="icon-option ${this._newActionIcon === icon ? 'selected' : ''}"
-              @click=${() => this._newActionIcon = icon}
+              data-icon=${icon}
               title=${icon}
             >
               <ha-icon icon=${icon}></ha-icon>
@@ -516,7 +540,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   .hass=${this.hass}
                   .data=${this._actionFormData}
                   .schema=${this._actionFormSchema}
-                  .computeLabel=${this._computeActionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeActionsLabel}
                   @value-changed=${this._actionFormValueChanged}
                 ></ha-form>
               </div>
@@ -771,6 +795,12 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
 
     return html`
       <div class="card-config">
+        <div class="card-header">
+          <div class="name">${CARD_NAME}</div>
+          <div class="version">
+            ${localize('editor.version', { hass: this.hass })}: ${CARD_VERSION}
+          </div>
+        </div>
         <div class="config-container">
           
           <div class="config-section">
@@ -793,7 +823,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                 .hass=${this.hass}
                 .data=${this._mainData}
                 .schema=${this._mainSchema}
-                .computeLabel=${this._computeLabel.bind(this)}
+                .computeLabel=${this._boundComputeLabel}
                 @value-changed=${this._valueChanged}
               ></ha-form>
             </div>
@@ -819,7 +849,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                 .hass=${this.hass}
                 .data=${this._infoData}
                 .schema=${this._infoSchema}
-                .computeLabel=${this._computePowerLabel.bind(this)}
+                .computeLabel=${this._boundComputePowerLabel}
                 @value-changed=${this._valueChanged}
               ></ha-form>
             </div>
@@ -845,7 +875,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                 .hass=${this.hass}
                 .data=${this._optionsData}
                 .schema=${this._viewOptionsSchema}
-                .computeLabel=${this._computeOptionsLabel.bind(this)}
+                .computeLabel=${this._boundComputeOptionsLabel}
                 @value-changed=${this._valueChanged}
               ></ha-form>
 
@@ -855,7 +885,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   .hass=${this.hass}
                   .data=${this._optionsData}
                   .schema=${this._mapOptionsSchema}
-                  .computeLabel=${this._computeOptionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
               </div>
@@ -866,7 +896,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   .hass=${this.hass}
                   .data=${this._optionsData}
                   .schema=${this._appearanceOptionsSchema}
-                  .computeLabel=${this._computeOptionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
               </div>
@@ -877,7 +907,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   .hass=${this.hass}
                   .data=${this._optionsData}
                   .schema=${this._colorOptionsSchema}
-                  .computeLabel=${this._computeOptionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
               </div>

@@ -17,6 +17,7 @@
   "editor": {
     "loading": "Loading editor...",
     "loading_components": "Loading components...",
+    "version": "Version",
     "entity": "Lawn Mower",
     "camera_entity": "Camera Entity (Optional)",
     "map_entity": "Map Entity (Optional, Device Tracker)",

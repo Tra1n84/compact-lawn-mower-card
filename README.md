@@ -33,7 +33,8 @@ Ideas for future development - no guarantee, but candidates for upcoming feature
 
 * **Support for additional service-call parameters** at the action buttons
 * **More than 3 custom actions** (but card would need a slighlty different layout)
-* **Improved graphics + animations** for the default mower graphic
+* **Improved graphic** for the default mower graphic
+* ~~Improved animations for the mower view~~ ✅ (implemented in v0.9.0)
 * **Additional Mower Models / Graphics** - technically prepared with a modular file structure for models including an model selection within the UI editor
 * **Support for more languages** if contributed by the community
 * **A more advanced map view** with mowing paths, mower maps, no-go zones etc. (Need to validated with individual lawn mower integrations)

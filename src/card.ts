@@ -3,6 +3,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCard } from 'custom-card-helpers';
 import './editor';
 import { getDefaultActions } from './defaults';
+import { CARD_NAME, CARD_VERSION } from './constants';
 import { getGraphics } from './graphics';
 import { localize } from './localize';
 import {
@@ -14,10 +15,8 @@ import {
 } from './types';
 import { cameraPopupStyles, compactLawnMowerCardStyles } from './styles';
 
-const CARD_VERSION = '0.8.3';
-
 console.groupCollapsed(
-  `%c COMPACT-LAWN-MOWER-CARD %c Version ${CARD_VERSION}`,
+  `%c ${CARD_NAME} %c Version ${CARD_VERSION}`,
   'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;',
   'color: rgb(90, 135, 91); font-weight: bold;'
 );
@@ -110,14 +109,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @property() public config!: CompactLawnMowerCardConfig;
 
   @state() private _animationClass = '';
+  @state() private _forceCameraRefresh = false;
   @state() private _isCameraLoading = false;
   @state() private _isCameraReachable = true;
   @state() private _isPopupOpen = false;
   @state() private _isMapLoading = false;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
-  private _resizeObserver?: ResizeObserver;
-  @state() private _mapCardElement?: HTMLElement;
+  @query('.progress-badge') private _progressBadge?: HTMLElement;
+  @query('.status-ring') private _statusRing?: HTMLElement;
 
   @property({ attribute: false }) private _viewMode: 'mower' | 'camera' | 'map' = 'mower';
   @state() private _mapWidth = 0;
@@ -126,7 +126,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _mapUpdateInterval?: number;
   private _cameraUpdateInterval?: number;
   private _animationTimeout?: number;
+  private _mainResizeObserver?: ResizeObserver;
   private _mowerResizeObserver?: ResizeObserver;
+  private _badgeOverlapCheckTimeout?: number;
+  @state() private _mapCardElement?: HTMLElement;
+  private _lastProgressLevel: number | string = '-';
 
   connectedCallback() {
     super.connectedCallback();
@@ -147,12 +151,16 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         this._setupMowerResizeObserver();
       });
     }
+
+    this.updateComplete.then(() => {
+      this._checkBadgeOverlap();
+    });
   }
 
   protected firstUpdated(_changedProperties: PropertyValues): void {
     super.firstUpdated(_changedProperties);
 
-    this._resizeObserver = new ResizeObserver(() => {
+    this._mainResizeObserver = new ResizeObserver(() => {
       if (this._mainDisplayArea) {
         const newWidth = Math.round(this._mainDisplayArea.clientWidth);
         const newHeight = Math.round(this._mainDisplayArea.clientHeight);
@@ -160,15 +168,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         if (newWidth > 0 && newHeight > 0 && (this._mapWidth !== newWidth || this._mapHeight !== newHeight)) {
           this._mapWidth = newWidth;
           this._mapHeight = newHeight;
+          this._checkBadgeOverlap();
         }
       }
       this.dispatchEvent(new Event("iron-resize", { bubbles: true, composed: true }));
     });
 
     if (this._mainDisplayArea) {
-      this._resizeObserver.observe(this._mainDisplayArea);
+      this._mainResizeObserver.observe(this._mainDisplayArea);
     }
 
+    this._checkBadgeOverlap();
     this._applyStyles();
     this.requestUpdate();
   }
@@ -184,9 +194,52 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (this._animationTimeout) {
       clearTimeout(this._animationTimeout);
     }
-    this._resizeObserver?.disconnect();
+    if (this._badgeOverlapCheckTimeout) {
+      clearTimeout(this._badgeOverlapCheckTimeout);
+    }
+    this._mainResizeObserver?.disconnect();
     this._mowerResizeObserver?.disconnect();
     this._closePopup();
+  }
+  
+  private _checkBadgeOverlap(): void {
+    const statusRing = this._statusRing;
+    if (!statusRing) return;
+
+    if (this._badgeOverlapCheckTimeout) {
+      window.cancelAnimationFrame(this._badgeOverlapCheckTimeout);
+    }
+
+    this._badgeOverlapCheckTimeout = window.requestAnimationFrame(() => {
+      const progressBadge = this._progressBadge;
+
+      if (!this.config.progress_entity || !progressBadge) {
+        statusRing.classList.remove('text-hidden');
+        return;
+      }
+
+      const progressRect = progressBadge.getBoundingClientRect();
+      const statusRect = statusRing.getBoundingClientRect();
+      const containerWidth = this._mainDisplayArea?.getBoundingClientRect().width || 0;
+
+      const isTextHidden = statusRing.classList.contains('text-hidden');
+      const statusTextElement = statusRing.querySelector('.status-text') as HTMLElement;
+      const textWidth = statusTextElement ? statusTextElement.getBoundingClientRect().width : 70;
+
+      if (isTextHidden) {
+        const requiredSpace = statusRect.width + textWidth + 20;
+        if (progressRect.right < containerWidth - requiredSpace) {
+          statusRing.classList.remove('text-hidden');
+        }
+      } else {
+        const hideThreshold = 10;
+        const positionOverlap = progressRect.right > statusRect.left - hideThreshold;
+        const widthOverlap = (progressRect.width + statusRect.width) > containerWidth - hideThreshold;
+        if (positionOverlap || widthOverlap) {
+          statusRing.classList.add('text-hidden');
+        }
+      }
+    });
   }
 
   private _setInitialAnimationState(currentState: string): void {
@@ -341,6 +394,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (changedProperties.has('config')) {
       this._setInitialAnimationState(this.mowerState);
       const oldConfig = changedProperties.get('config') as CompactLawnMowerCardConfig | undefined;
+      if (oldConfig && this.config.default_view !== oldConfig.default_view) {
+        this._setViewMode(this.config.default_view || 'mower');
+      }
+
       if (oldConfig) {
         if (this.config.camera_entity !== oldConfig.camera_entity && this._viewMode === 'camera') {
           if (!this.config.camera_entity) {
@@ -416,14 +473,24 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   updated(changedProperties: PropertyValues<this>) {
     super.updated(changedProperties);
 
+    if (changedProperties.has('hass')) {
+      const currentProgress = this.progressLevel;
+      if (this._lastProgressLevel !== currentProgress) {
+        this._lastProgressLevel = currentProgress;
+      }
+    }
+
     if ((changedProperties as any).has('_viewMode') && this._viewMode === 'mower') {
       this._updateMowerPosition();
       this._setupMowerResizeObserver();
     }
-
     if ((changedProperties as any).has('_viewMode') && this._viewMode !== 'mower') {
       this._mowerResizeObserver?.disconnect();
     }
+
+    this.updateComplete.then(() => {
+      this._checkBadgeOverlap();
+    });
   }
 
   private _isCurrentlyDocked(state: string, isCharging: boolean): boolean {
@@ -721,6 +788,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       `;
     }
 
+    if (this._forceCameraRefresh) {
+      return html`
+        <div class="camera-container is-loading">
+          <div class="loading-indicator">
+            <div class="loader"></div>
+          </div>
+        </div>
+      `;
+    }
     if (!this.cameraEntity || this.cameraEntity.state === 'unavailable') {
       return this._renderErrorView('camera-container', 'camera-error', 'mdi:camera-off', localize("camera.not_available", { hass: this.hass }));
     }
@@ -777,6 +853,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       document.body.removeChild(this._currentPopup);
       this._currentPopup = undefined;
       this._isPopupOpen = false;
+      
+      this._forceCameraRefresh = true;
+      this.updateComplete.then(() => {
+        this._forceCameraRefresh = false;
+        this._updateCameraState(true);
+      });
     }
   }
 
@@ -959,6 +1041,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._viewMode = mode;
 
     if (mode === 'camera') {
+      this._isPopupOpen = false;
       this._updateCameraState(true);
     }
     else if (mode === 'map') {

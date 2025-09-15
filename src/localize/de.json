@@ -17,6 +17,7 @@
   "editor": {
     "loading": "Editor wird geladen...",
     "loading_components": "Komponenten werden geladen...",
+    "version": "Version",
     "entity": "Mähroboter",
     "camera_entity": "Kameraentität (Optional)",
     "map_entity": "Kartenentität (Optional, Device Tracker)",

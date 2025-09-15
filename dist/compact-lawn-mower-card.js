@@ -85,6 +85,9 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  * SPDX-License-Identifier: BSD-3-Clause
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
+const CARD_NAME = 'Compact Lawn Mower Card';
+const CARD_VERSION = '0.9.0';
+
 var mower$1 = {
 	start: "Start",
 	stop: "Stop",
@@ -103,6 +106,7 @@ var status$1 = {
 var editor$1 = {
 	loading: "Loading editor...",
 	loading_components: "Loading components...",
+	version: "Version",
 	entity: "Lawn Mower",
 	camera_entity: "Camera Entity (Optional)",
 	map_entity: "Map Entity (Optional, Device Tracker)",
@@ -238,6 +242,7 @@ var status = {
 var editor = {
 	loading: "Editor wird geladen...",
 	loading_components: "Komponenten werden geladen...",
+	version: "Version",
 	entity: "Mähroboter",
 	camera_entity: "Kameraentität (Optional)",
 	map_entity: "Kartenentität (Optional, Device Tracker)",
@@ -801,9 +806,7 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .status-ring.charging {
-      animation: chargingGlow 2s ease-in-out infinite;
       border: 1px solid rgba(var(--rgb-success-color), 0.3);
-      will-change: box-shadow;
     }
 
     .view-toggle {
@@ -894,24 +897,19 @@ const compactLawnMowerCardStyles = i$3 `
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
 
     .status-icon.charging {
       color: var(--success-color, #4caf50);
-      animation: chargingPulse 2s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
     .status-icon.mowing {
       color: var(--warning-color, #ff9800);
-      animation: workingPulse 2s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
     .status-icon.returning {
       color: var(--primary-color, rgba(33, 150, 243, 0.6));
-      animation: returningPulse 2s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
     .status-icon.paused {
@@ -920,10 +918,52 @@ const compactLawnMowerCardStyles = i$3 `
 
     .status-icon.error {
       color: var(--error-color);
-      animation: errorPulse 1s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
+    .status-icon::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: calc(100% + 12px);
+      height: calc(100% + 12px);
+      border-radius: 50%;
+      opacity: 0;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .status-icon.charging::after,
+    .status-icon.mowing::after,
+    .status-icon.returning::after,
+    .status-icon.error::after {
+      animation: pulse-scale 2s ease-out infinite;
+    }
+
+    .status-icon.error::after {
+      animation-duration: 1s;
+    }
+
+    .status-icon.charging::after {
+      box-shadow: 0 0 8px 2px rgba(76, 175, 80, 0.7);
+    }
+
+    .status-icon.mowing::after {
+      box-shadow: 0 0 8px 2px rgba(255, 152, 0, 0.7);
+    }
+
+    .status-icon.returning::after {
+      box-shadow: 0 0 8px 2px rgba(33, 150, 243, 0.7);
+    }
+
+    .status-icon.error::after {
+      box-shadow: 0 0 8px 2px rgba(244, 67, 54, 0.7);
+    }
+
+    .status-ring.text-hidden .status-text,
+    .status-ring.text-hidden .badge-separator {
+      display: none;
+    }
     /* =================== */
     /*     Mower SVG       */
     /* =================== */
@@ -987,26 +1027,34 @@ const compactLawnMowerCardStyles = i$3 `
       opacity: 0.8;
     }
 
-    .mower-svg.active .wheel-back .wheel-rotation,
-    .mower-svg.driving-to-dock .wheel-back .wheel-rotation,
-    .mower-svg.driving-from-dock .wheel-back .wheel-rotation {
+    .mower-svg.on-lawn-static.active .wheel-back .wheel-rotation {
       animation: rotateWheel 1.5s linear infinite;
       will-change: transform;
     }
-
-    .mower-svg.active .wheel-front .wheel-rotation,
-    .mower-svg.driving-to-dock .wheel-front .wheel-rotation,
-    .mower-svg.driving-from-dock .wheel-front .wheel-rotation {
+    .mower-svg.on-lawn-static.active .wheel-front .wheel-rotation {
       animation: rotateWheel 0.6s linear infinite;
       will-change: transform;
     }
 
+    .mower-svg.driving-to-dock .wheel-back .wheel-rotation,
+    .mower-svg.driving-from-dock .wheel-back .wheel-rotation {
+      animation: rotateWheelDriveBack 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+      will-change: transform;
+    }
+    .mower-svg.driving-to-dock .wheel-front .wheel-rotation,
+    .mower-svg.driving-from-dock .wheel-front .wheel-rotation {
+      animation: rotateWheelDriveFront 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+      will-change: transform;
+    }
+    
     .mower-svg.driving-to-dock .mower-body {
-      animation: driveToDock 2s ease-in-out forwards;
+      animation: driveToDock 2s linear forwards;
+      will-change: transform;
     }
 
     .mower-svg.driving-from-dock .mower-body {
-      animation: driveFromDock 2s ease-in-out forwards;
+      animation: driveFromDock 2s linear forwards;
+      will-change: transform;
     }
 
     .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
@@ -1023,7 +1071,7 @@ const compactLawnMowerCardStyles = i$3 `
 
     .mower-svg.on-lawn-static.active .mower-body {
       transform: translateX(30px);
-      animation: BounceOnLawn 3s ease-in-out infinite;
+      animation: BounceOnLawn 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
       will-change: transform;
     }
 
@@ -1349,44 +1397,17 @@ const compactLawnMowerCardStyles = i$3 `
     /* =================== */
     /*    Animations       */
     /* =================== */
-    @keyframes chargingGlow {
-      0%, 100% { box-shadow: 0 2px 8px rgba(222, 54, 54, 0.1), inset 0 1px 0 rgba(255,255,255,0.1); }
-      50% { box-shadow: 0 2px 12px rgba(var(--rgb-success-color), 0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
-    }
-
-    @keyframes chargingPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    @keyframes pulse-scale {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
       }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(76, 175, 80, 0);
+      50% {
+        opacity: 1;
       }
-    }
-
-    @keyframes workingPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4);
-      }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(255, 152, 0, 0);
-      }
-    }
-
-    @keyframes returningPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.6);
-      }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(33, 150, 243, 0);
-      }
-    }
-
-    @keyframes errorPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
-      }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(244, 67, 54, 0);
+      100% {
+        transform: scale(1.1);
+        opacity: 0;
       }
     }
 
@@ -1427,19 +1448,59 @@ const compactLawnMowerCardStyles = i$3 `
       }
     }
 
+    @keyframes rotateWheelDriveBack {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(480deg); }
+    }
+
+    @keyframes rotateWheelDriveFront {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(1200deg); }
+    }
+
     @keyframes driveToDock {
-      0% { transform: translateX(30px); }
-      100% { transform: translateX(-20px); }
+      0%    { transform: translate(30px, 0px); }
+      10%   { transform: translate(29px, 0px); }
+      20%   { transform: translate(26px, 0px); }
+      30%   { transform: translate(21px, 0px); }
+      40%   { transform: translate(14px, 0px); }
+      50%   { transform: translate(5px, 0px); }
+      60%   { transform: translate(-4px, 0px); }
+      70%   { transform: translate(-11px, 0px); }
+      80%   { transform: translate(-16px, 0px); }
+      90%   { transform: translate(-19px, 0.3px); }
+      95%   { transform: translate(-19.75px, 0.5px); }
+      100%  { transform: translate(-20px, 0px); }
     }
 
     @keyframes driveFromDock {
-      0% { transform: translateX(-20px); }
-      100% { transform: translateX(30px); }
+      0%    { transform: translate(-20px, 0px); }
+      5%    { transform: translate(-19.9px, -0.3px); }
+      10%   { transform: translate(-19.5px, -0.5px); }
+      15%   { transform: translate(-18.5px, -0.5px); }
+      20%   { transform: translate(-17px, -0.4px); }
+      30%   { transform: translate(-13px, -0.2px); }
+      40%   { transform: translate(-8px, 0px); }
+      50%   { transform: translate(-1.5px, 0px); }
+      60%   { transform: translate(6px, 0px); }
+      70%   { transform: translate(14px, 0px); }
+      80%   { transform: translate(21.5px, 0px); }
+      90%   { transform: translate(27px, 0px); }
+      100%  { transform: translate(30px, 0px); }
     }
 
     @keyframes BounceOnLawn {
-      0%, 100% { transform: translateX(30px) translateY(0); }
-      50% { transform: translateX(30px) translateY(-3px); }
+      0%, 100% { 
+        transform: translateX(30px) translateY(0px); 
+      }
+      25% { 
+        transform: translateX(30px) translateY(-1px); 
+      }
+      50% { 
+        transform: translateX(30px) translateY(-0.2px); 
+      }
+      75% { 
+        transform: translateX(30px) translateY(-1.2px); }
     }
 
     @keyframes ledStripActive {
@@ -1530,18 +1591,6 @@ const compactLawnMowerCardStyles = i$3 `
       .status-icon {
         width: 20px;
         height: 20px;
-      }
-
-      .status-ring {
-        padding: 0;
-        gap: 0;
-      }
-
-      .status-ring .status-text,
-      .status-ring .badge-separator,
-      .status-ring .battery-icon-badge,
-      .status-ring .battery-text-badge {
-        display: none;
       }
     }
 
@@ -1730,6 +1779,27 @@ const editorStyles = i$3 `
     .loading-text {
       color: var(--secondary-text-color);
       font-style: italic;
+    }
+
+    /* =================== */
+    /*      Header         */
+    /* =================== */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+    }
+
+    .card-header .name {
+      font-weight: bold;
+      font-size: 1.1em;
+      color: rgb(86, 159, 66);
+    }
+
+    .card-header .version {
+      font-size: 0.9em;
+      color: var(--secondary-text-color);
     }
 
     .config-container {
@@ -2223,6 +2293,10 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._newActionService = '';
         this._newActionTarget = '';
         this._useCustomTarget = false;
+        this._boundComputeLabel = this._computeLabel.bind(this);
+        this._boundComputePowerLabel = this._computePowerLabel.bind(this);
+        this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
+        this._boundComputeActionsLabel = this._computeActionsLabel.bind(this);
         this.MAX_ACTIONS = 3;
         this.MOWER_ICONS = [
             'mdi:play', 'mdi:pause', 'mdi:stop', 'mdi:home-map-marker',
@@ -2453,19 +2527,24 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return baseSchema;
     }
     _getAvailableServices() {
+        if (this._cachedServices && this._cachedServices.hassServices === this.hass.services) {
+            return this._cachedServices.services;
+        }
         if (!this.hass?.services)
             return [];
         const services = [];
-        Object.keys(this.hass.services).forEach(domain => {
-            Object.keys(this.hass.services[domain]).forEach(service => {
+        for (const domain of Object.keys(this.hass.services)) {
+            for (const service of Object.keys(this.hass.services[domain])) {
                 const fullService = `${domain}.${service}`;
                 services.push({
                     value: fullService,
                     label: fullService
                 });
-            });
-        });
-        return services.sort((a, b) => a.label.localeCompare(b.label));
+            }
+        }
+        const sortedServices = services.sort((a, b) => a.label.localeCompare(b.label));
+        this._cachedServices = { services: sortedServices, hassServices: this.hass.services };
+        return sortedServices;
     }
     get _actionFormData() {
         return {
@@ -2512,6 +2591,13 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             isDefault: isDefault
         };
     }
+    _handleIconClick(e) {
+        const target = e.target;
+        const iconContainer = target.closest('.icon-option');
+        if (iconContainer?.dataset.icon) {
+            this._newActionIcon = iconContainer.dataset.icon;
+        }
+    }
     _renderIconSelector() {
         return x `
       <div class="icon-selector">
@@ -2520,11 +2606,11 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           <span>${this._newActionIcon}</span>
         </div>
         
-        <div class="icon-grid">
+        <div class="icon-grid" @click=${this._handleIconClick}>
           ${this.MOWER_ICONS.map(icon => x `
             <div 
               class="icon-option ${this._newActionIcon === icon ? 'selected' : ''}"
-              @click=${() => this._newActionIcon = icon}
+              data-icon=${icon}
               title=${icon}
             >
               <ha-icon icon=${icon}></ha-icon>
@@ -2652,7 +2738,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   .hass=${this.hass}
                   .data=${this._actionFormData}
                   .schema=${this._actionFormSchema}
-                  .computeLabel=${this._computeActionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeActionsLabel}
                   @value-changed=${this._actionFormValueChanged}
                 ></ha-form>
               </div>
@@ -2885,6 +2971,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         }
         return x `
       <div class="card-config">
+        <div class="card-header">
+          <div class="name">${CARD_NAME}</div>
+          <div class="version">
+            ${localize('editor.version', { hass: this.hass })}: ${CARD_VERSION}
+          </div>
+        </div>
         <div class="config-container">
           
           <div class="config-section">
@@ -2907,7 +2999,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 .hass=${this.hass}
                 .data=${this._mainData}
                 .schema=${this._mainSchema}
-                .computeLabel=${this._computeLabel.bind(this)}
+                .computeLabel=${this._boundComputeLabel}
                 @value-changed=${this._valueChanged}
               ></ha-form>
             </div>
@@ -2933,7 +3025,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 .hass=${this.hass}
                 .data=${this._infoData}
                 .schema=${this._infoSchema}
-                .computeLabel=${this._computePowerLabel.bind(this)}
+                .computeLabel=${this._boundComputePowerLabel}
                 @value-changed=${this._valueChanged}
               ></ha-form>
             </div>
@@ -2959,7 +3051,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 .hass=${this.hass}
                 .data=${this._optionsData}
                 .schema=${this._viewOptionsSchema}
-                .computeLabel=${this._computeOptionsLabel.bind(this)}
+                .computeLabel=${this._boundComputeOptionsLabel}
                 @value-changed=${this._valueChanged}
               ></ha-form>
 
@@ -2969,7 +3061,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   .hass=${this.hass}
                   .data=${this._optionsData}
                   .schema=${this._mapOptionsSchema}
-                  .computeLabel=${this._computeOptionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
               </div>
@@ -2980,7 +3072,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   .hass=${this.hass}
                   .data=${this._optionsData}
                   .schema=${this._appearanceOptionsSchema}
-                  .computeLabel=${this._computeOptionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
               </div>
@@ -2991,7 +3083,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   .hass=${this.hass}
                   .data=${this._optionsData}
                   .schema=${this._colorOptionsSchema}
-                  .computeLabel=${this._computeOptionsLabel.bind(this)}
+                  .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
               </div>
@@ -3044,8 +3136,7 @@ CompactLawnMowerCardEditor = __decorate([
 ], CompactLawnMowerCardEditor);
 
 var CompactLawnMowerCard_1;
-const CARD_VERSION = '0.8.2';
-console.groupCollapsed(`%c COMPACT-LAWN-MOWER-CARD %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
+console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
 console.log("Github:", "https://github.com/Tra1n84/compact-lawn-mower-card");
 console.groupEnd();
 let CameraPopup = class CameraPopup extends i {
@@ -3141,6 +3232,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     constructor() {
         super(...arguments);
         this._animationClass = '';
+        this._forceCameraRefresh = false;
         this._isCameraLoading = false;
         this._isCameraReachable = true;
         this._isPopupOpen = false;
@@ -3149,6 +3241,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._mapWidth = 0;
         this._mapHeight = 0;
         this._mapZoom = 19;
+        this._lastProgressLevel = '-';
     }
     connectedCallback() {
         super.connectedCallback();
@@ -3166,23 +3259,28 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 this._setupMowerResizeObserver();
             });
         }
+        this.updateComplete.then(() => {
+            this._checkBadgeOverlap();
+        });
     }
     firstUpdated(_changedProperties) {
         super.firstUpdated(_changedProperties);
-        this._resizeObserver = new ResizeObserver(() => {
+        this._mainResizeObserver = new ResizeObserver(() => {
             if (this._mainDisplayArea) {
                 const newWidth = Math.round(this._mainDisplayArea.clientWidth);
                 const newHeight = Math.round(this._mainDisplayArea.clientHeight);
                 if (newWidth > 0 && newHeight > 0 && (this._mapWidth !== newWidth || this._mapHeight !== newHeight)) {
                     this._mapWidth = newWidth;
                     this._mapHeight = newHeight;
+                    this._checkBadgeOverlap();
                 }
             }
             this.dispatchEvent(new Event("iron-resize", { bubbles: true, composed: true }));
         });
         if (this._mainDisplayArea) {
-            this._resizeObserver.observe(this._mainDisplayArea);
+            this._mainResizeObserver.observe(this._mainDisplayArea);
         }
+        this._checkBadgeOverlap();
         this._applyStyles();
         this.requestUpdate();
     }
@@ -3197,9 +3295,47 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (this._animationTimeout) {
             clearTimeout(this._animationTimeout);
         }
-        this._resizeObserver?.disconnect();
+        if (this._badgeOverlapCheckTimeout) {
+            clearTimeout(this._badgeOverlapCheckTimeout);
+        }
+        this._mainResizeObserver?.disconnect();
         this._mowerResizeObserver?.disconnect();
         this._closePopup();
+    }
+    _checkBadgeOverlap() {
+        const statusRing = this._statusRing;
+        if (!statusRing)
+            return;
+        if (this._badgeOverlapCheckTimeout) {
+            window.cancelAnimationFrame(this._badgeOverlapCheckTimeout);
+        }
+        this._badgeOverlapCheckTimeout = window.requestAnimationFrame(() => {
+            const progressBadge = this._progressBadge;
+            if (!this.config.progress_entity || !progressBadge) {
+                statusRing.classList.remove('text-hidden');
+                return;
+            }
+            const progressRect = progressBadge.getBoundingClientRect();
+            const statusRect = statusRing.getBoundingClientRect();
+            const containerWidth = this._mainDisplayArea?.getBoundingClientRect().width || 0;
+            const isTextHidden = statusRing.classList.contains('text-hidden');
+            const statusTextElement = statusRing.querySelector('.status-text');
+            const textWidth = statusTextElement ? statusTextElement.getBoundingClientRect().width : 70;
+            if (isTextHidden) {
+                const requiredSpace = statusRect.width + textWidth + 20;
+                if (progressRect.right < containerWidth - requiredSpace) {
+                    statusRing.classList.remove('text-hidden');
+                }
+            }
+            else {
+                const hideThreshold = 10;
+                const positionOverlap = progressRect.right > statusRect.left - hideThreshold;
+                const widthOverlap = (progressRect.width + statusRect.width) > containerWidth - hideThreshold;
+                if (positionOverlap || widthOverlap) {
+                    statusRing.classList.add('text-hidden');
+                }
+            }
+        });
     }
     _setInitialAnimationState(currentState) {
         const onLawnStates = ['mowing', 'paused', 'returning', 'error'];
@@ -3332,6 +3468,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (changedProperties.has('config')) {
             this._setInitialAnimationState(this.mowerState);
             const oldConfig = changedProperties.get('config');
+            if (oldConfig && this.config.default_view !== oldConfig.default_view) {
+                this._setViewMode(this.config.default_view || 'mower');
+            }
             if (oldConfig) {
                 if (this.config.camera_entity !== oldConfig.camera_entity && this._viewMode === 'camera') {
                     if (!this.config.camera_entity) {
@@ -3399,6 +3538,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     updated(changedProperties) {
         super.updated(changedProperties);
+        if (changedProperties.has('hass')) {
+            const currentProgress = this.progressLevel;
+            if (this._lastProgressLevel !== currentProgress) {
+                this._lastProgressLevel = currentProgress;
+            }
+        }
         if (changedProperties.has('_viewMode') && this._viewMode === 'mower') {
             this._updateMowerPosition();
             this._setupMowerResizeObserver();
@@ -3406,6 +3551,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (changedProperties.has('_viewMode') && this._viewMode !== 'mower') {
             this._mowerResizeObserver?.disconnect();
         }
+        this.updateComplete.then(() => {
+            this._checkBadgeOverlap();
+        });
     }
     _isCurrentlyDocked(state, isCharging) {
         if (isCharging) {
@@ -3679,6 +3827,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </div>
       `;
         }
+        if (this._forceCameraRefresh) {
+            return x `
+        <div class="camera-container is-loading">
+          <div class="loading-indicator">
+            <div class="loader"></div>
+          </div>
+        </div>
+      `;
+        }
         if (!this.cameraEntity || this.cameraEntity.state === 'unavailable') {
             return this._renderErrorView('camera-container', 'camera-error', 'mdi:camera-off', localize("camera.not_available", { hass: this.hass }));
         }
@@ -3726,6 +3883,11 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             document.body.removeChild(this._currentPopup);
             this._currentPopup = undefined;
             this._isPopupOpen = false;
+            this._forceCameraRefresh = true;
+            this.updateComplete.then(() => {
+                this._forceCameraRefresh = false;
+                this._updateCameraState(true);
+            });
         }
     }
     _handleMapError() {
@@ -3875,6 +4037,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         this._viewMode = mode;
         if (mode === 'camera') {
+            this._isPopupOpen = false;
             this._updateCameraState(true);
         }
         else if (mode === 'map') {
@@ -4057,6 +4220,9 @@ __decorate([
 ], CompactLawnMowerCard.prototype, "_animationClass", void 0);
 __decorate([
     r()
+], CompactLawnMowerCard.prototype, "_forceCameraRefresh", void 0);
+__decorate([
+    r()
 ], CompactLawnMowerCard.prototype, "_isCameraLoading", void 0);
 __decorate([
     r()
@@ -4071,8 +4237,11 @@ __decorate([
     e('.main-display-area')
 ], CompactLawnMowerCard.prototype, "_mainDisplayArea", void 0);
 __decorate([
-    r()
-], CompactLawnMowerCard.prototype, "_mapCardElement", void 0);
+    e('.progress-badge')
+], CompactLawnMowerCard.prototype, "_progressBadge", void 0);
+__decorate([
+    e('.status-ring')
+], CompactLawnMowerCard.prototype, "_statusRing", void 0);
 __decorate([
     n({ attribute: false })
 ], CompactLawnMowerCard.prototype, "_viewMode", void 0);
@@ -4085,6 +4254,9 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_mapZoom", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_mapCardElement", void 0);
 CompactLawnMowerCard = CompactLawnMowerCard_1 = __decorate([
     t('compact-lawn-mower-card')
 ], CompactLawnMowerCard);

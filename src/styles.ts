@@ -264,9 +264,7 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .status-ring.charging {
-      animation: chargingGlow 2s ease-in-out infinite;
       border: 1px solid rgba(var(--rgb-success-color), 0.3);
-      will-change: box-shadow;
     }
 
     .view-toggle {
@@ -357,24 +355,19 @@ export const compactLawnMowerCardStyles = css`
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
 
     .status-icon.charging {
       color: var(--success-color, #4caf50);
-      animation: chargingPulse 2s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
     .status-icon.mowing {
       color: var(--warning-color, #ff9800);
-      animation: workingPulse 2s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
     .status-icon.returning {
       color: var(--primary-color, rgba(33, 150, 243, 0.6));
-      animation: returningPulse 2s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
     .status-icon.paused {
@@ -383,10 +376,52 @@ export const compactLawnMowerCardStyles = css`
 
     .status-icon.error {
       color: var(--error-color);
-      animation: errorPulse 1s ease-in-out infinite;
-      will-change: box-shadow;
     }
 
+    .status-icon::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: calc(100% + 12px);
+      height: calc(100% + 12px);
+      border-radius: 50%;
+      opacity: 0;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .status-icon.charging::after,
+    .status-icon.mowing::after,
+    .status-icon.returning::after,
+    .status-icon.error::after {
+      animation: pulse-scale 2s ease-out infinite;
+    }
+
+    .status-icon.error::after {
+      animation-duration: 1s;
+    }
+
+    .status-icon.charging::after {
+      box-shadow: 0 0 8px 2px rgba(76, 175, 80, 0.7);
+    }
+
+    .status-icon.mowing::after {
+      box-shadow: 0 0 8px 2px rgba(255, 152, 0, 0.7);
+    }
+
+    .status-icon.returning::after {
+      box-shadow: 0 0 8px 2px rgba(33, 150, 243, 0.7);
+    }
+
+    .status-icon.error::after {
+      box-shadow: 0 0 8px 2px rgba(244, 67, 54, 0.7);
+    }
+
+    .status-ring.text-hidden .status-text,
+    .status-ring.text-hidden .badge-separator {
+      display: none;
+    }
     /* =================== */
     /*     Mower SVG       */
     /* =================== */
@@ -450,26 +485,34 @@ export const compactLawnMowerCardStyles = css`
       opacity: 0.8;
     }
 
-    .mower-svg.active .wheel-back .wheel-rotation,
-    .mower-svg.driving-to-dock .wheel-back .wheel-rotation,
-    .mower-svg.driving-from-dock .wheel-back .wheel-rotation {
+    .mower-svg.on-lawn-static.active .wheel-back .wheel-rotation {
       animation: rotateWheel 1.5s linear infinite;
       will-change: transform;
     }
-
-    .mower-svg.active .wheel-front .wheel-rotation,
-    .mower-svg.driving-to-dock .wheel-front .wheel-rotation,
-    .mower-svg.driving-from-dock .wheel-front .wheel-rotation {
+    .mower-svg.on-lawn-static.active .wheel-front .wheel-rotation {
       animation: rotateWheel 0.6s linear infinite;
       will-change: transform;
     }
 
+    .mower-svg.driving-to-dock .wheel-back .wheel-rotation,
+    .mower-svg.driving-from-dock .wheel-back .wheel-rotation {
+      animation: rotateWheelDriveBack 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+      will-change: transform;
+    }
+    .mower-svg.driving-to-dock .wheel-front .wheel-rotation,
+    .mower-svg.driving-from-dock .wheel-front .wheel-rotation {
+      animation: rotateWheelDriveFront 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+      will-change: transform;
+    }
+    
     .mower-svg.driving-to-dock .mower-body {
-      animation: driveToDock 2s ease-in-out forwards;
+      animation: driveToDock 2s linear forwards;
+      will-change: transform;
     }
 
     .mower-svg.driving-from-dock .mower-body {
-      animation: driveFromDock 2s ease-in-out forwards;
+      animation: driveFromDock 2s linear forwards;
+      will-change: transform;
     }
 
     .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
@@ -486,7 +529,7 @@ export const compactLawnMowerCardStyles = css`
 
     .mower-svg.on-lawn-static.active .mower-body {
       transform: translateX(30px);
-      animation: BounceOnLawn 3s ease-in-out infinite;
+      animation: BounceOnLawn 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
       will-change: transform;
     }
 
@@ -812,44 +855,17 @@ export const compactLawnMowerCardStyles = css`
     /* =================== */
     /*    Animations       */
     /* =================== */
-    @keyframes chargingGlow {
-      0%, 100% { box-shadow: 0 2px 8px rgba(222, 54, 54, 0.1), inset 0 1px 0 rgba(255,255,255,0.1); }
-      50% { box-shadow: 0 2px 12px rgba(var(--rgb-success-color), 0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
-    }
-
-    @keyframes chargingPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    @keyframes pulse-scale {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
       }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(76, 175, 80, 0);
+      50% {
+        opacity: 1;
       }
-    }
-
-    @keyframes workingPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4);
-      }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(255, 152, 0, 0);
-      }
-    }
-
-    @keyframes returningPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.6);
-      }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(33, 150, 243, 0);
-      }
-    }
-
-    @keyframes errorPulse {
-      0%, 100% { 
-        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4);
-      }
-      50% { 
-        box-shadow: 0 0 0 8px rgba(244, 67, 54, 0);
+      100% {
+        transform: scale(1.1);
+        opacity: 0;
       }
     }
 
@@ -890,19 +906,59 @@ export const compactLawnMowerCardStyles = css`
       }
     }
 
+    @keyframes rotateWheelDriveBack {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(480deg); }
+    }
+
+    @keyframes rotateWheelDriveFront {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(1200deg); }
+    }
+
     @keyframes driveToDock {
-      0% { transform: translateX(30px); }
-      100% { transform: translateX(-20px); }
+      0%    { transform: translate(30px, 0px); }
+      10%   { transform: translate(29px, 0px); }
+      20%   { transform: translate(26px, 0px); }
+      30%   { transform: translate(21px, 0px); }
+      40%   { transform: translate(14px, 0px); }
+      50%   { transform: translate(5px, 0px); }
+      60%   { transform: translate(-4px, 0px); }
+      70%   { transform: translate(-11px, 0px); }
+      80%   { transform: translate(-16px, 0px); }
+      90%   { transform: translate(-19px, 0.3px); }
+      95%   { transform: translate(-19.75px, 0.5px); }
+      100%  { transform: translate(-20px, 0px); }
     }
 
     @keyframes driveFromDock {
-      0% { transform: translateX(-20px); }
-      100% { transform: translateX(30px); }
+      0%    { transform: translate(-20px, 0px); }
+      5%    { transform: translate(-19.9px, -0.3px); }
+      10%   { transform: translate(-19.5px, -0.5px); }
+      15%   { transform: translate(-18.5px, -0.5px); }
+      20%   { transform: translate(-17px, -0.4px); }
+      30%   { transform: translate(-13px, -0.2px); }
+      40%   { transform: translate(-8px, 0px); }
+      50%   { transform: translate(-1.5px, 0px); }
+      60%   { transform: translate(6px, 0px); }
+      70%   { transform: translate(14px, 0px); }
+      80%   { transform: translate(21.5px, 0px); }
+      90%   { transform: translate(27px, 0px); }
+      100%  { transform: translate(30px, 0px); }
     }
 
     @keyframes BounceOnLawn {
-      0%, 100% { transform: translateX(30px) translateY(0); }
-      50% { transform: translateX(30px) translateY(-3px); }
+      0%, 100% { 
+        transform: translateX(30px) translateY(0px); 
+      }
+      25% { 
+        transform: translateX(30px) translateY(-1px); 
+      }
+      50% { 
+        transform: translateX(30px) translateY(-0.2px); 
+      }
+      75% { 
+        transform: translateX(30px) translateY(-1.2px); }
     }
 
     @keyframes ledStripActive {
@@ -993,18 +1049,6 @@ export const compactLawnMowerCardStyles = css`
       .status-icon {
         width: 20px;
         height: 20px;
-      }
-
-      .status-ring {
-        padding: 0;
-        gap: 0;
-      }
-
-      .status-ring .status-text,
-      .status-ring .badge-separator,
-      .status-ring .battery-icon-badge,
-      .status-ring .battery-text-badge {
-        display: none;
       }
     }
 
@@ -1194,6 +1238,27 @@ export const editorStyles = css`
     .loading-text {
       color: var(--secondary-text-color);
       font-style: italic;
+    }
+
+    /* =================== */
+    /*      Header         */
+    /* =================== */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+    }
+
+    .card-header .name {
+      font-weight: bold;
+      font-size: 1.1em;
+      color: rgb(86, 159, 66);
+    }
+
+    .card-header .version {
+      font-size: 0.9em;
+      color: var(--secondary-text-color);
     }
 
     .config-container {
