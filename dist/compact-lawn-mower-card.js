@@ -86,7 +86,7 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '0.9.0';
+const CARD_VERSION = '0.9.1';
 
 var mower$1 = {
 	start: "Start",
@@ -1094,9 +1094,7 @@ const compactLawnMowerCardStyles = i$3 `
       color: var(--primary-text-color);
       opacity: 0;
       animation: sleepZFloat 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-      filter: blur(0.5px);
-      will-change: transform, opacity, filter;
+      will-change: transform, opacity;
     }
 
     .sleep-z:nth-child(1) {
@@ -1415,22 +1413,18 @@ const compactLawnMowerCardStyles = i$3 `
       0% {
         opacity: 0;
         transform: translate3d(0, 10px, 0) scale(0.8);
-        filter: blur(1px);
       }
       25% {
         opacity: 1;
         transform: translate3d(2px, -10px, 0) scale(1);
-        filter: blur(0);
       }
       75% {
         opacity: 0.5;
         transform: translate3d(-2px, -35px, 0) scale(0.9);
-        filter: blur(0.5px);
       }
       100% {
         opacity: 0;
         transform: translate3d(0, -50px, 0) scale(0.8);
-        filter: blur(1.5px);
       }
     }
 
@@ -2583,8 +2577,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 isDefault: true
             };
         }
-        const entityState = this.hass?.states[entityId];
-        const friendlyName = entityState?.attributes?.friendly_name || entityId;
+        const friendlyName = this.hass?.states[entityId]?.attributes?.friendly_name || entityId;
         return {
             display: friendlyName,
             tooltip: entityId,
@@ -3808,7 +3801,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     `;
     }
     _renderMowerDisplay() {
-        this.config.camera_entity && this.cameraEntity;
         switch (this._viewMode) {
             case 'camera':
                 return this._renderCameraView();
@@ -4173,7 +4165,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
           <div class="controls-area">
             ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? x `
               <div class="buttons-section">
-                ${this.config.custom_actions.map((action, index) => x `
+                ${this.config.custom_actions.map((action) => x `
                   <button 
                     class="tile-card-button" 
                     @click=${() => this._executeCustomAction(action)}

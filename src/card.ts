@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, PropertyValues, TemplateResult } from 'lit';
+import { LitElement, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCard } from 'custom-card-helpers';
 import './editor';
@@ -767,7 +767,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _renderMowerDisplay() {
-    const hasCamera = this.config.camera_entity && this.cameraEntity;
     switch (this._viewMode) {
       case 'camera':
         return this._renderCameraView();
@@ -1191,7 +1190,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           <div class="controls-area">
             ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? html`
               <div class="buttons-section">
-                ${this.config.custom_actions.map((action, index) => html`
+                ${this.config.custom_actions.map((action) => html`
                   <button 
                     class="tile-card-button" 
                     @click=${() => this._executeCustomAction(action)}

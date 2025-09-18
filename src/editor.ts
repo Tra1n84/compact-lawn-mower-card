@@ -373,11 +373,10 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       };
     }
 
-    const entityState = this.hass?.states[entityId];
-    const friendlyName = entityState?.attributes?.friendly_name || entityId;
+    const friendlyName = this.hass?.states[entityId]?.attributes?.friendly_name || entityId;
     
     return { 
-      display: friendlyName, 
+      display: friendlyName,
       tooltip: entityId, 
       isDefault: isDefault 
     };
