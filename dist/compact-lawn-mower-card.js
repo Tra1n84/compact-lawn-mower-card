@@ -88,12 +88,12 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
 const CARD_NAME = 'Compact Lawn Mower Card';
 const CARD_VERSION = '0.9.1';
 
-var mower$1 = {
+var mower$2 = {
 	start: "Start",
 	stop: "Stop",
 	dock: "Dock"
 };
-var status$1 = {
+var status$2 = {
 	mowing: "Mowing",
 	docked: "Docked",
 	charging: "Charging",
@@ -103,7 +103,7 @@ var status$1 = {
 	unavailable: "Unavailable",
 	unknown: "Unknown"
 };
-var editor$1 = {
+var editor$2 = {
 	loading: "Loading editor...",
 	loading_components: "Loading components...",
 	version: "Version",
@@ -179,6 +179,17 @@ var editor$1 = {
 		default_entity: "Default Entity",
 		no_entity_selected: "no entity selected",
 		not_set: "not set",
+		service_data: "Service Data",
+		service_data_configured: "Configured",
+		service_data_none: "None",
+		target_mode: "Target",
+		target_mode_label: {
+			"default": "Default Entity",
+			custom: "Custom",
+			none: "None"
+		},
+		target_mode_none_helper: "The service will be called without a target entity.",
+		target_none: "None",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -190,46 +201,46 @@ var editor$1 = {
 		}
 	}
 };
-var error$1 = {
+var error$2 = {
 	missing_entity: "Please select a Lawn Mower entity",
 	loading_components: "Error loading components",
 	entity_not_found: "Entity not found."
 };
-var camera$1 = {
+var camera$2 = {
 	camera_title: "Camera",
 	not_available: "Camera not available",
 	not_reachable: "Camera not reachable"
 };
-var map$1 = {
+var map$2 = {
 	not_available: "Map not available"
 };
-var view$1 = {
+var view$2 = {
 	mower: "Lawn Mower",
 	camera: "Camera",
 	map: "Map"
 };
-var default_actions$1 = {
+var default_actions$2 = {
 	start_mowing: "Start Mowing",
 	pause: "Pause",
 	return_to_dock: "Return to Dock"
 };
 var en = {
-	mower: mower$1,
-	status: status$1,
-	editor: editor$1,
-	error: error$1,
-	camera: camera$1,
-	map: map$1,
-	view: view$1,
-	default_actions: default_actions$1
+	mower: mower$2,
+	status: status$2,
+	editor: editor$2,
+	error: error$2,
+	camera: camera$2,
+	map: map$2,
+	view: view$2,
+	default_actions: default_actions$2
 };
 
-var mower = {
+var mower$1 = {
 	start: "Start",
 	stop: "Stop",
 	dock: "Dock"
 };
-var status = {
+var status$1 = {
 	mowing: "Mäht",
 	docked: "Angedockt",
 	charging: "Lädt",
@@ -239,7 +250,7 @@ var status = {
 	unavailable: "Nicht verfügbar",
 	unknown: "Unbekannt"
 };
-var editor = {
+var editor$1 = {
 	loading: "Editor wird geladen...",
 	loading_components: "Komponenten werden geladen...",
 	version: "Version",
@@ -315,6 +326,17 @@ var editor = {
 		default_entity: "Standardentität",
 		no_entity_selected: "keine Entität ausgewählt",
 		not_set: "nicht festgelegt",
+		service_data: "Servicedaten",
+		service_data_configured: "Konfiguriert",
+		service_data_none: "Keine",
+		target_mode: "Zielentität",
+		target_mode_label: {
+			"default": "Standardentität",
+			custom: "Benutzerdefiniert",
+			none: "Keine"
+		},
+		target_mode_none_helper: "Der Service wird ohne eine Ziel-Entität aufgerufen.",
+		target_none: "Ohne",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -326,30 +348,177 @@ var editor = {
 		}
 	}
 };
-var error = {
+var error$1 = {
 	missing_entity: "Bitte wähle eine Mähroboter-Entität",
 	loading_components: "Fehler beim Laden der Komponenten",
 	entity_not_found: "Entität wurde nicht gefunden."
 };
-var camera = {
+var camera$1 = {
 	camera_title: "Kamera",
 	not_available: "Kamera nicht verfügbar",
 	not_reachable: "Kamera nicht erreichbar"
 };
-var map = {
+var map$1 = {
 	not_available: "Karte nicht verfügbar"
 };
-var view = {
+var view$1 = {
 	mower: "Mähroboter",
 	camera: "Kamera",
 	map: "Karte"
 };
-var default_actions = {
+var default_actions$1 = {
 	start_mowing: "Mähvorgang starten",
 	pause: "Pause",
 	return_to_dock: "Zurück zur Basis"
 };
 var de = {
+	mower: mower$1,
+	status: status$1,
+	editor: editor$1,
+	error: error$1,
+	camera: camera$1,
+	map: map$1,
+	view: view$1,
+	default_actions: default_actions$1
+};
+
+var mower = {
+	start: "Démarrage",
+	stop: "Stop",
+	dock: "Station"
+};
+var status = {
+	mowing: "Tonte",
+	docked: "Stationnée",
+	charging: "En charge",
+	paused: "Pause",
+	returning: "Retour à la station",
+	error: "Erreur",
+	unavailable: "Indisponible",
+	unknown: "Inconnu"
+};
+var editor = {
+	loading: "Chargement editeur...",
+	loading_components: "Chargement composants...",
+	version: "Version",
+	entity: "Tondeuse",
+	camera_entity: "Entité Caméra (Optionnel)",
+	map_entity: "Entité carte (Optional, Tracker)",
+	camera_fit_mode: "Mode d'ajustement de la caméra",
+	camera_fit_mode_label: {
+		cover: "Couverture (remplir l'espace, peut recadrer)",
+		contain: "Contient (s'adapte à l'intérieur, peut montrer des barres)"
+	},
+	section: {
+		main: "Tondeuse & Caméra",
+		main_description: "Tondeuse & Caméra optionnelle",
+		power: "Progression, batterie et charge",
+		power_description: "Entités facultatives pour afficher des informations supplémentaires sur la tondeuse à gazon tel que le niveau de la batterie, l'état de la charge ou la progression actuelle",
+		options: "Options",
+		options_description: "Options Additionnelles"
+	},
+	power: {
+		battery_entity: "Entité Batterie (Optionel)",
+		charging_entity: "Entité Chargement (Optionnel, Capteur Binaire: On/Off)",
+		progress_entity: "Entité Progression (Optional)"
+	},
+	options: {
+		default_view: "Vue par défaut",
+		google_maps_api_key: "Google Maps Clé API (Optionnel)",
+		use_google_maps: "Utiliser Google Maps (avec Clé API)",
+		enable_map: "Activer l'affichage de la carte",
+		map_type: "Type de carte",
+		map_type_label: {
+			roadmap: "Feuille de route",
+			satellite: "Satellite",
+			hybrid: "Hybride"
+		},
+		map_options_title: "Carte",
+		color_options_title: "Couleur",
+		appearance_options_title: "Apparence",
+		mower_model: "Modèle de tondeuse",
+		mower_models: {
+			"default": "Defaut"
+		},
+		color: {
+			sky: "Ciel",
+			grass: "Herbe",
+			top: "Haut",
+			bottom: "Bas"
+		}
+	},
+	actions: {
+		title: "Actions",
+		description: "Boutons d'action personnalisés. Vous pouvez définir jusqu'à trois actions personnalisées.",
+		confirm_reset: "Voulez-vous vraiment rétablir les actions par défaut ? Vos actions actuelles seront écrasées.",
+		reset_to_defaults: "Restaurer les paramètres par défaut",
+		edit: "Modifier l'action",
+		remove: "Supprimer l'action",
+		no_actions_configured: "Pas d'actions configurées.",
+		add: "Ajouter une nouvelle action",
+		name: "Nom de l'action",
+		icon: "Icone de l'action",
+		icon_custom: "Icone personnalisée",
+		icon_custom_helper: "ex: mdi:robot-mower ou mdi:grass",
+		config: "Configuration de l'action",
+		save: "Sauvegarder",
+		cancel: "Annuler",
+		add_button: "Ajouter une action",
+		max_reached: "Nombre maximal d'actions ({MAX_ACTIONS}) atteint. Supprimez une action pour en ajouter une nouvelle.",
+		service: "Service",
+		target: "Cible",
+		target_entity: "Entité ciblée (Optionnel)",
+		use_custom_target: "Utiliser une entité cible différente",
+		using_default_entity: "Utilisation de l'entité par défaut",
+		default_entity: "Entité par défaut",
+		no_entity_selected: "Pas d'entité selectionnée",
+		not_set: "non défini",
+		service_data: "Données de service",
+		service_data_configured: "Configuré",
+		service_data_none: "Aucun",
+		target_mode: "Entité Cible",
+		target_mode_label: {
+			"default": "Entité par défaut",
+			custom: "Personnalisée",
+			none: "Aucune"
+		},
+		target_mode_none_helper: "Le service sera appelé sans entité cible.",
+		target_none: "Aucune",
+		action_type: {
+			call_service: "Service",
+			navigate: "Navigation",
+			url: "URL",
+			toggle: "Basculer l'entité",
+			more_info: "Plus d'infos",
+			none: "Pas d'action",
+			not_configured: "Non Configurée"
+		}
+	}
+};
+var error = {
+	missing_entity: "Veuillez sélectionner une entité Tondeuse à gazon",
+	loading_components: "Erreur lors du chargement des composants",
+	entity_not_found: "Entité non trouvée."
+};
+var camera = {
+	camera_title: "Caméra",
+	not_available: "Caméra non disponible",
+	not_reachable: "Caméra inaccessible"
+};
+var map = {
+	not_available: "Carte non disponible"
+};
+var view = {
+	mower: "Tondeuse",
+	camera: "Caméra",
+	map: "Carte"
+};
+var default_actions = {
+	start_mowing: "Démarrer la tonte",
+	pause: "Pause",
+	return_to_dock: "Retour à la station"
+};
+var fr = {
 	mower: mower,
 	status: status,
 	editor: editor,
@@ -363,6 +532,7 @@ var de = {
 const languages = {
     en,
     de,
+    fr
 };
 const getLanguage = (hass) => {
     const lang = hass?.locale?.language || hass?.language || localStorage.getItem('selectedLanguage') || navigator.language || 'en';
@@ -1871,6 +2041,7 @@ const editorStyles = i$3 `
     .section-content.expanded {
       padding: 0 20px 20px 20px;
       max-height: none;
+      overflow: visible;
       opacity: 1;
     }
 
@@ -1932,8 +2103,6 @@ const editorStyles = i$3 `
       margin: 16px 0 24px 0;
       background: var(--card-background-color);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 10;
     }
     
     .form-header {
@@ -2028,6 +2197,26 @@ const editorStyles = i$3 `
       white-space: nowrap;
       max-width: 100%;
       position: relative;
+    }
+
+    .action-target,
+    .action-service-data {
+      font-size: 12px;
+      color: var(--secondary-text-color);
+      font-style: italic;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .action-target.custom-target {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .action-target.default-target {
+      color: var(--secondary-text-color);
+      font-style: italic;
     }
     
     .action-buttons {
@@ -2286,7 +2475,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._editingActionIndex = null;
         this._newActionService = '';
         this._newActionTarget = '';
-        this._useCustomTarget = false;
+        this._newActionServiceData = {};
+        this._targetMode = 'default';
         this._boundComputeLabel = this._computeLabel.bind(this);
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
         this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
@@ -2365,10 +2555,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     _actionFormValueChanged(ev) {
         ev.stopPropagation();
-        const { action_name, action_service, action_target } = ev.detail.value;
+        const { action_name, action_service, action_target, action_service_data, target_mode } = ev.detail.value;
         this._newActionName = action_name ?? '';
         this._newActionService = action_service ?? '';
         this._newActionTarget = action_target ?? '';
+        this._newActionServiceData = action_service_data ?? {};
+        this._targetMode = target_mode ?? this._targetMode;
     }
     _fireConfigChanged(config) {
         this.config = config;
@@ -2392,16 +2584,21 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (this.config.custom_actions && this.config.custom_actions.length >= this.MAX_ACTIONS) {
             return;
         }
-        const targetEntityId = this._useCustomTarget && this._newActionTarget.trim()
-            ? this._newActionTarget.trim()
-            : this.config.entity || '{{ entity }}';
+        let target;
+        if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
+            target = { entity_id: this._newActionTarget.trim() };
+        }
+        else if (this._targetMode === 'default') {
+            target = { entity_id: this.config.entity || '{{ entity }}' };
+        }
         const newAction = {
             name: this._newActionName.trim(),
             icon: this._newActionIcon,
             action: {
                 action: 'call-service',
                 service: service,
-                target: { entity_id: targetEntityId }
+                target: target,
+                data: this._newActionServiceData,
             }
         };
         const newActions = [...(this.config.custom_actions || []), newAction];
@@ -2418,29 +2615,48 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (action.action.action === 'call-service') {
             const serviceCall = action.action;
             this._newActionService = serviceCall.service || '';
-            const targetEntityId = serviceCall.target?.entity_id || '';
-            const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
-            const isCustomTarget = entityIdString !== '{{ entity }}' && entityIdString !== this.config.entity;
-            this._useCustomTarget = isCustomTarget;
-            this._newActionTarget = isCustomTarget ? entityIdString : '';
+            const target = serviceCall.target;
+            if (!target || (!target.entity_id && !target.device_id && !target.area_id)) {
+                this._targetMode = 'none';
+                this._newActionTarget = '';
+            }
+            else {
+                const targetEntityId = serviceCall.target?.entity_id || '';
+                const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
+                const isDefaultEntity = entityIdString === '{{ entity }}' || entityIdString === this.config.entity;
+                if (isDefaultEntity || !entityIdString) {
+                    this._targetMode = 'default';
+                    this._newActionTarget = '';
+                }
+                else {
+                    this._targetMode = 'custom';
+                    this._newActionTarget = entityIdString;
+                }
+            }
+            this._newActionServiceData = serviceCall.data || serviceCall.service_data || {};
         }
         this._showActionForm = true;
     }
     _saveEditingAction() {
-        if (!this.config?.custom_actions || this._editingActionIndex === null)
+        if (!this.config?.custom_actions || this._editingActionIndex === null || !this._newActionService.trim())
             return;
         const newActions = [...this.config.custom_actions];
         const service = this._newActionService.trim();
-        const targetEntityId = this._useCustomTarget && this._newActionTarget.trim()
-            ? this._newActionTarget.trim()
-            : this.config.entity || '{{ entity }}';
+        let target;
+        if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
+            target = { entity_id: this._newActionTarget.trim() };
+        }
+        else if (this._targetMode === 'default') {
+            target = { entity_id: this.config.entity || '{{ entity }}' };
+        }
         newActions[this._editingActionIndex] = {
             name: this._newActionName.trim(),
             icon: this._newActionIcon,
             action: {
                 action: 'call-service',
                 service: service,
-                target: { entity_id: targetEntityId }
+                target: target,
+                data: this._newActionServiceData,
             }
         };
         this._fireConfigChanged({ ...this.config, custom_actions: newActions });
@@ -2452,7 +2668,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._newActionIcon = 'mdi:play';
         this._newActionService = '';
         this._newActionTarget = '';
-        this._useCustomTarget = false;
+        this._newActionServiceData = {};
+        this._targetMode = 'default';
     }
     _showAddActionForm() {
         this._resetActionForm();
@@ -2481,15 +2698,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             this._hideActionForm();
         }
     }
-    _toggleCustomTarget() {
-        this._useCustomTarget = !this._useCustomTarget;
-        if (!this._useCustomTarget) {
-            this._newActionTarget = '';
-        }
-        this.requestUpdate();
-    }
     get _actionFormSchema() {
-        const baseSchema = [
+        const schema = [
             {
                 name: "action_name",
                 selector: {
@@ -2507,18 +2717,34 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                     }
                 },
                 required: true
-            }
-        ];
-        if (this._useCustomTarget) {
-            baseSchema.push({
-                name: "action_target",
+            },
+            {
+                name: "action_service_data",
                 selector: {
-                    entity: {}
+                    object: {}
                 },
                 required: false
-            });
+            },
+            {
+                name: "target_mode",
+                selector: {
+                    select: {
+                        mode: "dropdown",
+                        options: [
+                            { value: "default", label: localize('editor.actions.target_mode_label.default', { hass: this.hass }) },
+                            { value: "custom", label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
+                            { value: "none", label: localize('editor.actions.target_mode_label.none', { hass: this.hass }) }
+                        ],
+                        custom_value: false
+                    }
+                },
+                required: true
+            }
+        ];
+        if (this._targetMode === 'custom') {
+            schema.push({ name: "action_target", selector: { entity: {} } });
         }
-        return baseSchema;
+        return schema;
     }
     _getAvailableServices() {
         if (this._cachedServices && this._cachedServices.hassServices === this.hass.services) {
@@ -2544,7 +2770,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return {
             action_name: this._newActionName,
             action_service: this._newActionService,
-            action_target: this._newActionTarget
+            action_target: this._newActionTarget,
+            action_service_data: this._newActionServiceData,
+            target_mode: this._targetMode,
         };
     }
     _getServiceDisplayName(service) {
@@ -2567,7 +2795,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     _getEntityDisplayName(entityId) {
         if (!entityId) {
-            return { display: 'N/A', tooltip: 'No entity', isDefault: true };
+            const display = localize('editor.actions.target_none', { hass: this.hass });
+            return { display: display, tooltip: display, isDefault: true };
         }
         const isDefault = entityId === '{{ entity }}' || entityId === this.config.entity;
         if (entityId === '{{ entity }}') {
@@ -2642,7 +2871,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         const labelMap = {
             action_name: localize('editor.actions.name', { hass: this.hass }),
             action_service: localize('editor.actions.service', { hass: this.hass }),
-            action_target: localize('editor.actions.target_entity', { hass: this.hass })
+            action_target: localize('editor.actions.target_entity', { hass: this.hass }),
+            action_service_data: localize('editor.actions.service_data', { hass: this.hass }),
+            target_mode: localize('editor.actions.target_mode', { hass: this.hass })
         };
         return labelMap[schema.name] || schema.name;
     }
@@ -2680,9 +2911,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           ${this.config.custom_actions && this.config.custom_actions.length > 0
             ? this.config.custom_actions.map((action, index) => {
                 const serviceInfo = this._getServiceDisplayName(action.action.service || 'N/A');
-                const targetEntityId = action.action.target?.entity_id || '';
-                const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
+                action.action.target?.entity_id || '';
+                const target = action.action.target;
+                const entityIdString = target && target.entity_id ? (Array.isArray(target.entity_id) ? target.entity_id[0] : target.entity_id) : '';
                 const entityInfo = this._getEntityDisplayName(entityIdString);
+                const serviceData = action.action.data || action.action.service_data;
+                const hasServiceData = serviceData && Object.keys(serviceData).length > 0;
                 return x `
                   <div class="action-item">
                     <div class="action-icon">
@@ -2695,6 +2929,10 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                       </div>
                       <div class="action-target ${entityInfo.isDefault ? 'default-target' : 'custom-target'}">
                         ${localize('editor.actions.target', { hass: this.hass })}: ${entityInfo.display}
+                      </div>
+                      <div class="action-service-data">
+                        ${localize('editor.actions.service_data', { hass: this.hass })}:
+                        ${hasServiceData ? localize('editor.actions.service_data_configured', { hass: this.hass }) : localize('editor.actions.service_data_none', { hass: this.hass })}
                       </div>
                     </div>
                     <div class="action-buttons">
@@ -2736,28 +2974,24 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 ></ha-form>
               </div>
 
-              <div class="form-section">
-                <div class="target-entity-section">
-                  <div class="target-toggle">
-                    <ha-formfield .label=${localize('editor.actions.use_custom_target', { hass: this.hass })}>
-                      <ha-checkbox
-                        .checked=${this._useCustomTarget}
-                        @change=${this._toggleCustomTarget}
-                      ></ha-checkbox>
-                    </ha-formfield>
-                  </div>
-                  
-                  ${!this._useCustomTarget ? x `
-                    <div class="default-target-info">
-                      <ha-icon icon="mdi:information-outline"></ha-icon>
-                      <span>
-                        ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                        <strong>${this.config.entity ? this._getEntityDisplayName(this.config.entity).display : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong>
-                      </span>
-                    </div>
-                  ` : ''}
+              ${this._targetMode === 'default' ? x `
+                <div class="default-target-info form-section">
+                  <ha-icon icon="mdi:information-outline"></ha-icon>
+                  <span>
+                    ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                    <strong>${this.config.entity ? this._getEntityDisplayName(this.config.entity).display : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong>
+                  </span>
                 </div>
-              </div>
+              ` : ''}
+
+              ${this._targetMode === 'none' ? x `
+                <div class="default-target-info form-section">
+                  <ha-icon icon="mdi:information-outline"></ha-icon>
+                  <span>
+                    ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })}
+                  </span>
+                </div>
+              ` : ''}
 
               <div class="form-section">
                 <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
@@ -2769,7 +3003,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 ? x `
                     <ha-button
                       @click=${this._saveEditingAction}
-                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || (this._useCustomTarget && !this._newActionTarget.trim())}
+                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || (this._targetMode === 'custom' && !this._newActionTarget.trim())}
                     >
                       ${localize('editor.actions.save', { hass: this.hass })}
                     </ha-button>
@@ -2777,7 +3011,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 : x `
                     <ha-button
                       @click=${this._addAction}
-                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || !canAddAction || (this._useCustomTarget && !this._newActionTarget.trim())}
+                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || !canAddAction || (this._targetMode === 'custom' && !this._newActionTarget.trim())}
                     >
                       ${localize('editor.actions.add_button', { hass: this.hass })}
                     </ha-button>
@@ -3123,7 +3357,10 @@ __decorate([
 ], CompactLawnMowerCardEditor.prototype, "_newActionTarget", void 0);
 __decorate([
     r()
-], CompactLawnMowerCardEditor.prototype, "_useCustomTarget", void 0);
+], CompactLawnMowerCardEditor.prototype, "_newActionServiceData", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCardEditor.prototype, "_targetMode", void 0);
 CompactLawnMowerCardEditor = __decorate([
     t('compact-lawn-mower-card-editor')
 ], CompactLawnMowerCardEditor);
@@ -3655,7 +3892,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         }
         const serviceData = this._processTemplates(action.data || action.service_data || {});
-        const target = this._processTemplates(action.target || {});
+        const target = this._processTemplates(action.target);
         this.hass.callService(domain, service, serviceData, target)
             .catch((error) => {
             console.error('Service call failed:', error);
@@ -3664,7 +3901,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _processTemplates(obj) {
         if (typeof obj === 'string') {
-            return obj.replace(/\{\{\s*entity\s*\}\}/g, this.config.entity);
+            let processedString = obj.replace(/\{\{\s*entity\s*\}\}/g, this.config.entity);
+            const trimmed = processedString.trim();
+            if (/^[-+]?\d+(\.\d+)?$/.test(trimmed) && !isNaN(parseFloat(trimmed))) {
+                return parseFloat(trimmed);
+            }
+            return processedString;
         }
         if (Array.isArray(obj)) {
             return obj.map(item => this._processTemplates(item));

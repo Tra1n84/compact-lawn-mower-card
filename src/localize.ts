@@ -2,10 +2,12 @@ import { HomeAssistant } from 'custom-card-helpers';
 import type { Translation } from './localize/types';
 import en from './localize/en.json';
 import de from './localize/de.json';
+import fr from './localize/fr.json';
 
 const languages: Record<string, Translation> = {
   en,
   de,
+  fr
 };
 
 interface LocalizeOptions {

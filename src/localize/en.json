@@ -90,6 +90,17 @@
       "default_entity": "Default Entity",
       "no_entity_selected": "no entity selected",
       "not_set": "not set",
+      "service_data": "Service Data",
+      "service_data_configured": "Configured",
+      "service_data_none": "None",
+      "target_mode": "Target",
+      "target_mode_label": {
+        "default": "Default Entity",
+        "custom": "Custom",
+        "none": "None"
+      },
+      "target_mode_none_helper": "The service will be called without a target entity.",
+      "target_none": "None",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigation",

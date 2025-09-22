@@ -90,6 +90,17 @@
       "default_entity": "Standardentität",
       "no_entity_selected": "keine Entität ausgewählt",
       "not_set": "nicht festgelegt",
+      "service_data": "Servicedaten",
+      "service_data_configured": "Konfiguriert",
+      "service_data_none": "Ohne",
+      "target_mode": "Zielentität",
+      "target_mode_label": {
+        "default": "Standardentität",
+        "custom": "Benutzerdefiniert",
+        "none": "Ohne"
+      },
+      "target_mode_none_helper": "Der Service wird ohne eine Ziel-Entität aufgerufen.",
+      "target_none": "Ohne",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigation",

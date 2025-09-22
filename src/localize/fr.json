@@ -1,0 +1,138 @@
+{
+  "mower": {
+    "start": "Démarrage",
+    "stop": "Stop",
+    "dock": "Station"
+  },
+  "status": {
+    "mowing": "Tonte",
+    "docked": "Stationnée",
+    "charging": "En charge",
+    "paused": "Pause",
+    "returning": "Retour à la station",
+    "error": "Erreur",
+    "unavailable": "Indisponible",
+    "unknown": "Inconnu"
+  },
+  "editor": {
+    "loading": "Chargement editeur...",
+    "loading_components": "Chargement composants...",
+    "version": "Version",
+    "entity": "Tondeuse",
+    "camera_entity": "Entité Caméra (Optionnel)",
+    "map_entity": "Entité carte (Optional, Tracker)",
+    "camera_fit_mode": "Mode d'ajustement de la caméra",
+    "camera_fit_mode_label": {
+      "cover": "Couverture (remplir l'espace, peut recadrer)",
+      "contain": "Contient (s'adapte à l'intérieur, peut montrer des barres)"
+    },
+    "section": {
+      "main": "Tondeuse & Caméra",
+      "main_description": "Tondeuse & Caméra optionnelle",
+      "power": "Progression, batterie et charge",
+      "power_description": "Entités facultatives pour afficher des informations supplémentaires sur la tondeuse à gazon tel que le niveau de la batterie, l'état de la charge ou la progression actuelle",
+      "options": "Options",
+      "options_description": "Options Additionnelles"
+    },
+    "power": {
+      "battery_entity": "Entité Batterie (Optionel)",
+      "charging_entity": "Entité Chargement (Optionnel, Capteur Binaire: On/Off)",
+      "progress_entity": "Entité Progression (Optional)"
+    },
+    "options": {
+      "default_view": "Vue par défaut",
+      "google_maps_api_key": "Google Maps Clé API (Optionnel)",
+      "use_google_maps": "Utiliser Google Maps (avec Clé API)",
+      "enable_map": "Activer l'affichage de la carte",
+      "map_type": "Type de carte",
+      "map_type_label": {
+        "roadmap": "Feuille de route",
+        "satellite": "Satellite",
+        "hybrid": "Hybride"
+      },
+      "map_options_title": "Carte",
+      "color_options_title": "Couleur",
+      "appearance_options_title": "Apparence",
+      "mower_model": "Modèle de tondeuse",
+      "mower_models": {
+        "default": "Defaut"
+      },
+      "color": {
+        "sky": "Ciel",
+        "grass": "Herbe",
+        "top": "Haut",
+        "bottom": "Bas"
+      }
+    },
+    "actions": {
+      "title": "Actions",
+      "description": "Boutons d'action personnalisés. Vous pouvez définir jusqu'à trois actions personnalisées.",
+      "confirm_reset": "Voulez-vous vraiment rétablir les actions par défaut ? Vos actions actuelles seront écrasées.",
+      "reset_to_defaults": "Restaurer les paramètres par défaut",
+      "edit": "Modifier l'action",
+      "remove": "Supprimer l'action",
+      "no_actions_configured": "Pas d'actions configurées.",
+      "add": "Ajouter une nouvelle action",
+      "name": "Nom de l'action",
+      "icon": "Icone de l'action",
+      "icon_custom": "Icone personnalisée",
+      "icon_custom_helper": "ex: mdi:robot-mower ou mdi:grass",
+      "config": "Configuration de l'action",
+      "save": "Sauvegarder",
+      "cancel": "Annuler",
+      "add_button": "Ajouter une action",
+      "max_reached": "Nombre maximal d'actions ({MAX_ACTIONS}) atteint. Supprimez une action pour en ajouter une nouvelle.",
+      "service": "Service",
+      "target": "Cible",
+      "target_entity": "Entité ciblée (Optionnel)",
+      "use_custom_target": "Utiliser une entité cible différente",
+      "using_default_entity": "Utilisation de l'entité par défaut",
+      "default_entity": "Entité par défaut",
+      "no_entity_selected": "Pas d'entité selectionnée",
+      "not_set": "non défini",
+      "service_data": "Données de service",
+      "service_data_configured": "Configuré",
+      "service_data_none": "Aucun",
+      "target_mode": "Entité Cible",
+      "target_mode_label": {
+        "default": "Entité par défaut",
+        "custom": "Personnalisée",
+        "none": "Aucune"
+      },
+      "target_mode_none_helper": "Le service sera appelé sans entité cible.",
+      "target_none": "Aucune",
+      "action_type": {
+        "call_service": "Service",
+        "navigate": "Navigation",
+        "url": "URL",
+        "toggle": "Basculer l'entité",
+        "more_info": "Plus d'infos",
+        "none": "Pas d'action",
+        "not_configured": "Non Configurée"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Veuillez sélectionner une entité Tondeuse à gazon",
+    "loading_components": "Erreur lors du chargement des composants",
+    "entity_not_found": "Entité non trouvée."
+  },
+  "camera": {
+    "camera_title": "Caméra",
+    "not_available": "Caméra non disponible",
+    "not_reachable": "Caméra inaccessible"
+  },
+  "map": {
+    "not_available": "Carte non disponible"
+  },
+  "view": {
+    "mower": "Tondeuse",
+    "camera": "Caméra",
+    "map": "Carte"
+  },
+  "default_actions": {
+    "start_mowing": "Démarrer la tonte",
+    "pause": "Pause",
+    "return_to_dock": "Retour à la station"
+  }
+}

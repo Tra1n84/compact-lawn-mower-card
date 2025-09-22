@@ -30,7 +30,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   @state() private _editingActionIndex: number | null = null;
   @state() private _newActionService = '';
   @state() private _newActionTarget = '';
-  @state() private _useCustomTarget = false;
+  @state() private _newActionServiceData: Record<string, any> = {};
+  @state() private _targetMode: 'default' | 'custom' | 'none' = 'default';
   private _resizeObserver?: ResizeObserver;
   private _cachedServices?: {
     services: Array<{ value: string; label: string }>;
@@ -124,11 +125,13 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
 
   private _actionFormValueChanged(ev: CustomEvent): void {
     ev.stopPropagation();
-    const { action_name, action_service, action_target } = ev.detail.value;
+    const { action_name, action_service, action_target, action_service_data, target_mode } = ev.detail.value;
 
     this._newActionName = action_name ?? '';
     this._newActionService = action_service ?? '';
     this._newActionTarget = action_target ?? '';
+    this._newActionServiceData = action_service_data ?? {};
+    this._targetMode = target_mode ?? this._targetMode;
   }
 
   private _fireConfigChanged(config: CompactLawnMowerCardConfig): void {
@@ -158,9 +161,12 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       return;
     }
     
-    const targetEntityId = this._useCustomTarget && this._newActionTarget.trim() 
-      ? this._newActionTarget.trim()
-      : this.config.entity || '{{ entity }}';
+    let target: ServiceCallActionConfig['target'] | undefined;
+    if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
+      target = { entity_id: this._newActionTarget.trim() };
+    } else if (this._targetMode === 'default') {
+      target = { entity_id: this.config.entity || '{{ entity }}' };
+    }
     
     const newAction: CustomAction = {
       name: this._newActionName.trim(),
@@ -168,7 +174,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       action: {
         action: 'call-service',
         service: service,
-        target: { entity_id: targetEntityId }
+        target: target,
+        data: this._newActionServiceData,
       } as ServiceCallActionConfig
     };
     
@@ -189,26 +196,41 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     if (action.action.action === 'call-service') {
       const serviceCall = action.action as ServiceCallActionConfig;
       this._newActionService = serviceCall.service || '';
-      
-      const targetEntityId = serviceCall.target?.entity_id || '';
-      const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
-      const isCustomTarget = entityIdString !== '{{ entity }}' && entityIdString !== this.config.entity;
-      
-      this._useCustomTarget = isCustomTarget;
-      this._newActionTarget = isCustomTarget ? entityIdString : '';
+
+      const target = serviceCall.target;
+      if (!target || (!target.entity_id && !target.device_id && !target.area_id)) {
+        this._targetMode = 'none';
+        this._newActionTarget = '';
+      } else {
+        const targetEntityId = serviceCall.target?.entity_id || '';
+        const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
+        const isDefaultEntity = entityIdString === '{{ entity }}' || entityIdString === this.config.entity;
+
+        if (isDefaultEntity || !entityIdString) {
+          this._targetMode = 'default';
+          this._newActionTarget = '';
+        } else {
+          this._targetMode = 'custom';
+          this._newActionTarget = entityIdString;
+        }
+      }
+      this._newActionServiceData = serviceCall.data || (serviceCall as any).service_data || {};
     }
     this._showActionForm = true;
   }
 
   private _saveEditingAction(): void {
-    if (!this.config?.custom_actions || this._editingActionIndex === null) return;
-    
+    if (!this.config?.custom_actions || this._editingActionIndex === null || !this._newActionService.trim()) return;
+
     const newActions = [...this.config.custom_actions];
     const service = this._newActionService.trim();
-    
-    const targetEntityId = this._useCustomTarget && this._newActionTarget.trim() 
-      ? this._newActionTarget.trim()
-      : this.config.entity || '{{ entity }}';
+
+    let target: ServiceCallActionConfig['target'] | undefined;
+    if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
+      target = { entity_id: this._newActionTarget.trim() };
+    } else if (this._targetMode === 'default') {
+      target = { entity_id: this.config.entity || '{{ entity }}' };
+    }
 
     newActions[this._editingActionIndex] = {
       name: this._newActionName.trim(),
@@ -216,7 +238,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       action: {
         action: 'call-service',
         service: service,
-        target: { entity_id: targetEntityId }
+        target: target,
+        data: this._newActionServiceData,
       } as ServiceCallActionConfig
     };
     
@@ -230,7 +253,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     this._newActionIcon = 'mdi:play';
     this._newActionService = '';
     this._newActionTarget = '';
-    this._useCustomTarget = false;
+    this._newActionServiceData = {};
+    this._targetMode = 'default';
   }
 
   private _showAddActionForm(): void {
@@ -262,16 +286,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     }
   }
 
-  private _toggleCustomTarget(): void {
-    this._useCustomTarget = !this._useCustomTarget;
-    if (!this._useCustomTarget) {
-      this._newActionTarget = '';
-    }
-    this.requestUpdate();
-  }
-
   private get _actionFormSchema() {
-    const baseSchema: any[] = [
+    const schema: any[] = [
       { 
         name: "action_name", 
         selector: { 
@@ -289,20 +305,36 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
           }
         },
         required: true
+      },
+      {
+        name: "action_service_data",
+        selector: {
+          object: {}
+        },
+        required: false
+      },
+      {
+        name: "target_mode",
+        selector: {
+          select: {
+            mode: "dropdown",
+            options: [
+              { value: "default", label: localize('editor.actions.target_mode_label.default', { hass: this.hass }) },
+              { value: "custom", label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
+              { value: "none", label: localize('editor.actions.target_mode_label.none', { hass: this.hass }) }
+            ],
+            custom_value: false
+          }
+        },
+        required: true
       }
     ];
 
-    if (this._useCustomTarget) {
-      baseSchema.push({
-        name: "action_target",
-        selector: { 
-          entity: {}
-        },
-        required: false
-      });
+    if (this._targetMode === 'custom') {
+      schema.push({ name: "action_target", selector: { entity: {} } });
     }
 
-    return baseSchema;
+    return schema;
   }
 
   private _getAvailableServices(): Array<{ value: string; label: string }> {
@@ -333,7 +365,9 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return {
       action_name: this._newActionName,
       action_service: this._newActionService,
-      action_target: this._newActionTarget
+      action_target: this._newActionTarget,
+      action_service_data: this._newActionServiceData,
+      target_mode: this._targetMode,
     };
   }
 
@@ -360,7 +394,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
 
   private _getEntityDisplayName(entityId: string): { display: string; tooltip: string; isDefault: boolean } {
     if (!entityId) {
-      return { display: 'N/A', tooltip: 'No entity', isDefault: true };
+      const display = localize('editor.actions.target_none', { hass: this.hass });
+      return { display: display, tooltip: display, isDefault: true };
     }
 
     const isDefault = entityId === '{{ entity }}' || entityId === this.config.entity;
@@ -446,7 +481,9 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     const labelMap: Record<string, string> = {
       action_name: localize('editor.actions.name', { hass: this.hass }),
       action_service: localize('editor.actions.service', { hass: this.hass }),
-      action_target: localize('editor.actions.target_entity', { hass: this.hass })
+      action_target: localize('editor.actions.target_entity', { hass: this.hass }),
+      action_service_data: localize('editor.actions.service_data', { hass: this.hass }),
+      target_mode: localize('editor.actions.target_mode', { hass: this.hass })
     };
     return labelMap[schema.name] || schema.name;
   }  
@@ -487,8 +524,11 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             ? this.config.custom_actions.map((action, index) => {
                 const serviceInfo = this._getServiceDisplayName((action.action as ServiceCallActionConfig).service || 'N/A');
                 const targetEntityId = (action.action as ServiceCallActionConfig).target?.entity_id || '';
-                const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
+                const target = (action.action as ServiceCallActionConfig).target;
+                const entityIdString = target && target.entity_id ? (Array.isArray(target.entity_id) ? target.entity_id[0] : target.entity_id) : '';
                 const entityInfo = this._getEntityDisplayName(entityIdString);
+                const serviceData = (action.action as ServiceCallActionConfig).data || (action.action as any).service_data;
+                const hasServiceData = serviceData && Object.keys(serviceData).length > 0;
                 
                 return html`
                   <div class="action-item">
@@ -502,6 +542,10 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                       </div>
                       <div class="action-target ${entityInfo.isDefault ? 'default-target' : 'custom-target'}">
                         ${localize('editor.actions.target', { hass: this.hass })}: ${entityInfo.display}
+                      </div>
+                      <div class="action-service-data">
+                        ${localize('editor.actions.service_data', { hass: this.hass })}:
+                        ${hasServiceData ? localize('editor.actions.service_data_configured', { hass: this.hass }) : localize('editor.actions.service_data_none', { hass: this.hass })}
                       </div>
                     </div>
                     <div class="action-buttons">
@@ -544,28 +588,24 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                 ></ha-form>
               </div>
 
-              <div class="form-section">
-                <div class="target-entity-section">
-                  <div class="target-toggle">
-                    <ha-formfield .label=${localize('editor.actions.use_custom_target', { hass: this.hass })}>
-                      <ha-checkbox
-                        .checked=${this._useCustomTarget}
-                        @change=${this._toggleCustomTarget}
-                      ></ha-checkbox>
-                    </ha-formfield>
-                  </div>
-                  
-                  ${!this._useCustomTarget ? html`
-                    <div class="default-target-info">
-                      <ha-icon icon="mdi:information-outline"></ha-icon>
-                      <span>
-                        ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                        <strong>${this.config.entity ? this._getEntityDisplayName(this.config.entity).display : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong>
-                      </span>
-                    </div>
-                  ` : ''}
+              ${this._targetMode === 'default' ? html`
+                <div class="default-target-info form-section">
+                  <ha-icon icon="mdi:information-outline"></ha-icon>
+                  <span>
+                    ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                    <strong>${this.config.entity ? this._getEntityDisplayName(this.config.entity).display : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong>
+                  </span>
                 </div>
-              </div>
+              ` : ''}
+
+              ${this._targetMode === 'none' ? html`
+                <div class="default-target-info form-section">
+                  <ha-icon icon="mdi:information-outline"></ha-icon>
+                  <span>
+                    ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })}
+                  </span>
+                </div>
+              ` : ''}
 
               <div class="form-section">
                 <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
@@ -577,7 +617,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   ? html`
                     <ha-button
                       @click=${this._saveEditingAction}
-                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || (this._useCustomTarget && !this._newActionTarget.trim())}
+                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || (this._targetMode === 'custom' && !this._newActionTarget.trim())}
                     >
                       ${localize('editor.actions.save', { hass: this.hass })}
                     </ha-button>
@@ -585,7 +625,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   : html`
                     <ha-button
                       @click=${this._addAction}
-                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || !canAddAction || (this._useCustomTarget && !this._newActionTarget.trim())}
+                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || !canAddAction || (this._targetMode === 'custom' && !this._newActionTarget.trim())}
                     >
                       ${localize('editor.actions.add_button', { hass: this.hass })}
                     </ha-button>

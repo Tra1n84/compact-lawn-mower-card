@@ -1330,6 +1330,7 @@ export const editorStyles = css`
     .section-content.expanded {
       padding: 0 20px 20px 20px;
       max-height: none;
+      overflow: visible;
       opacity: 1;
     }
 
@@ -1391,8 +1392,6 @@ export const editorStyles = css`
       margin: 16px 0 24px 0;
       background: var(--card-background-color);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 10;
     }
     
     .form-header {
@@ -1487,6 +1486,26 @@ export const editorStyles = css`
       white-space: nowrap;
       max-width: 100%;
       position: relative;
+    }
+
+    .action-target,
+    .action-service-data {
+      font-size: 12px;
+      color: var(--secondary-text-color);
+      font-style: italic;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .action-target.custom-target {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .action-target.default-target {
+      color: var(--secondary-text-color);
+      font-style: italic;
     }
     
     .action-buttons {

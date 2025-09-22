@@ -22,7 +22,7 @@ Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
 A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the mower view colors
 * **Localization:**   
-Comes with English and German translation - ready to be extended with more languages
+Comes with English, German and French translation - ready to be extended with more languages
 
 
 ---
@@ -49,7 +49,6 @@ Ideas for future development - no guarantee, but candidates for upcoming feature
 There are known issues / bugs that haven't been resolved yet
 
 * In Map View, when using HA Map with more than 6 columns (Grid), the lawn mower marker is not centered correctly. (Google Maps works as expected.) Possibly caused by aspect ratio issues
-* ...
 
 ---
 
@@ -185,7 +184,7 @@ custom_actions:
 **Currently supported languages:**
 * English
 * German
-
+* French
 
 ---
 

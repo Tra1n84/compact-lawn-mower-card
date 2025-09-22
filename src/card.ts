@@ -625,7 +625,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
 
     const serviceData = this._processTemplates(action.data || action.service_data || {});
-    const target = this._processTemplates(action.target || {});
+    const target = this._processTemplates(action.target);
 
     this.hass.callService(domain, service, serviceData, target)
       .catch((error) => {
@@ -635,8 +635,16 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _processTemplates(obj: any): any {
+
     if (typeof obj === 'string') {
-      return obj.replace(/\{\{\s*entity\s*\}\}/g, this.config.entity);
+      let processedString = obj.replace(/\{\{\s*entity\s*\}\}/g, this.config.entity);
+
+      const trimmed = processedString.trim();
+      if (/^[-+]?\d+(\.\d+)?$/.test(trimmed) && !isNaN(parseFloat(trimmed))) {
+        return parseFloat(trimmed);
+      }
+
+      return processedString;
     }
 
     if (Array.isArray(obj)) {
