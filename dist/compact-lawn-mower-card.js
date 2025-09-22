@@ -86,7 +86,7 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '0.9.1';
+const CARD_VERSION = '0.10.0';
 
 var mower$2 = {
 	start: "Start",
@@ -328,12 +328,12 @@ var editor$1 = {
 		not_set: "nicht festgelegt",
 		service_data: "Servicedaten",
 		service_data_configured: "Konfiguriert",
-		service_data_none: "Keine",
+		service_data_none: "Ohne",
 		target_mode: "Zielentität",
 		target_mode_label: {
 			"default": "Standardentität",
 			custom: "Benutzerdefiniert",
-			none: "Keine"
+			none: "Ohne"
 		},
 		target_mode_none_helper: "Der Service wird ohne eine Ziel-Entität aufgerufen.",
 		target_none: "Ohne",

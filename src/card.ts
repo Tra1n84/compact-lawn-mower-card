@@ -630,7 +630,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this.hass.callService(domain, service, serviceData, target)
       .catch((error) => {
         console.error('Service call failed:', error);
-        this._showError(`Service-Aufruf fehlgeschlagen: ${action.service}`);
+        this._showError(`Service call failed: ${action.service}`);
       });
   }
 

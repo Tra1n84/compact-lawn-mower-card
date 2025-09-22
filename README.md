@@ -31,7 +31,7 @@ Comes with English, German and French translation - ready to be extended with mo
 
 Ideas for future development - no guarantee, but candidates for upcoming features
 
-* **Support for additional service-call parameters** at the action buttons
+* ~~Support for additional service-call parameters** at the action buttons~~ ✅ (implemented in v0.10.0)
 * **More than 3 custom actions** (but card would need a slighlty different layout)
 * **Improved graphic** for the default mower graphic
 * ~~Improved animations for the mower view~~ ✅ (implemented in v0.9.0)
