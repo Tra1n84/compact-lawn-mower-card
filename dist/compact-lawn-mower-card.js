@@ -86,7 +86,7 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '0.10.0';
+const CARD_VERSION = '0.10.1';
 
 var mower$2 = {
 	start: "Start",
@@ -141,8 +141,10 @@ var editor$2 = {
 		},
 		map_options_title: "Map",
 		color_options_title: "Color",
-		appearance_options_title: "Appearance",
+		model_options_title: "Model",
 		mower_model: "Lawn Mower Model",
+		badge_text_color: "Badge Text Color",
+		badge_icon_color: "Badge Icon Color",
 		mower_models: {
 			"default": "Default"
 		},
@@ -212,7 +214,8 @@ var camera$2 = {
 	not_reachable: "Camera not reachable"
 };
 var map$2 = {
-	not_available: "Map not available"
+	not_available: "Map not available",
+	no_gps_coordinates: "No GPS data"
 };
 var view$2 = {
 	mower: "Lawn Mower",
@@ -286,10 +289,12 @@ var editor$1 = {
 			satellite: "Satellit",
 			hybrid: "Hybrid"
 		},
-		map_options_title: "Karten",
+		map_options_title: "Karte",
 		color_options_title: "Farben",
-		appearance_options_title: "Erscheinungsbild",
+		model_options_title: "Modell",
 		mower_model: "Mähroboter Modell",
+		badge_text_color: "Textfarbe für Badges",
+		badge_icon_color: "Icon-Farbe für Badges",
 		mower_models: {
 			"default": "Standard"
 		},
@@ -359,7 +364,8 @@ var camera$1 = {
 	not_reachable: "Kamera nicht erreichbar"
 };
 var map$1 = {
-	not_available: "Karte nicht verfügbar"
+	not_available: "Karte nicht verfügbar",
+	no_gps_coordinates: "Keine GPS-Daten"
 };
 var view$1 = {
 	mower: "Mähroboter",
@@ -435,8 +441,10 @@ var editor = {
 		},
 		map_options_title: "Carte",
 		color_options_title: "Couleur",
-		appearance_options_title: "Apparence",
+		model_options_title: "Modèle",
 		mower_model: "Modèle de tondeuse",
+		badge_text_color: "Couleur du texte du badge",
+		badge_icon_color: "Couleur de l'icône du badge",
 		mower_models: {
 			"default": "Defaut"
 		},
@@ -506,7 +514,8 @@ var camera = {
 	not_reachable: "Caméra inaccessible"
 };
 var map = {
-	not_available: "Carte non disponible"
+	not_available: "Carte non disponible",
+	no_gps_coordinates: "Pas de données GPS"
 };
 var view = {
 	mower: "Tondeuse",
@@ -838,8 +847,6 @@ const compactLawnMowerCardStyles = i$3 `
       --outline-color: var(--outline, rgba(var(--rgb-on-surface), 0.12));
       --badge-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
         rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-      --tile-button-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-        rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     }
 
     ha-card {
@@ -1040,19 +1047,17 @@ const compactLawnMowerCardStyles = i$3 `
 
     .badge-icon {
       --mdc-icon-size: 22px;
-      font-size: 18px;
-      color: var(--primary-text-color);
+      color: var(--badge-icon-color, var(--primary-text-color));
       display: inline-flex;
       align-items: center;
       justify-content: center;
     }
 
-    .progress-text-small,
-    .status-text,
-    .battery-text-badge {
+    .progress-text,
+    .status-text {
       font-size: 12px;
       font-weight: 600;
-      color: var(--primary-text-color);
+      color: var(--badge-text-color, var(--primary-text-color));
       white-space: nowrap;
       letter-spacing: 0.5px;
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -1079,11 +1084,12 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .status-icon.returning {
-      color: var(--primary-color, rgba(33, 150, 243, 0.6));
+      color: var(--primary-color, rgba(33, 150, 243, 0.7));
     }
 
-    .status-icon.paused {
-      color: rgb(0, 0, 0);
+    .status-icon.paused,
+    .status-icon.docked {
+      color: var(--badge-icon-color, rgb(0, 0, 0));
     }
 
     .status-icon.error {
@@ -1417,7 +1423,7 @@ const compactLawnMowerCardStyles = i$3 `
       height: 100%;
       width: 100%;
       box-sizing: border-box;
-      color: var(--secondary-text-color);
+      color: #5e5e5e;
       text-align: center;
       padding: 16px;
     }
@@ -1506,7 +1512,7 @@ const compactLawnMowerCardStyles = i$3 `
       gap: 4px;
     }
 
-    .tile-card-button {
+    .action-button {
       flex: 1;
       padding: 8px 12px;
       border: 1px solid var(--outline-color);
@@ -1516,7 +1522,7 @@ const compactLawnMowerCardStyles = i$3 `
       font-size: 12px;
       cursor: pointer;
       transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
-      min-height: 36px;
+      min-height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1524,12 +1530,12 @@ const compactLawnMowerCardStyles = i$3 `
       will-change: background-color, box-shadow;
     }
 
-    .tile-card-button:hover {
+    .action-button:hover {
       background: color-mix(in srgb, var(--tile-color) 92%, black);
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
-    .tile-card-button ha-icon {
+    .action-button ha-icon {
       --mdc-icon-size: 20px;
     }
 
@@ -1717,7 +1723,7 @@ const compactLawnMowerCardStyles = i$3 `
         height: 36px;
       }
       
-      .progress-text-small {
+      .progress-text {
         font-size: 11px;
       }
       
@@ -1727,13 +1733,13 @@ const compactLawnMowerCardStyles = i$3 `
         min-height: auto;
       }
 
-      .tile-card-button {
+      .action-button {
         padding: 6px 8px;
         min-height: 34px;
         font-size: 10px;
       }
       
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 18px;
       }
 
@@ -1779,7 +1785,7 @@ const compactLawnMowerCardStyles = i$3 `
         gap: 3px;
       }
       
-      .progress-text-small {
+      .progress-text {
         font-size: 12px;
       }
       
@@ -1789,13 +1795,13 @@ const compactLawnMowerCardStyles = i$3 `
         min-height: auto;
       }
 
-      .tile-card-button {
+      .action-button {
         padding: 6px 8px;
         min-height: 36px;
         font-size: 10px;
       }
       
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 20px;
       }
 
@@ -1823,12 +1829,12 @@ const compactLawnMowerCardStyles = i$3 `
         gap: 2px;
       }
       
-      .tile-card-button {
+      .action-button {
         padding: 8px;
         min-height: 36px;
       }
       
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 20px;
       }
     }
@@ -1885,7 +1891,7 @@ const compactLawnMowerCardStyles = i$3 `
         --mdc-icon-size: 20px;
       }
 
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 20px;
       }
     }
@@ -1916,7 +1922,7 @@ const compactLawnMowerCardStyles = i$3 `
     .sleep-z,
     .loader,
     .camera-overlay,
-    .tile-card-button {
+    .action-button {
       backface-visibility: hidden;
       perspective: 1000px;
     }
@@ -2070,6 +2076,20 @@ const editorStyles = i$3 `
       margin-bottom: 16px;
       color: var(--primary-text-color);
       font-size: 15px;
+    }
+
+    .color-group {
+      padding-bottom: 16px;
+    }
+
+    .separator {
+      height: 1px;
+      background-color: var(--divider-color);
+      margin: 16px -16px;
+    }
+
+    .form-group ha-form + .separator + ha-form .form-group-title {
+      margin-top: 16px;
     }
 
     /* =================== */
@@ -2865,6 +2885,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             const translated = `${localize(`editor.options.color.${parts[0]}`, { hass: this.hass })} (${localize(`editor.options.color.${parts[2]}`, { hass: this.hass })})`;
             return translated;
         }
+        if (schema.name === 'badge_text_color') {
+            return this._getLocalizedLabel(`editor.options.badge_text_color`, schema.name);
+        }
+        if (schema.name === 'badge_icon_color') {
+            return this._getLocalizedLabel(`editor.options.badge_icon_color`, schema.name);
+        }
         return this._getLocalizedLabel(`editor.options.${schema.name}`, schema.name);
     }
     _computeActionsLabel(schema) {
@@ -3134,6 +3160,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             { name: 'grass_color_bottom', selector: { "color_rgb": {} } },
         ];
     }
+    get _badgeColorOptionsSchema() {
+        return [
+            { name: 'badge_text_color', selector: { "color_rgb": {} } },
+            { name: 'badge_icon_color', selector: { "color_rgb": {} } },
+        ];
+    }
     get _appearanceOptionsSchema() {
         return [
             {
@@ -3186,6 +3218,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             sky_color_bottom: this._parseColor(this.config.sky_color_bottom) || [109, 213, 250],
             grass_color_top: this._parseColor(this.config.grass_color_top) || [65, 150, 8],
             grass_color_bottom: this._parseColor(this.config.grass_color_bottom) || [133, 187, 88],
+        };
+    }
+    get _badgeColorData() {
+        return {
+            badge_text_color: this._parseColor(this.config.badge_text_color) || [0, 0, 0],
+            badge_icon_color: this._parseColor(this.config.badge_icon_color) || [0, 0, 0],
         };
     }
     render() {
@@ -3294,7 +3332,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
               </div>
 
               <div class="form-group">
-                <div class="form-group-title">${localize('editor.options.appearance_options_title', { hass: this.hass })}</div>
+                <div class="form-group-title">${localize('editor.options.model_options_title', { hass: this.hass })}</div>
                 <ha-form
                   .hass=${this.hass}
                   .data=${this._optionsData}
@@ -3308,11 +3346,21 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 <div class="form-group-title">${localize('editor.options.color_options_title', { hass: this.hass })}</div>
                 <ha-form
                   .hass=${this.hass}
-                  .data=${this._optionsData}
-                  .schema=${this._colorOptionsSchema}
+                  .data=${this._badgeColorData}
+                  .schema=${this._badgeColorOptionsSchema}
                   .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
+                <div class="separator"></div>
+                <div class="color-group">
+                  <ha-form
+                    .hass=${this.hass}
+                    .data=${this._optionsData}
+                    .schema=${this._colorOptionsSchema}
+                    .computeLabel=${this._boundComputeOptionsLabel}
+                    @value-changed=${this._valueChanged}
+                  ></ha-form>
+                </div>
               </div>
 
             </div>
@@ -3682,6 +3730,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         style.setProperty('--sky-color-bottom', this._toCssColor(this.config.sky_color_bottom));
         style.setProperty('--grass-color-top', this._toCssColor(this.config.grass_color_top));
         style.setProperty('--grass-color-bottom', this._toCssColor(this.config.grass_color_bottom));
+        style.setProperty('--badge-text-color', this._toCssColor(this.config.badge_text_color));
+        style.setProperty('--badge-icon-color', this._toCssColor(this.config.badge_icon_color));
     }
     willUpdate(changedProperties) {
         if (!this.hass || !this.config?.entity) {
@@ -3896,7 +3946,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this.hass.callService(domain, service, serviceData, target)
             .catch((error) => {
             console.error('Service call failed:', error);
-            this._showError(`Service-Aufruf fehlgeschlagen: ${action.service}`);
+            this._showError(`Service call failed: ${action.service}`);
         });
     }
     _processTemplates(obj) {
@@ -3967,6 +4017,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return "error";
         if (state === "returning")
             return "returning";
+        if (state === "docked")
+            return "docked";
         return "";
     }
     _getDisplayStatus(state, charging) {
@@ -4152,8 +4204,11 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _renderMapView() {
         const deviceTracker = this.config.map_entity ? this.hass.states[this.config.map_entity] : null;
-        if (!deviceTracker || !deviceTracker.attributes.latitude) {
+        if (!deviceTracker) {
             return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-off-outline', localize("map.not_available", { hass: this.hass }));
+        }
+        if (!deviceTracker.attributes.latitude || !deviceTracker.attributes.longitude) {
+            return this._renderErrorView('map-container', 'map-error', 'mdi:crosshairs-gps', localize("map.no_gps_coordinates", { hass: this.hass }));
         }
         const lat = deviceTracker.attributes.latitude;
         const lon = deviceTracker.attributes.longitude;
@@ -4386,7 +4441,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
               <div class="progress-badges">
                 <div class="progress-badge">
                   <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                  <span class="progress-text-small">${this.progressLevel}%</span>
+                  <span class="progress-text">${this.progressLevel}%</span>
                 </div>
               </div>
             ` : ''}
@@ -4409,7 +4464,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
               <div class="buttons-section">
                 ${this.config.custom_actions.map((action) => x `
                   <button 
-                    class="tile-card-button" 
+                    class="action-button" 
                     @click=${() => this._executeCustomAction(action)}
                     aria-label=${action.name}
                     title=${action.name}

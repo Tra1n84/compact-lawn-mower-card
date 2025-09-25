@@ -50,10 +50,12 @@
         "satellite": "Satellit",
         "hybrid": "Hybrid"
       },
-      "map_options_title": "Karten",
+      "map_options_title": "Karte",
       "color_options_title": "Farben",
-      "appearance_options_title": "Erscheinungsbild",
+      "model_options_title": "Modell",
       "mower_model": "Mähroboter Modell",
+      "badge_text_color": "Textfarbe für Badges",
+      "badge_icon_color": "Icon-Farbe für Badges",
       "mower_models": {
         "default": "Standard"
       },
@@ -123,7 +125,8 @@
     "not_reachable": "Kamera nicht erreichbar"
   },
   "map": {
-    "not_available": "Karte nicht verfügbar"
+    "not_available": "Karte nicht verfügbar",
+    "no_gps_coordinates": "Keine GPS-Daten"
   },
   "view": {
     "mower": "Mähroboter",

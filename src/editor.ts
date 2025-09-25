@@ -7,7 +7,7 @@ import { getAvailableMowerModels } from './graphics';
 import { localize } from './localize';
 import { editorStyles } from './styles';
 import type { 
-  CompactLawnMowerCardConfig, 
+  CompactLawnMowerCardConfig,
   CustomAction, 
   ServiceCallActionConfig
 } from './types';
@@ -474,6 +474,12 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       const translated = `${localize(`editor.options.color.${parts[0]}`, { hass: this.hass })} (${localize(`editor.options.color.${parts[2]}`, { hass: this.hass })})`;
       return translated;
     }
+    if (schema.name === 'badge_text_color') {
+      return this._getLocalizedLabel(`editor.options.badge_text_color`, schema.name);
+    }
+    if (schema.name === 'badge_icon_color') {
+      return this._getLocalizedLabel(`editor.options.badge_icon_color`, schema.name);
+    }
     return this._getLocalizedLabel(`editor.options.${schema.name}`, schema.name);
   }
 
@@ -764,6 +770,13 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     ];
   }
 
+  private get _badgeColorOptionsSchema() {
+    return [
+      { name: 'badge_text_color', selector: { "color_rgb": {} } },
+      { name: 'badge_icon_color', selector: { "color_rgb": {} } },
+    ];
+  }
+
   private get _appearanceOptionsSchema() {
     return [
       {
@@ -820,6 +833,13 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       sky_color_bottom: this._parseColor(this.config.sky_color_bottom) || [109, 213, 250],
       grass_color_top: this._parseColor(this.config.grass_color_top) || [65, 150, 8],
       grass_color_bottom: this._parseColor(this.config.grass_color_bottom) || [133, 187, 88],
+    };
+  }
+
+  private get _badgeColorData() {
+    return {
+      badge_text_color: this._parseColor(this.config.badge_text_color) || [0, 0, 0],
+      badge_icon_color: this._parseColor(this.config.badge_icon_color) || [0, 0, 0],
     };
   }
 
@@ -930,7 +950,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
               </div>
 
               <div class="form-group">
-                <div class="form-group-title">${localize('editor.options.appearance_options_title', { hass: this.hass })}</div>
+                <div class="form-group-title">${localize('editor.options.model_options_title', { hass: this.hass })}</div>
                 <ha-form
                   .hass=${this.hass}
                   .data=${this._optionsData}
@@ -944,11 +964,21 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                 <div class="form-group-title">${localize('editor.options.color_options_title', { hass: this.hass })}</div>
                 <ha-form
                   .hass=${this.hass}
-                  .data=${this._optionsData}
-                  .schema=${this._colorOptionsSchema}
+                  .data=${this._badgeColorData}
+                  .schema=${this._badgeColorOptionsSchema}
                   .computeLabel=${this._boundComputeOptionsLabel}
                   @value-changed=${this._valueChanged}
                 ></ha-form>
+                <div class="separator"></div>
+                <div class="color-group">
+                  <ha-form
+                    .hass=${this.hass}
+                    .data=${this._optionsData}
+                    .schema=${this._colorOptionsSchema}
+                    .computeLabel=${this._boundComputeOptionsLabel}
+                    @value-changed=${this._valueChanged}
+                  ></ha-form>
+                </div>
               </div>
 
             </div>

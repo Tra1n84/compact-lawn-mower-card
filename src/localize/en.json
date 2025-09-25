@@ -52,8 +52,10 @@
       },
       "map_options_title": "Map",
       "color_options_title": "Color",
-      "appearance_options_title": "Appearance",
+		"model_options_title": "Model",
       "mower_model": "Lawn Mower Model",
+      "badge_text_color": "Badge Text Color",
+      "badge_icon_color": "Badge Icon Color",
       "mower_models": {
         "default": "Default"
       },
@@ -123,7 +125,8 @@
     "not_reachable": "Camera not reachable"
   },
   "map": {
-    "not_available": "Map not available"
+    "not_available": "Map not available",
+    "no_gps_coordinates": "No GPS data"
   },
   "view": {
     "mower": "Lawn Mower",

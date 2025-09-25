@@ -20,7 +20,7 @@ Define up to 3 customizable action buttons to trigger any Home Assistant service
 * **Info Badges:**   
 Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
-A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the mower view colors
+A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the individual colors
 * **Localization:**   
 Comes with English, German and French translation - ready to be extended with more languages
 
@@ -113,6 +113,14 @@ google_maps_api_key: YOUR_GOOGLE_API_KEY
 use_google_maps: true
 map_type: hybrid
 mower_model: default
+badge_text_color:
+  - 0
+  - 0
+  - 0
+badge_icon_color:
+  - 0
+  - 0
+  - 0
 sky_color_top:
   - 41
   - 128
@@ -170,6 +178,8 @@ custom_actions:
 | `google_maps_api_key`| string   | No           | Your Google Maps Static API key                                                              |
 | `map_type`           | string   | No           | Map type for Google Maps: `roadmap`, `satellite`, `hybrid` (Default: `hybrid`)               |
 | `mower_model`        | string   | No           | Select mower model graphic (Default: `default`)                                              |
+| `badge_text_color`   | list     | No           | RGB value for the badge text color                                                           |
+| `badge_icon_color`   | list     | No           | RGB value for the badge icon color                                                           |
 | `sky_color_top`      | list     | No           | RGB value for the top sky color                                                              |
 | `sky_color_bottom`   | list     | No           | RGB value for the bottom sky color                                                           |
 | `grass_color_top`    | list     | No           | RGB value for the top grass color                                                            |

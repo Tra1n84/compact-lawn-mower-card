@@ -126,8 +126,6 @@ export const compactLawnMowerCardStyles = css`
       --outline-color: var(--outline, rgba(var(--rgb-on-surface), 0.12));
       --badge-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
         rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-      --tile-button-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-        rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     }
 
     ha-card {
@@ -328,19 +326,17 @@ export const compactLawnMowerCardStyles = css`
 
     .badge-icon {
       --mdc-icon-size: 22px;
-      font-size: 18px;
-      color: var(--primary-text-color);
+      color: var(--badge-icon-color, var(--primary-text-color));
       display: inline-flex;
       align-items: center;
       justify-content: center;
     }
 
-    .progress-text-small,
-    .status-text,
-    .battery-text-badge {
+    .progress-text,
+    .status-text {
       font-size: 12px;
       font-weight: 600;
-      color: var(--primary-text-color);
+      color: var(--badge-text-color, var(--primary-text-color));
       white-space: nowrap;
       letter-spacing: 0.5px;
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -367,11 +363,12 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .status-icon.returning {
-      color: var(--primary-color, rgba(33, 150, 243, 0.6));
+      color: var(--primary-color, rgba(33, 150, 243, 0.7));
     }
 
-    .status-icon.paused {
-      color: rgb(0, 0, 0);
+    .status-icon.paused,
+    .status-icon.docked {
+      color: var(--badge-icon-color, rgb(0, 0, 0));
     }
 
     .status-icon.error {
@@ -705,7 +702,7 @@ export const compactLawnMowerCardStyles = css`
       height: 100%;
       width: 100%;
       box-sizing: border-box;
-      color: var(--secondary-text-color);
+      color: #5e5e5e;
       text-align: center;
       padding: 16px;
     }
@@ -794,7 +791,7 @@ export const compactLawnMowerCardStyles = css`
       gap: 4px;
     }
 
-    .tile-card-button {
+    .action-button {
       flex: 1;
       padding: 8px 12px;
       border: 1px solid var(--outline-color);
@@ -804,7 +801,7 @@ export const compactLawnMowerCardStyles = css`
       font-size: 12px;
       cursor: pointer;
       transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
-      min-height: 36px;
+      min-height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -812,12 +809,12 @@ export const compactLawnMowerCardStyles = css`
       will-change: background-color, box-shadow;
     }
 
-    .tile-card-button:hover {
+    .action-button:hover {
       background: color-mix(in srgb, var(--tile-color) 92%, black);
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
-    .tile-card-button ha-icon {
+    .action-button ha-icon {
       --mdc-icon-size: 20px;
     }
 
@@ -1005,7 +1002,7 @@ export const compactLawnMowerCardStyles = css`
         height: 36px;
       }
       
-      .progress-text-small {
+      .progress-text {
         font-size: 11px;
       }
       
@@ -1015,13 +1012,13 @@ export const compactLawnMowerCardStyles = css`
         min-height: auto;
       }
 
-      .tile-card-button {
+      .action-button {
         padding: 6px 8px;
         min-height: 34px;
         font-size: 10px;
       }
       
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 18px;
       }
 
@@ -1067,7 +1064,7 @@ export const compactLawnMowerCardStyles = css`
         gap: 3px;
       }
       
-      .progress-text-small {
+      .progress-text {
         font-size: 12px;
       }
       
@@ -1077,13 +1074,13 @@ export const compactLawnMowerCardStyles = css`
         min-height: auto;
       }
 
-      .tile-card-button {
+      .action-button {
         padding: 6px 8px;
         min-height: 36px;
         font-size: 10px;
       }
       
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 20px;
       }
 
@@ -1111,12 +1108,12 @@ export const compactLawnMowerCardStyles = css`
         gap: 2px;
       }
       
-      .tile-card-button {
+      .action-button {
         padding: 8px;
         min-height: 36px;
       }
       
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 20px;
       }
     }
@@ -1173,7 +1170,7 @@ export const compactLawnMowerCardStyles = css`
         --mdc-icon-size: 20px;
       }
 
-      .tile-card-button ha-icon {
+      .action-button ha-icon {
         --mdc-icon-size: 20px;
       }
     }
@@ -1204,7 +1201,7 @@ export const compactLawnMowerCardStyles = css`
     .sleep-z,
     .loader,
     .camera-overlay,
-    .tile-card-button {
+    .action-button {
       backface-visibility: hidden;
       perspective: 1000px;
     }
@@ -1359,6 +1356,20 @@ export const editorStyles = css`
       margin-bottom: 16px;
       color: var(--primary-text-color);
       font-size: 15px;
+    }
+
+    .color-group {
+      padding-bottom: 16px;
+    }
+
+    .separator {
+      height: 1px;
+      background-color: var(--divider-color);
+      margin: 16px -16px;
+    }
+
+    .form-group ha-form + .separator + ha-form .form-group-title {
+      margin-top: 16px;
     }
 
     /* =================== */

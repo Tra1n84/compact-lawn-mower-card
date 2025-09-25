@@ -374,6 +374,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     style.setProperty('--sky-color-bottom', this._toCssColor(this.config.sky_color_bottom));
     style.setProperty('--grass-color-top', this._toCssColor(this.config.grass_color_top));
     style.setProperty('--grass-color-bottom', this._toCssColor(this.config.grass_color_bottom));
+    style.setProperty('--badge-text-color', this._toCssColor(this.config.badge_text_color));
+    style.setProperty('--badge-icon-color', this._toCssColor(this.config.badge_icon_color));
   }
 
   protected willUpdate(changedProperties: PropertyValues<this>): void {
@@ -702,6 +704,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (state === "paused") return "paused";
     if (state === "error") return "error";
     if (state === "returning") return "returning";
+    if (state === "docked") return "docked";
     return "";
   }
 
@@ -911,8 +914,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _renderMapView() {
     const deviceTracker = this.config.map_entity ? this.hass.states[this.config.map_entity] : null;
 
-    if (!deviceTracker || !deviceTracker.attributes.latitude) {
+    if (!deviceTracker) {
       return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-off-outline', localize("map.not_available", { hass: this.hass }));
+    }
+
+    if (!deviceTracker.attributes.latitude || !deviceTracker.attributes.longitude) {
+      return this._renderErrorView('map-container', 'map-error', 'mdi:crosshairs-gps', localize("map.no_gps_coordinates", { hass: this.hass }));
     }
 
     const lat = deviceTracker.attributes.latitude;
@@ -1177,7 +1184,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
               <div class="progress-badges">
                 <div class="progress-badge">
                   <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                  <span class="progress-text-small">${this.progressLevel}%</span>
+                  <span class="progress-text">${this.progressLevel}%</span>
                 </div>
               </div>
             ` : ''}
@@ -1200,7 +1207,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
               <div class="buttons-section">
                 ${this.config.custom_actions.map((action) => html`
                   <button 
-                    class="tile-card-button" 
+                    class="action-button" 
                     @click=${() => this._executeCustomAction(action)}
                     aria-label=${action.name}
                     title=${action.name}

@@ -52,8 +52,10 @@
       },
       "map_options_title": "Carte",
       "color_options_title": "Couleur",
-      "appearance_options_title": "Apparence",
+      "model_options_title": "Modèle",
       "mower_model": "Modèle de tondeuse",
+      "badge_text_color": "Couleur du texte du badge",
+      "badge_icon_color": "Couleur de l'icône du badge",
       "mower_models": {
         "default": "Defaut"
       },
@@ -123,7 +125,8 @@
     "not_reachable": "Caméra inaccessible"
   },
   "map": {
-    "not_available": "Carte non disponible"
+    "not_available": "Carte non disponible",
+    "no_gps_coordinates": "Pas de données GPS"
   },
   "view": {
     "mower": "Tondeuse",
