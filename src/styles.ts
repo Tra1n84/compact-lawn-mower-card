@@ -134,13 +134,15 @@ export const compactLawnMowerCardStyles = css`
       height: 100%;
       width: 100%;
       background: var(--ha-card-background,var(--card-background-color,#fff));
-      border-radius: 12px;
-      box-shadow: var(--ha-card-box-shadow, 
+      border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg));
+      box-shadow: var(--ha-card-box-shadow,
         0 2px 8px 0 rgba(0, 0, 0, 0.08),
         0 1px 16px 0 rgba(0, 0, 0, 0.04)
       );
       backdrop-filter: blur(20px);
-      border: none;
+      border-width: var(--ha-card-border-width, 1px);
+      border-style: solid;
+      border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
       overflow: hidden;
       transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
       font-family: var(--mdc-typography-body2-font-family, Roboto);
@@ -175,7 +177,7 @@ export const compactLawnMowerCardStyles = css`
       grid-template-areas: "display";
       grid-template-rows: 1fr;
       grid-template-columns: 1fr;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
       border: 1px solid var(--outline-color);
       position: relative;
       overflow: hidden;
@@ -283,7 +285,7 @@ export const compactLawnMowerCardStyles = css`
       background: rgba(255, 255, 255, 0.60);
       backdrop-filter: blur(10px) saturate(180%);
       border: none;
-      border-radius: 12px;
+      border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
       box-shadow: var(--badge-box-shadow);
       display: flex;
       align-items: center;
@@ -359,11 +361,11 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .status-icon.mowing {
-      color: var(--warning-color, #ff9800);
+      color: #e8930f;
     }
 
     .status-icon.returning {
-      color: var(--primary-color, rgba(33, 150, 243, 0.7));
+      color: #1e88e5;
     }
 
     .status-icon.paused,
@@ -372,7 +374,19 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .status-icon.error {
-      color: var(--error-color);
+      color: #d32f2f;
+    }
+
+    .status-ring.mowing .status-text {
+      color: #e8930f;
+    }
+
+    .status-ring.returning .status-text {
+      color: #1e88e5;
+    }
+
+    .status-ring.error .status-text {
+      color: #d32f2f;
     }
 
     .status-icon::after {
@@ -404,15 +418,15 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .status-icon.mowing::after {
-      box-shadow: 0 0 8px 2px rgba(255, 152, 0, 0.7);
+      box-shadow: 0 0 8px 2px rgba(232, 147, 15, 0.65);
     }
 
     .status-icon.returning::after {
-      box-shadow: 0 0 8px 2px rgba(33, 150, 243, 0.7);
+      box-shadow: 0 0 8px 2px rgba(30, 136, 229, 0.65);
     }
 
     .status-icon.error::after {
-      box-shadow: 0 0 8px 2px rgba(244, 67, 54, 0.7);
+      box-shadow: 0 0 8px 2px rgba(211, 47, 47, 0.6);
     }
 
     .status-ring.text-hidden .status-text,
@@ -437,7 +451,7 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .mower-svg.active {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(255, 152, 0, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(232, 147, 15, 0.3));
     }
 
     .mower-svg.charging {
@@ -445,11 +459,11 @@ export const compactLawnMowerCardStyles = css`
     }
 
     .mower-svg.returning {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(33, 150, 243, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(30, 136, 229, 0.3));
     }
 
     .mower-svg.error {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(244, 67, 54, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(211, 47, 47, 0.3));
     }
 
     .mower-svg.active .mower-led-strip {
@@ -624,7 +638,7 @@ export const compactLawnMowerCardStyles = css`
     .camera-container ha-camera-stream {
       width: 100%;
       height: 100%;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -684,7 +698,7 @@ export const compactLawnMowerCardStyles = css`
       height: 100%;
       box-sizing: border-box;
       background-color: #f0f0f0;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
       overflow: hidden;
       transition: background-color 0.3s ease;
       will-change: background-color;
@@ -795,7 +809,7 @@ export const compactLawnMowerCardStyles = css`
       flex: 1;
       padding: 8px 12px;
       border: 1px solid var(--outline-color);
-      border-radius: 8px;
+      border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
       background: var(--tile-color);
       color: var(--primary-text-color);
       font-size: 12px;
@@ -834,7 +848,7 @@ export const compactLawnMowerCardStyles = css`
       justify-content: center;
       z-index: 5;
       transition: all 0.3s ease;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
     }
 
     .loader {
@@ -859,7 +873,7 @@ export const compactLawnMowerCardStyles = css`
         opacity: 1;
       }
       100% {
-        transform: scale(1.1);
+        transform: scale(1.0);
         opacity: 0;
       }
     }

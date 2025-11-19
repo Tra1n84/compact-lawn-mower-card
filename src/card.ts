@@ -2,8 +2,23 @@ import { LitElement, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCard } from 'custom-card-helpers';
 import './editor';
+import './camera-popup';
+import { CameraPopup } from './camera-popup';
 import { getDefaultActions } from './defaults';
-import { CARD_NAME, CARD_VERSION } from './constants';
+import {
+  CARD_NAME,
+  CARD_VERSION,
+  DEFAULT_MAP_ZOOM,
+  MIN_MAP_ZOOM,
+  MAX_MAP_ZOOM,
+  MAX_STATIC_MAP_SIZE,
+  MOWER_COLUMN_WIDTH,
+  MIN_SKY_PERCENTAGE,
+  MAX_SKY_PERCENTAGE,
+  CAMERA_RETRY_INTERVAL,
+  MAP_UPDATE_INTERVAL,
+  CAMERA_LOADING_DELAY,
+} from './constants';
 import { getGraphics } from './graphics';
 import { localize } from './localize';
 import {
@@ -13,7 +28,7 @@ import {
   CustomAction,
   ServiceCallActionConfig,
 } from './types';
-import { cameraPopupStyles, compactLawnMowerCardStyles } from './styles';
+import { compactLawnMowerCardStyles } from './styles';
 
 console.groupCollapsed(
   `%c ${CARD_NAME} %c Version ${CARD_VERSION}`,
@@ -25,83 +40,6 @@ console.log(
   "https://github.com/Tra1n84/compact-lawn-mower-card"
 );
 console.groupEnd();
-
-@customElement('camera-popup')
-class CameraPopup extends LitElement {
-  @property() title = '';
-  @property() onClose?: () => void;
-  @property() hass?: HomeAssistant;
-  @property() entityId?: string;
-  @property({ type: Boolean }) isReachable = true;
-  static styles = cameraPopupStyles;
-
-  connectedCallback() {
-    super.connectedCallback();
-    const escHandler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        this._close();
-      }
-    };
-    document.addEventListener('keydown', escHandler);
-    this.addEventListener('close', () => document.removeEventListener('keydown', escHandler), { once: true });
-  }
-
-  private _close() {
-    if (this.onClose) {
-      this.onClose();
-    }
-    this.dispatchEvent(new Event('close'));
-  }
-
-  render() {
-    if (!this.hass || !this.entityId) {
-      return nothing;
-    }
-    const stateObj = this.hass.states[this.entityId];
-    if (!stateObj) {
-      return nothing;
-    }
-
-    let content: TemplateResult;
-
-    if (stateObj.state === 'unavailable') {
-      content = html`
-        <div class="popup-stream-container camera-error">
-          <ha-icon icon="mdi:camera-off"></ha-icon>
-          <span>${localize("camera.not_available", { hass: this.hass })}</span>
-        </div>
-      `;
-    } else if (!this.isReachable) {
-      content = html`
-        <div class="popup-stream-container camera-error">
-          <ha-icon icon="mdi:lan-disconnect"></ha-icon>
-          <span>${localize("camera.not_reachable", { hass: this.hass })}</span>
-        </div>
-      `;
-    } else {
-      content = html`
-        <div class="popup-stream-container">
-          <ha-camera-stream
-            .hass=${this.hass}
-            .stateObj=${stateObj}
-            controls
-            muted
-          ></ha-camera-stream>
-        </div>
-      `;
-    }
-
-    return html`
-      <div class="popup-content" @click=${(e: Event) => e.stopPropagation()}>
-        <div class="popup-header">
-          <h3 class="popup-title">${this.title}</h3>
-          <button class="popup-close" @click=${this._close}>×</button>
-        </div>
-        ${content}
-      </div>
-    `;
-  }
-}
 
 @customElement('compact-lawn-mower-card')
 export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
@@ -122,7 +60,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @property({ attribute: false }) private _viewMode: 'mower' | 'camera' | 'map' = 'mower';
   @state() private _mapWidth = 0;
   @state() private _mapHeight = 0;
-  @state() private _mapZoom = 19;
+  @state() private _mapZoom = DEFAULT_MAP_ZOOM;
   private _mapUpdateInterval?: number;
   private _cameraUpdateInterval?: number;
   private _animationTimeout?: number;
@@ -130,7 +68,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _mowerResizeObserver?: ResizeObserver;
   private _badgeOverlapCheckTimeout?: number;
   @state() private _mapCardElement?: HTMLElement;
-  private _lastProgressLevel: number | string = '-';
 
   connectedCallback() {
     super.connectedCallback();
@@ -185,21 +122,29 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    if (this._mapUpdateInterval) {
-      clearInterval(this._mapUpdateInterval);
-    }
-    if (this._cameraUpdateInterval) {
-      clearInterval(this._cameraUpdateInterval);
-    }
-    if (this._animationTimeout) {
-      clearTimeout(this._animationTimeout);
-    }
-    if (this._badgeOverlapCheckTimeout) {
-      clearTimeout(this._badgeOverlapCheckTimeout);
-    }
+    this._clearAllTimers();
     this._mainResizeObserver?.disconnect();
     this._mowerResizeObserver?.disconnect();
     this._closePopup();
+  }
+
+  private _clearAllTimers(): void {
+    if (this._mapUpdateInterval) {
+      clearInterval(this._mapUpdateInterval);
+      this._mapUpdateInterval = undefined;
+    }
+    if (this._cameraUpdateInterval) {
+      clearInterval(this._cameraUpdateInterval);
+      this._cameraUpdateInterval = undefined;
+    }
+    if (this._animationTimeout) {
+      clearTimeout(this._animationTimeout);
+      this._animationTimeout = undefined;
+    }
+    if (this._badgeOverlapCheckTimeout) {
+      clearTimeout(this._badgeOverlapCheckTimeout);
+      this._badgeOverlapCheckTimeout = undefined;
+    }
   }
   
   private _checkBadgeOverlap(): void {
@@ -273,8 +218,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return;
     }
 
-    const estimatedColumns = Math.max(1, Math.floor(containerWidth / 120));
-    const skyPercentage = Math.max(45, 70 - (estimatedColumns * 2));
+    const estimatedColumns = Math.max(1, Math.floor(containerWidth / MOWER_COLUMN_WIDTH));
+    const skyPercentage = Math.max(MIN_SKY_PERCENTAGE, MAX_SKY_PERCENTAGE - (estimatedColumns * 2));
     mowerDisplay.style.setProperty('--sky-percentage', `${skyPercentage}%`);
 
     const mowerHeight = mowerSvg.clientHeight;
@@ -475,13 +420,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   updated(changedProperties: PropertyValues<this>) {
     super.updated(changedProperties);
 
-    if (changedProperties.has('hass')) {
-      const currentProgress = this.progressLevel;
-      if (this._lastProgressLevel !== currentProgress) {
-        this._lastProgressLevel = currentProgress;
-      }
-    }
-
     if ((changedProperties as any).has('_viewMode') && this._viewMode === 'mower') {
       this._updateMowerPosition();
       this._setupMowerResizeObserver();
@@ -680,7 +618,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (this._animationClass === 'driving-to-dock' || this._animationClass === 'driving-from-dock') {
       classes.push(this._animationClass, 'active');
     } else {
-      if (this._getDisplayStatus(state) === 'charging') {
+      if (displayState === 'charging') {
         classes.push('docked-static', 'charging', 'charging-animated');
       } else if (displayState === 'docked') {
         classes.push('docked-static');
@@ -734,9 +672,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   private _getLEDColor(state: string): string {
     if (this.chargingStatus) return 'rgb(184, 79, 27)';
-    if (state === 'mowing') return 'var(--warning-color, #ff9800)';
-    if (state === 'returning') return 'var(--primary-color, #2196f3)';
-    if (state === 'error') return 'var(--error-color, #f44336)';
+    if (state === 'mowing') return '#e8930f';
+    if (state === 'returning') return '#1e88e5';
+    if (state === 'error') return '#d32f2f';
     return 'var(--disabled-text-color, #9e9e9e)';
   }
 
@@ -878,11 +816,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   private _handleZoom(e: Event, direction: 'in' | 'out'): void {
     e.stopPropagation();
-    if (direction === 'in') {
-      this._mapZoom = Math.min(21, this._mapZoom + 1);
-    } else {
-      this._mapZoom = Math.max(1, this._mapZoom - 1);
-    }
+    const delta = direction === 'in' ? 1 : -1;
+    this._mapZoom = Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, this._mapZoom + delta));
     if (this.config.google_maps_api_key && this.config.use_google_maps) {
       this._isMapLoading = true;
     }
@@ -981,9 +916,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return '';
     }
 
-    const maxSize = 640;
-    if (reqWidth > maxSize || reqHeight > maxSize) {
-      const ratio = reqWidth > reqHeight ? maxSize / reqWidth : maxSize / reqHeight;
+    if (reqWidth > MAX_STATIC_MAP_SIZE || reqHeight > MAX_STATIC_MAP_SIZE) {
+      const ratio = reqWidth > reqHeight ? MAX_STATIC_MAP_SIZE / reqWidth : MAX_STATIC_MAP_SIZE / reqHeight;
       reqWidth = Math.floor(reqWidth * ratio);
       reqHeight = Math.floor(reqHeight * ratio);
     }
@@ -1085,7 +1019,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
     await this._checkCameraReachability();
     if (showLoader) {
-      setTimeout(() => { this._isCameraLoading = false; }, 1000);
+      setTimeout(() => { this._isCameraLoading = false; }, CAMERA_LOADING_DELAY);
     }
 
     if (this._isCameraReachable) {
@@ -1095,7 +1029,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       }
     } else {
       if (!this._cameraUpdateInterval && this._viewMode === 'camera') {
-        this._cameraUpdateInterval = window.setInterval(() => this._updateCameraState(false), 5000);
+        this._cameraUpdateInterval = window.setInterval(() => this._updateCameraState(false), CAMERA_RETRY_INTERVAL);
       }
     }
   }
@@ -1109,7 +1043,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           (this._mapCardElement as any).hass = this.hass;
         }
         this.requestUpdate();
-      }, 10000);
+      }, MAP_UPDATE_INTERVAL);
     }
   }
 
@@ -1192,7 +1126,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             ${this._renderViewToggles()}
             
             <div class="status-badges">
-              <div class="status-ring ${isCharging ? 'charging' : ''}">
+              <div class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                 <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                   <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                 </div>
@@ -1202,12 +1136,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
           </div>
           
-          <div class="controls-area">
-            ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? html`
+          ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? html`
+            <div class="controls-area">
               <div class="buttons-section">
                 ${this.config.custom_actions.map((action) => html`
-                  <button 
-                    class="action-button" 
+                  <button
+                    class="action-button"
                     @click=${() => this._executeCustomAction(action)}
                     aria-label=${action.name}
                     title=${action.name}
@@ -1216,11 +1150,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
                   </button>
                 `)}
               </div>
-            ` : html`
-              <div class="no-actions-message">
-              </div>
-            `}
-          </div>
+            </div>
+          ` : nothing}
 
         </div>
       </ha-card>
@@ -1236,7 +1167,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       rows: 4,
       columns: 6,
       min_rows: 4,
-      max_rows: 4,
+      max_rows: 6,
       min_columns: 6,
       max_columns: 12,
     };
@@ -1247,7 +1178,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 declare global {
   interface HTMLElementTagNameMap {
     'compact-lawn-mower-card': CompactLawnMowerCard;
-    'camera-popup': CameraPopup;
   }
 }
 

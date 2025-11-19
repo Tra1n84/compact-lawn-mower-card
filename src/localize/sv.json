@@ -1,0 +1,141 @@
+{
+  "mower": {
+    "start": "Starta",
+    "stop": "Stoppa",
+    "dock": "Docka"
+  },
+  "status": {
+    "mowing": "Klipper",
+    "docked": "Dockad",
+    "charging": "Laddar",
+    "paused": "Pausad",
+    "returning": "Återvänder till docka",
+    "error": "Fel",
+    "unavailable": "Ej tillgänglig",
+    "unknown": "Okänd"
+  },
+  "editor": {
+    "loading": "Laddar redigerare...",
+    "loading_components": "Laddar komponenter...",
+    "version": "Version",
+    "entity": "Gräsklippare",
+    "camera_entity": "Kameraenhet (Valfritt)",
+    "map_entity": "Kartenhet (Valfritt, Device Tracker)",
+    "camera_fit_mode": "Kameraanpassningsläge",
+    "camera_fit_mode_label": {
+      "cover": "Täck (fyller utrymme, kan beskära)",
+      "contain": "Innehåll (passar inuti, kan visa staplar)"
+    },
+    "section": {
+      "main": "Gräsklippare och kamera",
+      "main_description": "Gräsklippare och valfri kamera",
+      "power": "Framsteg, batteri och laddning",
+      "power_description": "Valfria enheter för att visa ytterligare gräsklipparinformation som batterinivå, laddningsstatus eller aktuellt framsteg",
+      "options": "Alternativ",
+      "options_description": "Ytterligare alternativ"
+    },
+    "power": {
+      "battery_entity": "Batterienhet (Valfritt)",
+      "charging_entity": "Laddningsenhet (Valfritt, Binär sensor: På/Av)",
+      "progress_entity": "Framstegsenhet (Valfritt)"
+    },
+    "options": {
+      "default_view": "Standardvy",
+      "google_maps_api_key": "Google Maps API-nyckel (Valfritt)",
+      "use_google_maps": "Använd Google Maps (med API-nyckel)",
+      "enable_map": "Aktivera kartvy",
+      "map_type": "Karttyp",
+      "map_type_label": {
+        "roadmap": "Vägkarta",
+        "satellite": "Satellit",
+        "hybrid": "Hybrid"
+      },
+      "map_options_title": "Karta",
+      "color_options_title": "Färg",
+      "model_options_title": "Modell",
+      "mower_model": "Gräsklipparmodell",
+      "badge_text_color": "Märkets textfärg",
+      "badge_icon_color": "Märkets ikonfärg",
+      "mower_models": {
+        "default": "Standard"
+      },
+      "color": {
+        "sky": "Himmel",
+        "grass": "Gräs",
+        "top": "Topp",
+        "bottom": "Botten"
+      }
+    },
+    "actions": {
+      "title": "Åtgärder",
+      "description": "Anpassade åtgärdsknappar. Du kan definiera upp till 3 anpassade åtgärder",
+      "confirm_reset": "Är du säker på att du vill återställa till standardåtgärder? Detta kommer att skriva över dina nuvarande åtgärder",
+      "reset_to_defaults": "Återställ standardvärden",
+      "edit": "Redigera åtgärd",
+      "remove": "Ta bort åtgärd",
+      "no_actions_configured": "Inga åtgärder konfigurerade.",
+      "add": "Lägg till ny åtgärd",
+      "name": "Åtgärdsnamn",
+      "icon": "Åtgärdsikon",
+      "icon_custom": "Anpassad ikon",
+      "icon_custom_helper": "t.ex. mdi:robot-mower eller mdi:grass",
+      "config": "Åtgärdskonfiguration",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "add_button": "Lägg till åtgärd",
+      "max_reached": "Maximalt antal {MAX_ACTIONS} åtgärder uppnått. Ta bort en åtgärd för att lägga till en ny",
+      "service": "Tjänst",
+      "target": "Mål",
+      "target_entity": "Målenhet (Valfritt)",
+      "use_custom_target": "Använd annan målenhet",
+      "using_default_entity": "Använder standardenhet",
+      "default_entity": "Standardenhet",
+      "no_entity_selected": "ingen enhet vald",
+      "not_set": "inte inställd",
+      "service_data": "Tjänstdata",
+      "service_data_configured": "Konfigurerad",
+      "service_data_none": "Ingen",
+      "target_mode": "Mål",
+      "target_mode_label": {
+        "default": "Standardenhet",
+        "custom": "Anpassad",
+        "none": "Ingen"
+      },
+      "target_mode_none_helper": "Tjänsten kommer att anropas utan målenhet.",
+      "target_none": "Ingen",
+      "action_type": {
+        "call_service": "Tjänst",
+        "navigate": "Navigering",
+        "url": "URL",
+        "toggle": "Växla enhet",
+        "more_info": "Mer info",
+        "none": "Ingen åtgärd",
+        "not_configured": "Inte konfigurerad"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Välj en gräsklipparenhet",
+    "loading_components": "Fel vid laddning av komponenter",
+    "entity_not_found": "Enhet hittades inte."
+  },
+  "camera": {
+    "camera_title": "Kamera",
+    "not_available": "Kamera ej tillgänglig",
+    "not_reachable": "Kamera ej nåbar"
+  },
+  "map": {
+    "not_available": "Karta ej tillgänglig",
+    "no_gps_coordinates": "Ingen GPS-data"
+  },
+  "view": {
+    "mower": "Gräsklippare",
+    "camera": "Kamera",
+    "map": "Karta"
+  },
+  "default_actions": {
+    "start_mowing": "Starta klippning",
+    "pause": "Pausa",
+    "return_to_dock": "Återvänd till docka"
+  }
+}

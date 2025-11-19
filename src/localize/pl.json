@@ -1,0 +1,141 @@
+{
+  "mower": {
+    "start": "Start",
+    "stop": "Stop",
+    "dock": "Stacja"
+  },
+  "status": {
+    "mowing": "Koszenie",
+    "docked": "W stacji",
+    "charging": "Ładowanie",
+    "paused": "Wstrzymano",
+    "returning": "Powrót do stacji",
+    "error": "Błąd",
+    "unavailable": "Niedostępny",
+    "unknown": "Nieznany"
+  },
+  "editor": {
+    "loading": "Ładowanie edytora...",
+    "loading_components": "Ładowanie komponentów...",
+    "version": "Wersja",
+    "entity": "Kosiarka",
+    "camera_entity": "Encja kamery (Opcjonalne)",
+    "map_entity": "Encja mapy (Opcjonalne, Device Tracker)",
+    "camera_fit_mode": "Tryb dopasowania kamery",
+    "camera_fit_mode_label": {
+      "cover": "Wypełnij (wypełnia przestrzeń, może przycinać)",
+      "contain": "Dopasuj (mieści się wewnątrz, może pokazywać paski)"
+    },
+    "section": {
+      "main": "Kosiarka i kamera",
+      "main_description": "Kosiarka i opcjonalna kamera",
+      "power": "Postęp, bateria i ładowanie",
+      "power_description": "Opcjonalne encje do wyświetlania dodatkowych informacji o kosiarce, takich jak poziom baterii, stan ładowania lub aktualny postęp",
+      "options": "Opcje",
+      "options_description": "Dodatkowe opcje"
+    },
+    "power": {
+      "battery_entity": "Encja baterii (Opcjonalne)",
+      "charging_entity": "Encja ładowania (Opcjonalne, Czujnik binarny: Wł/Wył)",
+      "progress_entity": "Encja postępu (Opcjonalne)"
+    },
+    "options": {
+      "default_view": "Widok domyślny",
+      "google_maps_api_key": "Klucz API Google Maps (Opcjonalne)",
+      "use_google_maps": "Użyj Google Maps (z kluczem API)",
+      "enable_map": "Włącz widok mapy",
+      "map_type": "Typ mapy",
+      "map_type_label": {
+        "roadmap": "Mapa drogowa",
+        "satellite": "Satelita",
+        "hybrid": "Hybrydowa"
+      },
+      "map_options_title": "Mapa",
+      "color_options_title": "Kolor",
+      "model_options_title": "Model",
+      "mower_model": "Model kosiarki",
+      "badge_text_color": "Kolor tekstu odznaki",
+      "badge_icon_color": "Kolor ikony odznaki",
+      "mower_models": {
+        "default": "Domyślny"
+      },
+      "color": {
+        "sky": "Niebo",
+        "grass": "Trawa",
+        "top": "Góra",
+        "bottom": "Dół"
+      }
+    },
+    "actions": {
+      "title": "Akcje",
+      "description": "Niestandardowe przyciski akcji. Możesz zdefiniować do 3 niestandardowych akcji",
+      "confirm_reset": "Czy na pewno chcesz przywrócić domyślne akcje? To nadpisze twoje obecne akcje",
+      "reset_to_defaults": "Przywróć domyślne",
+      "edit": "Edytuj akcję",
+      "remove": "Usuń akcję",
+      "no_actions_configured": "Brak skonfigurowanych akcji.",
+      "add": "Dodaj nową akcję",
+      "name": "Nazwa akcji",
+      "icon": "Ikona akcji",
+      "icon_custom": "Niestandardowa ikona",
+      "icon_custom_helper": "np. mdi:robot-mower lub mdi:grass",
+      "config": "Konfiguracja akcji",
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "add_button": "Dodaj akcję",
+      "max_reached": "Osiągnięto maksymalną liczbę {MAX_ACTIONS} akcji. Usuń akcję, aby dodać nową",
+      "service": "Usługa",
+      "target": "Cel",
+      "target_entity": "Encja docelowa (Opcjonalne)",
+      "use_custom_target": "Użyj innej encji docelowej",
+      "using_default_entity": "Używanie domyślnej encji",
+      "default_entity": "Domyślna encja",
+      "no_entity_selected": "nie wybrano encji",
+      "not_set": "nie ustawiono",
+      "service_data": "Dane usługi",
+      "service_data_configured": "Skonfigurowano",
+      "service_data_none": "Brak",
+      "target_mode": "Cel",
+      "target_mode_label": {
+        "default": "Domyślna encja",
+        "custom": "Niestandardowy",
+        "none": "Brak"
+      },
+      "target_mode_none_helper": "Usługa zostanie wywołana bez encji docelowej.",
+      "target_none": "Brak",
+      "action_type": {
+        "call_service": "Usługa",
+        "navigate": "Nawigacja",
+        "url": "URL",
+        "toggle": "Przełącz encję",
+        "more_info": "Więcej informacji",
+        "none": "Brak akcji",
+        "not_configured": "Nie skonfigurowano"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Wybierz encję kosiarki",
+    "loading_components": "Błąd ładowania komponentów",
+    "entity_not_found": "Nie znaleziono encji."
+  },
+  "camera": {
+    "camera_title": "Kamera",
+    "not_available": "Kamera niedostępna",
+    "not_reachable": "Kamera nieosiągalna"
+  },
+  "map": {
+    "not_available": "Mapa niedostępna",
+    "no_gps_coordinates": "Brak danych GPS"
+  },
+  "view": {
+    "mower": "Kosiarka",
+    "camera": "Kamera",
+    "map": "Mapa"
+  },
+  "default_actions": {
+    "start_mowing": "Rozpocznij koszenie",
+    "pause": "Wstrzymaj",
+    "return_to_dock": "Powrót do stacji"
+  }
+}

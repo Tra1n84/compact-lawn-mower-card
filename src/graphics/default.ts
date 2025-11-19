@@ -31,6 +31,7 @@ export const renderDefaultMower: MowerRenderFunction = (
           <stop offset="0.5" stop-color="#444"/>
           <stop offset="1" stop-color="#555"/>
         </linearGradient>
+
         <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
           <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/>
         </filter>
@@ -49,7 +50,6 @@ export const renderDefaultMower: MowerRenderFunction = (
           </feMerge>
         </filter>
       </defs>
-
       <g transform="translate(0, 10)">
         <g class="mower-body body-translate" filter="url(#softShadow)" transform="matrix(1, 0, 0, 0.99008, 0, 0.872922)">
           <g class="wheel-back" transform="matrix(1, 0, 0, 1, 2, 0)">
