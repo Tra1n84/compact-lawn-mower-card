@@ -3,11 +3,21 @@ import type { Translation } from './localize/types';
 import en from './localize/en.json';
 import de from './localize/de.json';
 import fr from './localize/fr.json';
+import es from './localize/es.json';
+import it from './localize/it.json';
+import nl from './localize/nl.json';
+import pl from './localize/pl.json';
+import sv from './localize/sv.json';
 
 const languages: Record<string, Translation> = {
   en,
   de,
-  fr
+  fr,
+  es,
+  it,
+  nl,
+  pl,
+  sv
 };
 
 interface LocalizeOptions {

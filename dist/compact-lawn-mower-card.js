@@ -86,14 +86,27 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '0.10.1';
+const CARD_VERSION = '0.11.0';
+// Map constants
+const DEFAULT_MAP_ZOOM = 18;
+const MIN_MAP_ZOOM = 1;
+const MAX_MAP_ZOOM = 21;
+const MAX_STATIC_MAP_SIZE = 640;
+// Layout constants
+const MOWER_COLUMN_WIDTH = 120;
+const MIN_SKY_PERCENTAGE = 45;
+const MAX_SKY_PERCENTAGE = 70;
+// Timing constants (ms)
+const CAMERA_RETRY_INTERVAL = 5000;
+const MAP_UPDATE_INTERVAL = 10000;
+const CAMERA_LOADING_DELAY = 1000;
 
-var mower$2 = {
+var mower$7 = {
 	start: "Start",
 	stop: "Stop",
 	dock: "Dock"
 };
-var status$2 = {
+var status$7 = {
 	mowing: "Mowing",
 	docked: "Docked",
 	charging: "Charging",
@@ -103,7 +116,7 @@ var status$2 = {
 	unavailable: "Unavailable",
 	unknown: "Unknown"
 };
-var editor$2 = {
+var editor$7 = {
 	loading: "Loading editor...",
 	loading_components: "Loading components...",
 	version: "Version",
@@ -203,47 +216,47 @@ var editor$2 = {
 		}
 	}
 };
-var error$2 = {
+var error$7 = {
 	missing_entity: "Please select a Lawn Mower entity",
 	loading_components: "Error loading components",
 	entity_not_found: "Entity not found."
 };
-var camera$2 = {
+var camera$7 = {
 	camera_title: "Camera",
 	not_available: "Camera not available",
 	not_reachable: "Camera not reachable"
 };
-var map$2 = {
+var map$7 = {
 	not_available: "Map not available",
 	no_gps_coordinates: "No GPS data"
 };
-var view$2 = {
+var view$7 = {
 	mower: "Lawn Mower",
 	camera: "Camera",
 	map: "Map"
 };
-var default_actions$2 = {
+var default_actions$7 = {
 	start_mowing: "Start Mowing",
 	pause: "Pause",
 	return_to_dock: "Return to Dock"
 };
 var en = {
-	mower: mower$2,
-	status: status$2,
-	editor: editor$2,
-	error: error$2,
-	camera: camera$2,
-	map: map$2,
-	view: view$2,
-	default_actions: default_actions$2
+	mower: mower$7,
+	status: status$7,
+	editor: editor$7,
+	error: error$7,
+	camera: camera$7,
+	map: map$7,
+	view: view$7,
+	default_actions: default_actions$7
 };
 
-var mower$1 = {
+var mower$6 = {
 	start: "Start",
 	stop: "Stop",
 	dock: "Dock"
 };
-var status$1 = {
+var status$6 = {
 	mowing: "Mäht",
 	docked: "Angedockt",
 	charging: "Lädt",
@@ -253,7 +266,7 @@ var status$1 = {
 	unavailable: "Nicht verfügbar",
 	unknown: "Unbekannt"
 };
-var editor$1 = {
+var editor$6 = {
 	loading: "Editor wird geladen...",
 	loading_components: "Komponenten werden geladen...",
 	version: "Version",
@@ -353,47 +366,47 @@ var editor$1 = {
 		}
 	}
 };
-var error$1 = {
+var error$6 = {
 	missing_entity: "Bitte wähle eine Mähroboter-Entität",
 	loading_components: "Fehler beim Laden der Komponenten",
 	entity_not_found: "Entität wurde nicht gefunden."
 };
-var camera$1 = {
+var camera$6 = {
 	camera_title: "Kamera",
 	not_available: "Kamera nicht verfügbar",
 	not_reachable: "Kamera nicht erreichbar"
 };
-var map$1 = {
+var map$6 = {
 	not_available: "Karte nicht verfügbar",
 	no_gps_coordinates: "Keine GPS-Daten"
 };
-var view$1 = {
+var view$6 = {
 	mower: "Mähroboter",
 	camera: "Kamera",
 	map: "Karte"
 };
-var default_actions$1 = {
+var default_actions$6 = {
 	start_mowing: "Mähvorgang starten",
 	pause: "Pause",
 	return_to_dock: "Zurück zur Basis"
 };
 var de = {
-	mower: mower$1,
-	status: status$1,
-	editor: editor$1,
-	error: error$1,
-	camera: camera$1,
-	map: map$1,
-	view: view$1,
-	default_actions: default_actions$1
+	mower: mower$6,
+	status: status$6,
+	editor: editor$6,
+	error: error$6,
+	camera: camera$6,
+	map: map$6,
+	view: view$6,
+	default_actions: default_actions$6
 };
 
-var mower = {
+var mower$5 = {
 	start: "Démarrage",
 	stop: "Stop",
 	dock: "Station"
 };
-var status = {
+var status$5 = {
 	mowing: "Tonte",
 	docked: "Stationnée",
 	charging: "En charge",
@@ -403,7 +416,7 @@ var status = {
 	unavailable: "Indisponible",
 	unknown: "Inconnu"
 };
-var editor = {
+var editor$5 = {
 	loading: "Chargement editeur...",
 	loading_components: "Chargement composants...",
 	version: "Version",
@@ -503,31 +516,781 @@ var editor = {
 		}
 	}
 };
-var error = {
+var error$5 = {
 	missing_entity: "Veuillez sélectionner une entité Tondeuse à gazon",
 	loading_components: "Erreur lors du chargement des composants",
 	entity_not_found: "Entité non trouvée."
 };
-var camera = {
+var camera$5 = {
 	camera_title: "Caméra",
 	not_available: "Caméra non disponible",
 	not_reachable: "Caméra inaccessible"
 };
-var map = {
+var map$5 = {
 	not_available: "Carte non disponible",
 	no_gps_coordinates: "Pas de données GPS"
 };
-var view = {
+var view$5 = {
 	mower: "Tondeuse",
 	camera: "Caméra",
 	map: "Carte"
 };
-var default_actions = {
+var default_actions$5 = {
 	start_mowing: "Démarrer la tonte",
 	pause: "Pause",
 	return_to_dock: "Retour à la station"
 };
 var fr = {
+	mower: mower$5,
+	status: status$5,
+	editor: editor$5,
+	error: error$5,
+	camera: camera$5,
+	map: map$5,
+	view: view$5,
+	default_actions: default_actions$5
+};
+
+var mower$4 = {
+	start: "Iniciar",
+	stop: "Detener",
+	dock: "Base"
+};
+var status$4 = {
+	mowing: "Cortando",
+	docked: "En base",
+	charging: "Cargando",
+	paused: "Pausado",
+	returning: "Volviendo a base",
+	error: "Error",
+	unavailable: "No disponible",
+	unknown: "Desconocido"
+};
+var editor$4 = {
+	loading: "Cargando editor...",
+	loading_components: "Cargando componentes...",
+	version: "Versión",
+	entity: "Cortacésped",
+	camera_entity: "Entidad de cámara (Opcional)",
+	map_entity: "Entidad de mapa (Opcional, Device Tracker)",
+	camera_fit_mode: "Modo de ajuste de cámara",
+	camera_fit_mode_label: {
+		cover: "Cubrir (llenar espacio, puede recortar)",
+		contain: "Contener (ajustar dentro, puede mostrar barras)"
+	},
+	section: {
+		main: "Cortacésped y cámara",
+		main_description: "Cortacésped y cámara opcional",
+		power: "Progreso, batería y carga",
+		power_description: "Entidades opcionales para mostrar información adicional del cortacésped como nivel de batería, estado de carga o progreso actual",
+		options: "Opciones",
+		options_description: "Opciones adicionales"
+	},
+	power: {
+		battery_entity: "Entidad de batería (Opcional)",
+		charging_entity: "Entidad de carga (Opcional, Sensor binario: On/Off)",
+		progress_entity: "Entidad de progreso (Opcional)"
+	},
+	options: {
+		default_view: "Vista predeterminada",
+		google_maps_api_key: "Clave API de Google Maps (Opcional)",
+		use_google_maps: "Usar Google Maps (con clave API)",
+		enable_map: "Habilitar vista de mapa",
+		map_type: "Tipo de mapa",
+		map_type_label: {
+			roadmap: "Mapa de carreteras",
+			satellite: "Satélite",
+			hybrid: "Híbrido"
+		},
+		map_options_title: "Mapa",
+		color_options_title: "Color",
+		model_options_title: "Modelo",
+		mower_model: "Modelo de cortacésped",
+		badge_text_color: "Color del texto de la insignia",
+		badge_icon_color: "Color del icono de la insignia",
+		mower_models: {
+			"default": "Predeterminado"
+		},
+		color: {
+			sky: "Cielo",
+			grass: "Césped",
+			top: "Superior",
+			bottom: "Inferior"
+		}
+	},
+	actions: {
+		title: "Acciones",
+		description: "Botones de acción personalizados. Puedes definir hasta 3 acciones personalizadas",
+		confirm_reset: "¿Estás seguro de que quieres restablecer las acciones predeterminadas? Esto sobrescribirá tus acciones actuales",
+		reset_to_defaults: "Restaurar predeterminados",
+		edit: "Editar acción",
+		remove: "Eliminar acción",
+		no_actions_configured: "No hay acciones configuradas.",
+		add: "Añadir nueva acción",
+		name: "Nombre de acción",
+		icon: "Icono de acción",
+		icon_custom: "Icono personalizado",
+		icon_custom_helper: "ej. mdi:robot-mower o mdi:grass",
+		config: "Configuración de acción",
+		save: "Guardar",
+		cancel: "Cancelar",
+		add_button: "Añadir acción",
+		max_reached: "Número máximo de {MAX_ACTIONS} acciones alcanzado. Elimina una acción para añadir una nueva",
+		service: "Servicio",
+		target: "Objetivo",
+		target_entity: "Entidad objetivo (Opcional)",
+		use_custom_target: "Usar entidad objetivo diferente",
+		using_default_entity: "Usando entidad predeterminada",
+		default_entity: "Entidad predeterminada",
+		no_entity_selected: "ninguna entidad seleccionada",
+		not_set: "no establecido",
+		service_data: "Datos del servicio",
+		service_data_configured: "Configurado",
+		service_data_none: "Ninguno",
+		target_mode: "Objetivo",
+		target_mode_label: {
+			"default": "Entidad predeterminada",
+			custom: "Personalizado",
+			none: "Ninguno"
+		},
+		target_mode_none_helper: "El servicio se llamará sin entidad objetivo.",
+		target_none: "Ninguno",
+		action_type: {
+			call_service: "Servicio",
+			navigate: "Navegación",
+			url: "URL",
+			toggle: "Alternar entidad",
+			more_info: "Más información",
+			none: "Sin acción",
+			not_configured: "No configurado"
+		}
+	}
+};
+var error$4 = {
+	missing_entity: "Por favor selecciona una entidad de cortacésped",
+	loading_components: "Error al cargar componentes",
+	entity_not_found: "Entidad no encontrada."
+};
+var camera$4 = {
+	camera_title: "Cámara",
+	not_available: "Cámara no disponible",
+	not_reachable: "Cámara no accesible"
+};
+var map$4 = {
+	not_available: "Mapa no disponible",
+	no_gps_coordinates: "Sin datos GPS"
+};
+var view$4 = {
+	mower: "Cortacésped",
+	camera: "Cámara",
+	map: "Mapa"
+};
+var default_actions$4 = {
+	start_mowing: "Iniciar corte",
+	pause: "Pausar",
+	return_to_dock: "Volver a base"
+};
+var es = {
+	mower: mower$4,
+	status: status$4,
+	editor: editor$4,
+	error: error$4,
+	camera: camera$4,
+	map: map$4,
+	view: view$4,
+	default_actions: default_actions$4
+};
+
+var mower$3 = {
+	start: "Avvia",
+	stop: "Ferma",
+	dock: "Base"
+};
+var status$3 = {
+	mowing: "In taglio",
+	docked: "In base",
+	charging: "In carica",
+	paused: "In pausa",
+	returning: "Ritorno alla base",
+	error: "Errore",
+	unavailable: "Non disponibile",
+	unknown: "Sconosciuto"
+};
+var editor$3 = {
+	loading: "Caricamento editor...",
+	loading_components: "Caricamento componenti...",
+	version: "Versione",
+	entity: "Tagliaerba",
+	camera_entity: "Entità telecamera (Opzionale)",
+	map_entity: "Entità mappa (Opzionale, Device Tracker)",
+	camera_fit_mode: "Modalità adattamento telecamera",
+	camera_fit_mode_label: {
+		cover: "Coprire (riempie lo spazio, può ritagliare)",
+		contain: "Contenere (adatta all'interno, può mostrare barre)"
+	},
+	section: {
+		main: "Tagliaerba e telecamera",
+		main_description: "Tagliaerba e telecamera opzionale",
+		power: "Progresso, batteria e ricarica",
+		power_description: "Entità opzionali per visualizzare informazioni aggiuntive del tagliaerba come livello batteria, stato di ricarica o progresso attuale",
+		options: "Opzioni",
+		options_description: "Opzioni aggiuntive"
+	},
+	power: {
+		battery_entity: "Entità batteria (Opzionale)",
+		charging_entity: "Entità ricarica (Opzionale, Sensore binario: On/Off)",
+		progress_entity: "Entità progresso (Opzionale)"
+	},
+	options: {
+		default_view: "Vista predefinita",
+		google_maps_api_key: "Chiave API Google Maps (Opzionale)",
+		use_google_maps: "Usa Google Maps (con chiave API)",
+		enable_map: "Abilita vista mappa",
+		map_type: "Tipo di mappa",
+		map_type_label: {
+			roadmap: "Mappa stradale",
+			satellite: "Satellite",
+			hybrid: "Ibrido"
+		},
+		map_options_title: "Mappa",
+		color_options_title: "Colore",
+		model_options_title: "Modello",
+		mower_model: "Modello tagliaerba",
+		badge_text_color: "Colore testo badge",
+		badge_icon_color: "Colore icona badge",
+		mower_models: {
+			"default": "Predefinito"
+		},
+		color: {
+			sky: "Cielo",
+			grass: "Erba",
+			top: "Superiore",
+			bottom: "Inferiore"
+		}
+	},
+	actions: {
+		title: "Azioni",
+		description: "Pulsanti azione personalizzati. Puoi definire fino a 3 azioni personalizzate",
+		confirm_reset: "Sei sicuro di voler ripristinare le azioni predefinite? Questo sovrascriverà le tue azioni attuali",
+		reset_to_defaults: "Ripristina predefiniti",
+		edit: "Modifica azione",
+		remove: "Rimuovi azione",
+		no_actions_configured: "Nessuna azione configurata.",
+		add: "Aggiungi nuova azione",
+		name: "Nome azione",
+		icon: "Icona azione",
+		icon_custom: "Icona personalizzata",
+		icon_custom_helper: "es. mdi:robot-mower o mdi:grass",
+		config: "Configurazione azione",
+		save: "Salva",
+		cancel: "Annulla",
+		add_button: "Aggiungi azione",
+		max_reached: "Numero massimo di {MAX_ACTIONS} azioni raggiunto. Rimuovi un'azione per aggiungerne una nuova",
+		service: "Servizio",
+		target: "Destinazione",
+		target_entity: "Entità destinazione (Opzionale)",
+		use_custom_target: "Usa entità destinazione diversa",
+		using_default_entity: "Usando entità predefinita",
+		default_entity: "Entità predefinita",
+		no_entity_selected: "nessuna entità selezionata",
+		not_set: "non impostato",
+		service_data: "Dati servizio",
+		service_data_configured: "Configurato",
+		service_data_none: "Nessuno",
+		target_mode: "Destinazione",
+		target_mode_label: {
+			"default": "Entità predefinita",
+			custom: "Personalizzato",
+			none: "Nessuno"
+		},
+		target_mode_none_helper: "Il servizio verrà chiamato senza entità destinazione.",
+		target_none: "Nessuno",
+		action_type: {
+			call_service: "Servizio",
+			navigate: "Navigazione",
+			url: "URL",
+			toggle: "Attiva/disattiva entità",
+			more_info: "Più informazioni",
+			none: "Nessuna azione",
+			not_configured: "Non configurato"
+		}
+	}
+};
+var error$3 = {
+	missing_entity: "Seleziona un'entità tagliaerba",
+	loading_components: "Errore nel caricamento componenti",
+	entity_not_found: "Entità non trovata."
+};
+var camera$3 = {
+	camera_title: "Telecamera",
+	not_available: "Telecamera non disponibile",
+	not_reachable: "Telecamera non raggiungibile"
+};
+var map$3 = {
+	not_available: "Mappa non disponibile",
+	no_gps_coordinates: "Nessun dato GPS"
+};
+var view$3 = {
+	mower: "Tagliaerba",
+	camera: "Telecamera",
+	map: "Mappa"
+};
+var default_actions$3 = {
+	start_mowing: "Avvia taglio",
+	pause: "Pausa",
+	return_to_dock: "Ritorna alla base"
+};
+var it = {
+	mower: mower$3,
+	status: status$3,
+	editor: editor$3,
+	error: error$3,
+	camera: camera$3,
+	map: map$3,
+	view: view$3,
+	default_actions: default_actions$3
+};
+
+var mower$2 = {
+	start: "Start",
+	stop: "Stop",
+	dock: "Dock"
+};
+var status$2 = {
+	mowing: "Maaien",
+	docked: "Gedockt",
+	charging: "Opladen",
+	paused: "Gepauzeerd",
+	returning: "Terugkeren naar dock",
+	error: "Fout",
+	unavailable: "Niet beschikbaar",
+	unknown: "Onbekend"
+};
+var editor$2 = {
+	loading: "Editor laden...",
+	loading_components: "Componenten laden...",
+	version: "Versie",
+	entity: "Grasmaaier",
+	camera_entity: "Camera-entiteit (Optioneel)",
+	map_entity: "Kaart-entiteit (Optioneel, Device Tracker)",
+	camera_fit_mode: "Camera aanpasmodus",
+	camera_fit_mode_label: {
+		cover: "Bedekken (ruimte vullen, kan bijsnijden)",
+		contain: "Bevatten (binnen passen, kan balken tonen)"
+	},
+	section: {
+		main: "Grasmaaier en camera",
+		main_description: "Grasmaaier en optionele camera",
+		power: "Voortgang, batterij en opladen",
+		power_description: "Optionele entiteiten voor het weergeven van aanvullende grasmaaier-informatie zoals batterijniveau, oplaadstatus of huidige voortgang",
+		options: "Opties",
+		options_description: "Aanvullende opties"
+	},
+	power: {
+		battery_entity: "Batterij-entiteit (Optioneel)",
+		charging_entity: "Oplaad-entiteit (Optioneel, Binaire sensor: Aan/Uit)",
+		progress_entity: "Voortgang-entiteit (Optioneel)"
+	},
+	options: {
+		default_view: "Standaardweergave",
+		google_maps_api_key: "Google Maps API-sleutel (Optioneel)",
+		use_google_maps: "Google Maps gebruiken (met API-sleutel)",
+		enable_map: "Kaartweergave inschakelen",
+		map_type: "Kaarttype",
+		map_type_label: {
+			roadmap: "Wegenkaart",
+			satellite: "Satelliet",
+			hybrid: "Hybride"
+		},
+		map_options_title: "Kaart",
+		color_options_title: "Kleur",
+		model_options_title: "Model",
+		mower_model: "Grasmaaiermodel",
+		badge_text_color: "Badge tekstkleur",
+		badge_icon_color: "Badge pictogramkleur",
+		mower_models: {
+			"default": "Standaard"
+		},
+		color: {
+			sky: "Lucht",
+			grass: "Gras",
+			top: "Boven",
+			bottom: "Onder"
+		}
+	},
+	actions: {
+		title: "Acties",
+		description: "Aangepaste actieknoppen. Je kunt maximaal 3 aangepaste acties definiëren",
+		confirm_reset: "Weet je zeker dat je de standaardacties wilt herstellen? Dit overschrijft je huidige acties",
+		reset_to_defaults: "Standaardwaarden herstellen",
+		edit: "Actie bewerken",
+		remove: "Actie verwijderen",
+		no_actions_configured: "Geen acties geconfigureerd.",
+		add: "Nieuwe actie toevoegen",
+		name: "Actienaam",
+		icon: "Actiepictogram",
+		icon_custom: "Aangepast pictogram",
+		icon_custom_helper: "bijv. mdi:robot-mower of mdi:grass",
+		config: "Actieconfiguratie",
+		save: "Opslaan",
+		cancel: "Annuleren",
+		add_button: "Actie toevoegen",
+		max_reached: "Maximaal aantal van {MAX_ACTIONS} acties bereikt. Verwijder een actie om een nieuwe toe te voegen",
+		service: "Service",
+		target: "Doel",
+		target_entity: "Doelentiteit (Optioneel)",
+		use_custom_target: "Andere doelentiteit gebruiken",
+		using_default_entity: "Standaardentiteit gebruiken",
+		default_entity: "Standaardentiteit",
+		no_entity_selected: "geen entiteit geselecteerd",
+		not_set: "niet ingesteld",
+		service_data: "Servicegegevens",
+		service_data_configured: "Geconfigureerd",
+		service_data_none: "Geen",
+		target_mode: "Doel",
+		target_mode_label: {
+			"default": "Standaardentiteit",
+			custom: "Aangepast",
+			none: "Geen"
+		},
+		target_mode_none_helper: "De service wordt aangeroepen zonder doelentiteit.",
+		target_none: "Geen",
+		action_type: {
+			call_service: "Service",
+			navigate: "Navigatie",
+			url: "URL",
+			toggle: "Entiteit schakelen",
+			more_info: "Meer info",
+			none: "Geen actie",
+			not_configured: "Niet geconfigureerd"
+		}
+	}
+};
+var error$2 = {
+	missing_entity: "Selecteer een grasmaaier-entiteit",
+	loading_components: "Fout bij laden van componenten",
+	entity_not_found: "Entiteit niet gevonden."
+};
+var camera$2 = {
+	camera_title: "Camera",
+	not_available: "Camera niet beschikbaar",
+	not_reachable: "Camera niet bereikbaar"
+};
+var map$2 = {
+	not_available: "Kaart niet beschikbaar",
+	no_gps_coordinates: "Geen GPS-gegevens"
+};
+var view$2 = {
+	mower: "Grasmaaier",
+	camera: "Camera",
+	map: "Kaart"
+};
+var default_actions$2 = {
+	start_mowing: "Start maaien",
+	pause: "Pauzeren",
+	return_to_dock: "Terugkeren naar dock"
+};
+var nl = {
+	mower: mower$2,
+	status: status$2,
+	editor: editor$2,
+	error: error$2,
+	camera: camera$2,
+	map: map$2,
+	view: view$2,
+	default_actions: default_actions$2
+};
+
+var mower$1 = {
+	start: "Start",
+	stop: "Stop",
+	dock: "Stacja"
+};
+var status$1 = {
+	mowing: "Koszenie",
+	docked: "W stacji",
+	charging: "Ładowanie",
+	paused: "Wstrzymano",
+	returning: "Powrót do stacji",
+	error: "Błąd",
+	unavailable: "Niedostępny",
+	unknown: "Nieznany"
+};
+var editor$1 = {
+	loading: "Ładowanie edytora...",
+	loading_components: "Ładowanie komponentów...",
+	version: "Wersja",
+	entity: "Kosiarka",
+	camera_entity: "Encja kamery (Opcjonalne)",
+	map_entity: "Encja mapy (Opcjonalne, Device Tracker)",
+	camera_fit_mode: "Tryb dopasowania kamery",
+	camera_fit_mode_label: {
+		cover: "Wypełnij (wypełnia przestrzeń, może przycinać)",
+		contain: "Dopasuj (mieści się wewnątrz, może pokazywać paski)"
+	},
+	section: {
+		main: "Kosiarka i kamera",
+		main_description: "Kosiarka i opcjonalna kamera",
+		power: "Postęp, bateria i ładowanie",
+		power_description: "Opcjonalne encje do wyświetlania dodatkowych informacji o kosiarce, takich jak poziom baterii, stan ładowania lub aktualny postęp",
+		options: "Opcje",
+		options_description: "Dodatkowe opcje"
+	},
+	power: {
+		battery_entity: "Encja baterii (Opcjonalne)",
+		charging_entity: "Encja ładowania (Opcjonalne, Czujnik binarny: Wł/Wył)",
+		progress_entity: "Encja postępu (Opcjonalne)"
+	},
+	options: {
+		default_view: "Widok domyślny",
+		google_maps_api_key: "Klucz API Google Maps (Opcjonalne)",
+		use_google_maps: "Użyj Google Maps (z kluczem API)",
+		enable_map: "Włącz widok mapy",
+		map_type: "Typ mapy",
+		map_type_label: {
+			roadmap: "Mapa drogowa",
+			satellite: "Satelita",
+			hybrid: "Hybrydowa"
+		},
+		map_options_title: "Mapa",
+		color_options_title: "Kolor",
+		model_options_title: "Model",
+		mower_model: "Model kosiarki",
+		badge_text_color: "Kolor tekstu odznaki",
+		badge_icon_color: "Kolor ikony odznaki",
+		mower_models: {
+			"default": "Domyślny"
+		},
+		color: {
+			sky: "Niebo",
+			grass: "Trawa",
+			top: "Góra",
+			bottom: "Dół"
+		}
+	},
+	actions: {
+		title: "Akcje",
+		description: "Niestandardowe przyciski akcji. Możesz zdefiniować do 3 niestandardowych akcji",
+		confirm_reset: "Czy na pewno chcesz przywrócić domyślne akcje? To nadpisze twoje obecne akcje",
+		reset_to_defaults: "Przywróć domyślne",
+		edit: "Edytuj akcję",
+		remove: "Usuń akcję",
+		no_actions_configured: "Brak skonfigurowanych akcji.",
+		add: "Dodaj nową akcję",
+		name: "Nazwa akcji",
+		icon: "Ikona akcji",
+		icon_custom: "Niestandardowa ikona",
+		icon_custom_helper: "np. mdi:robot-mower lub mdi:grass",
+		config: "Konfiguracja akcji",
+		save: "Zapisz",
+		cancel: "Anuluj",
+		add_button: "Dodaj akcję",
+		max_reached: "Osiągnięto maksymalną liczbę {MAX_ACTIONS} akcji. Usuń akcję, aby dodać nową",
+		service: "Usługa",
+		target: "Cel",
+		target_entity: "Encja docelowa (Opcjonalne)",
+		use_custom_target: "Użyj innej encji docelowej",
+		using_default_entity: "Używanie domyślnej encji",
+		default_entity: "Domyślna encja",
+		no_entity_selected: "nie wybrano encji",
+		not_set: "nie ustawiono",
+		service_data: "Dane usługi",
+		service_data_configured: "Skonfigurowano",
+		service_data_none: "Brak",
+		target_mode: "Cel",
+		target_mode_label: {
+			"default": "Domyślna encja",
+			custom: "Niestandardowy",
+			none: "Brak"
+		},
+		target_mode_none_helper: "Usługa zostanie wywołana bez encji docelowej.",
+		target_none: "Brak",
+		action_type: {
+			call_service: "Usługa",
+			navigate: "Nawigacja",
+			url: "URL",
+			toggle: "Przełącz encję",
+			more_info: "Więcej informacji",
+			none: "Brak akcji",
+			not_configured: "Nie skonfigurowano"
+		}
+	}
+};
+var error$1 = {
+	missing_entity: "Wybierz encję kosiarki",
+	loading_components: "Błąd ładowania komponentów",
+	entity_not_found: "Nie znaleziono encji."
+};
+var camera$1 = {
+	camera_title: "Kamera",
+	not_available: "Kamera niedostępna",
+	not_reachable: "Kamera nieosiągalna"
+};
+var map$1 = {
+	not_available: "Mapa niedostępna",
+	no_gps_coordinates: "Brak danych GPS"
+};
+var view$1 = {
+	mower: "Kosiarka",
+	camera: "Kamera",
+	map: "Mapa"
+};
+var default_actions$1 = {
+	start_mowing: "Rozpocznij koszenie",
+	pause: "Wstrzymaj",
+	return_to_dock: "Powrót do stacji"
+};
+var pl = {
+	mower: mower$1,
+	status: status$1,
+	editor: editor$1,
+	error: error$1,
+	camera: camera$1,
+	map: map$1,
+	view: view$1,
+	default_actions: default_actions$1
+};
+
+var mower = {
+	start: "Starta",
+	stop: "Stoppa",
+	dock: "Docka"
+};
+var status = {
+	mowing: "Klipper",
+	docked: "Dockad",
+	charging: "Laddar",
+	paused: "Pausad",
+	returning: "Återvänder till docka",
+	error: "Fel",
+	unavailable: "Ej tillgänglig",
+	unknown: "Okänd"
+};
+var editor = {
+	loading: "Laddar redigerare...",
+	loading_components: "Laddar komponenter...",
+	version: "Version",
+	entity: "Gräsklippare",
+	camera_entity: "Kameraenhet (Valfritt)",
+	map_entity: "Kartenhet (Valfritt, Device Tracker)",
+	camera_fit_mode: "Kameraanpassningsläge",
+	camera_fit_mode_label: {
+		cover: "Täck (fyller utrymme, kan beskära)",
+		contain: "Innehåll (passar inuti, kan visa staplar)"
+	},
+	section: {
+		main: "Gräsklippare och kamera",
+		main_description: "Gräsklippare och valfri kamera",
+		power: "Framsteg, batteri och laddning",
+		power_description: "Valfria enheter för att visa ytterligare gräsklipparinformation som batterinivå, laddningsstatus eller aktuellt framsteg",
+		options: "Alternativ",
+		options_description: "Ytterligare alternativ"
+	},
+	power: {
+		battery_entity: "Batterienhet (Valfritt)",
+		charging_entity: "Laddningsenhet (Valfritt, Binär sensor: På/Av)",
+		progress_entity: "Framstegsenhet (Valfritt)"
+	},
+	options: {
+		default_view: "Standardvy",
+		google_maps_api_key: "Google Maps API-nyckel (Valfritt)",
+		use_google_maps: "Använd Google Maps (med API-nyckel)",
+		enable_map: "Aktivera kartvy",
+		map_type: "Karttyp",
+		map_type_label: {
+			roadmap: "Vägkarta",
+			satellite: "Satellit",
+			hybrid: "Hybrid"
+		},
+		map_options_title: "Karta",
+		color_options_title: "Färg",
+		model_options_title: "Modell",
+		mower_model: "Gräsklipparmodell",
+		badge_text_color: "Märkets textfärg",
+		badge_icon_color: "Märkets ikonfärg",
+		mower_models: {
+			"default": "Standard"
+		},
+		color: {
+			sky: "Himmel",
+			grass: "Gräs",
+			top: "Topp",
+			bottom: "Botten"
+		}
+	},
+	actions: {
+		title: "Åtgärder",
+		description: "Anpassade åtgärdsknappar. Du kan definiera upp till 3 anpassade åtgärder",
+		confirm_reset: "Är du säker på att du vill återställa till standardåtgärder? Detta kommer att skriva över dina nuvarande åtgärder",
+		reset_to_defaults: "Återställ standardvärden",
+		edit: "Redigera åtgärd",
+		remove: "Ta bort åtgärd",
+		no_actions_configured: "Inga åtgärder konfigurerade.",
+		add: "Lägg till ny åtgärd",
+		name: "Åtgärdsnamn",
+		icon: "Åtgärdsikon",
+		icon_custom: "Anpassad ikon",
+		icon_custom_helper: "t.ex. mdi:robot-mower eller mdi:grass",
+		config: "Åtgärdskonfiguration",
+		save: "Spara",
+		cancel: "Avbryt",
+		add_button: "Lägg till åtgärd",
+		max_reached: "Maximalt antal {MAX_ACTIONS} åtgärder uppnått. Ta bort en åtgärd för att lägga till en ny",
+		service: "Tjänst",
+		target: "Mål",
+		target_entity: "Målenhet (Valfritt)",
+		use_custom_target: "Använd annan målenhet",
+		using_default_entity: "Använder standardenhet",
+		default_entity: "Standardenhet",
+		no_entity_selected: "ingen enhet vald",
+		not_set: "inte inställd",
+		service_data: "Tjänstdata",
+		service_data_configured: "Konfigurerad",
+		service_data_none: "Ingen",
+		target_mode: "Mål",
+		target_mode_label: {
+			"default": "Standardenhet",
+			custom: "Anpassad",
+			none: "Ingen"
+		},
+		target_mode_none_helper: "Tjänsten kommer att anropas utan målenhet.",
+		target_none: "Ingen",
+		action_type: {
+			call_service: "Tjänst",
+			navigate: "Navigering",
+			url: "URL",
+			toggle: "Växla enhet",
+			more_info: "Mer info",
+			none: "Ingen åtgärd",
+			not_configured: "Inte konfigurerad"
+		}
+	}
+};
+var error = {
+	missing_entity: "Välj en gräsklipparenhet",
+	loading_components: "Fel vid laddning av komponenter",
+	entity_not_found: "Enhet hittades inte."
+};
+var camera = {
+	camera_title: "Kamera",
+	not_available: "Kamera ej tillgänglig",
+	not_reachable: "Kamera ej nåbar"
+};
+var map = {
+	not_available: "Karta ej tillgänglig",
+	no_gps_coordinates: "Ingen GPS-data"
+};
+var view = {
+	mower: "Gräsklippare",
+	camera: "Kamera",
+	map: "Karta"
+};
+var default_actions = {
+	start_mowing: "Starta klippning",
+	pause: "Pausa",
+	return_to_dock: "Återvänd till docka"
+};
+var sv = {
 	mower: mower,
 	status: status,
 	editor: editor,
@@ -541,7 +1304,12 @@ var fr = {
 const languages = {
     en,
     de,
-    fr
+    fr,
+    es,
+    it,
+    nl,
+    pl,
+    sv
 };
 const getLanguage = (hass) => {
     const lang = hass?.locale?.language || hass?.language || localStorage.getItem('selectedLanguage') || navigator.language || 'en';
@@ -621,6 +1389,7 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
           <stop offset="0.5" stop-color="#444"/>
           <stop offset="1" stop-color="#555"/>
         </linearGradient>
+
         <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
           <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/>
         </filter>
@@ -639,7 +1408,6 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
           </feMerge>
         </filter>
       </defs>
-
       <g transform="translate(0, 10)">
         <g class="mower-body body-translate" filter="url(#softShadow)" transform="matrix(1, 0, 0, 0.99008, 0, 0.872922)">
           <g class="wheel-back" transform="matrix(1, 0, 0, 1, 2, 0)">
@@ -855,13 +1623,15 @@ const compactLawnMowerCardStyles = i$3 `
       height: 100%;
       width: 100%;
       background: var(--ha-card-background,var(--card-background-color,#fff));
-      border-radius: 12px;
-      box-shadow: var(--ha-card-box-shadow, 
+      border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg));
+      box-shadow: var(--ha-card-box-shadow,
         0 2px 8px 0 rgba(0, 0, 0, 0.08),
         0 1px 16px 0 rgba(0, 0, 0, 0.04)
       );
       backdrop-filter: blur(20px);
-      border: none;
+      border-width: var(--ha-card-border-width, 1px);
+      border-style: solid;
+      border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
       overflow: hidden;
       transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
       font-family: var(--mdc-typography-body2-font-family, Roboto);
@@ -896,7 +1666,7 @@ const compactLawnMowerCardStyles = i$3 `
       grid-template-areas: "display";
       grid-template-rows: 1fr;
       grid-template-columns: 1fr;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
       border: 1px solid var(--outline-color);
       position: relative;
       overflow: hidden;
@@ -1004,7 +1774,7 @@ const compactLawnMowerCardStyles = i$3 `
       background: rgba(255, 255, 255, 0.60);
       backdrop-filter: blur(10px) saturate(180%);
       border: none;
-      border-radius: 12px;
+      border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
       box-shadow: var(--badge-box-shadow);
       display: flex;
       align-items: center;
@@ -1080,11 +1850,11 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .status-icon.mowing {
-      color: var(--warning-color, #ff9800);
+      color: #e8930f;
     }
 
     .status-icon.returning {
-      color: var(--primary-color, rgba(33, 150, 243, 0.7));
+      color: #1e88e5;
     }
 
     .status-icon.paused,
@@ -1093,7 +1863,19 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .status-icon.error {
-      color: var(--error-color);
+      color: #d32f2f;
+    }
+
+    .status-ring.mowing .status-text {
+      color: #e8930f;
+    }
+
+    .status-ring.returning .status-text {
+      color: #1e88e5;
+    }
+
+    .status-ring.error .status-text {
+      color: #d32f2f;
     }
 
     .status-icon::after {
@@ -1125,15 +1907,15 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .status-icon.mowing::after {
-      box-shadow: 0 0 8px 2px rgba(255, 152, 0, 0.7);
+      box-shadow: 0 0 8px 2px rgba(232, 147, 15, 0.65);
     }
 
     .status-icon.returning::after {
-      box-shadow: 0 0 8px 2px rgba(33, 150, 243, 0.7);
+      box-shadow: 0 0 8px 2px rgba(30, 136, 229, 0.65);
     }
 
     .status-icon.error::after {
-      box-shadow: 0 0 8px 2px rgba(244, 67, 54, 0.7);
+      box-shadow: 0 0 8px 2px rgba(211, 47, 47, 0.6);
     }
 
     .status-ring.text-hidden .status-text,
@@ -1158,7 +1940,7 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .mower-svg.active {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(255, 152, 0, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(232, 147, 15, 0.3));
     }
 
     .mower-svg.charging {
@@ -1166,11 +1948,11 @@ const compactLawnMowerCardStyles = i$3 `
     }
 
     .mower-svg.returning {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(33, 150, 243, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(30, 136, 229, 0.3));
     }
 
     .mower-svg.error {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(244, 67, 54, 0.3));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(211, 47, 47, 0.3));
     }
 
     .mower-svg.active .mower-led-strip {
@@ -1345,7 +2127,7 @@ const compactLawnMowerCardStyles = i$3 `
     .camera-container ha-camera-stream {
       width: 100%;
       height: 100%;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -1405,7 +2187,7 @@ const compactLawnMowerCardStyles = i$3 `
       height: 100%;
       box-sizing: border-box;
       background-color: #f0f0f0;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
       overflow: hidden;
       transition: background-color 0.3s ease;
       will-change: background-color;
@@ -1516,7 +2298,7 @@ const compactLawnMowerCardStyles = i$3 `
       flex: 1;
       padding: 8px 12px;
       border: 1px solid var(--outline-color);
-      border-radius: 8px;
+      border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
       background: var(--tile-color);
       color: var(--primary-text-color);
       font-size: 12px;
@@ -1555,7 +2337,7 @@ const compactLawnMowerCardStyles = i$3 `
       justify-content: center;
       z-index: 5;
       transition: all 0.3s ease;
-      border-radius: 12px;
+      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
     }
 
     .loader {
@@ -1580,7 +2362,7 @@ const compactLawnMowerCardStyles = i$3 `
         opacity: 1;
       }
       100% {
-        transform: scale(1.1);
+        transform: scale(1.0);
         opacity: 0;
       }
     }
@@ -3413,10 +4195,6 @@ CompactLawnMowerCardEditor = __decorate([
     t('compact-lawn-mower-card-editor')
 ], CompactLawnMowerCardEditor);
 
-var CompactLawnMowerCard_1;
-console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
-console.log("Github:", "https://github.com/Tra1n84/compact-lawn-mower-card");
-console.groupEnd();
 let CameraPopup = class CameraPopup extends i {
     constructor() {
         super(...arguments);
@@ -3425,13 +4203,19 @@ let CameraPopup = class CameraPopup extends i {
     }
     connectedCallback() {
         super.connectedCallback();
-        const escHandler = (e) => {
+        this._escHandler = (e) => {
             if (e.key === 'Escape') {
                 this._close();
             }
         };
-        document.addEventListener('keydown', escHandler);
-        this.addEventListener('close', () => document.removeEventListener('keydown', escHandler), { once: true });
+        document.addEventListener('keydown', this._escHandler);
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        if (this._escHandler) {
+            document.removeEventListener('keydown', this._escHandler);
+            this._escHandler = undefined;
+        }
     }
     _close() {
         if (this.onClose) {
@@ -3506,6 +4290,11 @@ __decorate([
 CameraPopup = __decorate([
     t('camera-popup')
 ], CameraPopup);
+
+var CompactLawnMowerCard_1;
+console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
+console.log("Github:", "https://github.com/Tra1n84/compact-lawn-mower-card");
+console.groupEnd();
 let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard extends i {
     constructor() {
         super(...arguments);
@@ -3518,8 +4307,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._viewMode = 'mower';
         this._mapWidth = 0;
         this._mapHeight = 0;
-        this._mapZoom = 19;
-        this._lastProgressLevel = '-';
+        this._mapZoom = DEFAULT_MAP_ZOOM;
     }
     connectedCallback() {
         super.connectedCallback();
@@ -3564,21 +4352,28 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     disconnectedCallback() {
         super.disconnectedCallback();
-        if (this._mapUpdateInterval) {
-            clearInterval(this._mapUpdateInterval);
-        }
-        if (this._cameraUpdateInterval) {
-            clearInterval(this._cameraUpdateInterval);
-        }
-        if (this._animationTimeout) {
-            clearTimeout(this._animationTimeout);
-        }
-        if (this._badgeOverlapCheckTimeout) {
-            clearTimeout(this._badgeOverlapCheckTimeout);
-        }
+        this._clearAllTimers();
         this._mainResizeObserver?.disconnect();
         this._mowerResizeObserver?.disconnect();
         this._closePopup();
+    }
+    _clearAllTimers() {
+        if (this._mapUpdateInterval) {
+            clearInterval(this._mapUpdateInterval);
+            this._mapUpdateInterval = undefined;
+        }
+        if (this._cameraUpdateInterval) {
+            clearInterval(this._cameraUpdateInterval);
+            this._cameraUpdateInterval = undefined;
+        }
+        if (this._animationTimeout) {
+            clearTimeout(this._animationTimeout);
+            this._animationTimeout = undefined;
+        }
+        if (this._badgeOverlapCheckTimeout) {
+            clearTimeout(this._badgeOverlapCheckTimeout);
+            this._badgeOverlapCheckTimeout = undefined;
+        }
     }
     _checkBadgeOverlap() {
         const statusRing = this._statusRing;
@@ -3641,8 +4436,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (containerWidth === 0 || containerHeight === 0) {
             return;
         }
-        const estimatedColumns = Math.max(1, Math.floor(containerWidth / 120));
-        const skyPercentage = Math.max(45, 70 - (estimatedColumns * 2));
+        const estimatedColumns = Math.max(1, Math.floor(containerWidth / MOWER_COLUMN_WIDTH));
+        const skyPercentage = Math.max(MIN_SKY_PERCENTAGE, MAX_SKY_PERCENTAGE - (estimatedColumns * 2));
         mowerDisplay.style.setProperty('--sky-percentage', `${skyPercentage}%`);
         const mowerHeight = mowerSvg.clientHeight;
         if (mowerHeight === 0)
@@ -3818,12 +4613,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     updated(changedProperties) {
         super.updated(changedProperties);
-        if (changedProperties.has('hass')) {
-            const currentProgress = this.progressLevel;
-            if (this._lastProgressLevel !== currentProgress) {
-                this._lastProgressLevel = currentProgress;
-            }
-        }
         if (changedProperties.has('_viewMode') && this._viewMode === 'mower') {
             this._updateMowerPosition();
             this._setupMowerResizeObserver();
@@ -3985,7 +4774,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             classes.push(this._animationClass, 'active');
         }
         else {
-            if (this._getDisplayStatus(state) === 'charging') {
+            if (displayState === 'charging') {
                 classes.push('docked-static', 'charging', 'charging-animated');
             }
             else if (displayState === 'docked') {
@@ -4052,11 +4841,11 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (this.chargingStatus)
             return 'rgb(184, 79, 27)';
         if (state === 'mowing')
-            return 'var(--warning-color, #ff9800)';
+            return '#e8930f';
         if (state === 'returning')
-            return 'var(--primary-color, #2196f3)';
+            return '#1e88e5';
         if (state === 'error')
-            return 'var(--error-color, #f44336)';
+            return '#d32f2f';
         return 'var(--disabled-text-color, #9e9e9e)';
     }
     _getChargingStationColor(state) {
@@ -4181,12 +4970,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _handleZoom(e, direction) {
         e.stopPropagation();
-        if (direction === 'in') {
-            this._mapZoom = Math.min(21, this._mapZoom + 1);
-        }
-        else {
-            this._mapZoom = Math.max(1, this._mapZoom - 1);
-        }
+        const delta = direction === 'in' ? 1 : -1;
+        this._mapZoom = Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, this._mapZoom + delta));
         if (this.config.google_maps_api_key && this.config.use_google_maps) {
             this._isMapLoading = true;
         }
@@ -4263,9 +5048,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (reqWidth <= 0 || reqHeight <= 0) {
             return '';
         }
-        const maxSize = 640;
-        if (reqWidth > maxSize || reqHeight > maxSize) {
-            const ratio = reqWidth > reqHeight ? maxSize / reqWidth : maxSize / reqHeight;
+        if (reqWidth > MAX_STATIC_MAP_SIZE || reqHeight > MAX_STATIC_MAP_SIZE) {
+            const ratio = reqWidth > reqHeight ? MAX_STATIC_MAP_SIZE / reqWidth : MAX_STATIC_MAP_SIZE / reqHeight;
             reqWidth = Math.floor(reqWidth * ratio);
             reqHeight = Math.floor(reqHeight * ratio);
         }
@@ -4355,7 +5139,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         await this._checkCameraReachability();
         if (showLoader) {
-            setTimeout(() => { this._isCameraLoading = false; }, 1000);
+            setTimeout(() => { this._isCameraLoading = false; }, CAMERA_LOADING_DELAY);
         }
         if (this._isCameraReachable) {
             if (this._cameraUpdateInterval) {
@@ -4365,7 +5149,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         else {
             if (!this._cameraUpdateInterval && this._viewMode === 'camera') {
-                this._cameraUpdateInterval = window.setInterval(() => this._updateCameraState(false), 5000);
+                this._cameraUpdateInterval = window.setInterval(() => this._updateCameraState(false), CAMERA_RETRY_INTERVAL);
             }
         }
     }
@@ -4378,7 +5162,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._mapCardElement.hass = this.hass;
                 }
                 this.requestUpdate();
-            }, 10000);
+            }, MAP_UPDATE_INTERVAL);
         }
     }
     async _loadMapElement() {
@@ -4449,7 +5233,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             ${this._renderViewToggles()}
             
             <div class="status-badges">
-              <div class="status-ring ${isCharging ? 'charging' : ''}">
+              <div class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                 <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                   <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                 </div>
@@ -4459,12 +5243,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
 
           </div>
           
-          <div class="controls-area">
-            ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? x `
+          ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? x `
+            <div class="controls-area">
               <div class="buttons-section">
                 ${this.config.custom_actions.map((action) => x `
-                  <button 
-                    class="action-button" 
+                  <button
+                    class="action-button"
                     @click=${() => this._executeCustomAction(action)}
                     aria-label=${action.name}
                     title=${action.name}
@@ -4473,11 +5257,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                   </button>
                 `)}
               </div>
-            ` : x `
-              <div class="no-actions-message">
-              </div>
-            `}
-          </div>
+            </div>
+          ` : E}
 
         </div>
       </ha-card>
@@ -4491,7 +5272,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             rows: 4,
             columns: 6,
             min_rows: 4,
-            max_rows: 4,
+            max_rows: 6,
             min_columns: 6,
             max_columns: 12,
         };

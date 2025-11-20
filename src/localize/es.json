@@ -1,0 +1,141 @@
+{
+  "mower": {
+    "start": "Iniciar",
+    "stop": "Detener",
+    "dock": "Base"
+  },
+  "status": {
+    "mowing": "Cortando",
+    "docked": "En base",
+    "charging": "Cargando",
+    "paused": "Pausado",
+    "returning": "Volviendo a base",
+    "error": "Error",
+    "unavailable": "No disponible",
+    "unknown": "Desconocido"
+  },
+  "editor": {
+    "loading": "Cargando editor...",
+    "loading_components": "Cargando componentes...",
+    "version": "Versión",
+    "entity": "Cortacésped",
+    "camera_entity": "Entidad de cámara (Opcional)",
+    "map_entity": "Entidad de mapa (Opcional, Device Tracker)",
+    "camera_fit_mode": "Modo de ajuste de cámara",
+    "camera_fit_mode_label": {
+      "cover": "Cubrir (llenar espacio, puede recortar)",
+      "contain": "Contener (ajustar dentro, puede mostrar barras)"
+    },
+    "section": {
+      "main": "Cortacésped y cámara",
+      "main_description": "Cortacésped y cámara opcional",
+      "power": "Progreso, batería y carga",
+      "power_description": "Entidades opcionales para mostrar información adicional del cortacésped como nivel de batería, estado de carga o progreso actual",
+      "options": "Opciones",
+      "options_description": "Opciones adicionales"
+    },
+    "power": {
+      "battery_entity": "Entidad de batería (Opcional)",
+      "charging_entity": "Entidad de carga (Opcional, Sensor binario: On/Off)",
+      "progress_entity": "Entidad de progreso (Opcional)"
+    },
+    "options": {
+      "default_view": "Vista predeterminada",
+      "google_maps_api_key": "Clave API de Google Maps (Opcional)",
+      "use_google_maps": "Usar Google Maps (con clave API)",
+      "enable_map": "Habilitar vista de mapa",
+      "map_type": "Tipo de mapa",
+      "map_type_label": {
+        "roadmap": "Mapa de carreteras",
+        "satellite": "Satélite",
+        "hybrid": "Híbrido"
+      },
+      "map_options_title": "Mapa",
+      "color_options_title": "Color",
+      "model_options_title": "Modelo",
+      "mower_model": "Modelo de cortacésped",
+      "badge_text_color": "Color del texto de la insignia",
+      "badge_icon_color": "Color del icono de la insignia",
+      "mower_models": {
+        "default": "Predeterminado"
+      },
+      "color": {
+        "sky": "Cielo",
+        "grass": "Césped",
+        "top": "Superior",
+        "bottom": "Inferior"
+      }
+    },
+    "actions": {
+      "title": "Acciones",
+      "description": "Botones de acción personalizados. Puedes definir hasta 3 acciones personalizadas",
+      "confirm_reset": "¿Estás seguro de que quieres restablecer las acciones predeterminadas? Esto sobrescribirá tus acciones actuales",
+      "reset_to_defaults": "Restaurar predeterminados",
+      "edit": "Editar acción",
+      "remove": "Eliminar acción",
+      "no_actions_configured": "No hay acciones configuradas.",
+      "add": "Añadir nueva acción",
+      "name": "Nombre de acción",
+      "icon": "Icono de acción",
+      "icon_custom": "Icono personalizado",
+      "icon_custom_helper": "ej. mdi:robot-mower o mdi:grass",
+      "config": "Configuración de acción",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "add_button": "Añadir acción",
+      "max_reached": "Número máximo de {MAX_ACTIONS} acciones alcanzado. Elimina una acción para añadir una nueva",
+      "service": "Servicio",
+      "target": "Objetivo",
+      "target_entity": "Entidad objetivo (Opcional)",
+      "use_custom_target": "Usar entidad objetivo diferente",
+      "using_default_entity": "Usando entidad predeterminada",
+      "default_entity": "Entidad predeterminada",
+      "no_entity_selected": "ninguna entidad seleccionada",
+      "not_set": "no establecido",
+      "service_data": "Datos del servicio",
+      "service_data_configured": "Configurado",
+      "service_data_none": "Ninguno",
+      "target_mode": "Objetivo",
+      "target_mode_label": {
+        "default": "Entidad predeterminada",
+        "custom": "Personalizado",
+        "none": "Ninguno"
+      },
+      "target_mode_none_helper": "El servicio se llamará sin entidad objetivo.",
+      "target_none": "Ninguno",
+      "action_type": {
+        "call_service": "Servicio",
+        "navigate": "Navegación",
+        "url": "URL",
+        "toggle": "Alternar entidad",
+        "more_info": "Más información",
+        "none": "Sin acción",
+        "not_configured": "No configurado"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Por favor selecciona una entidad de cortacésped",
+    "loading_components": "Error al cargar componentes",
+    "entity_not_found": "Entidad no encontrada."
+  },
+  "camera": {
+    "camera_title": "Cámara",
+    "not_available": "Cámara no disponible",
+    "not_reachable": "Cámara no accesible"
+  },
+  "map": {
+    "not_available": "Mapa no disponible",
+    "no_gps_coordinates": "Sin datos GPS"
+  },
+  "view": {
+    "mower": "Cortacésped",
+    "camera": "Cámara",
+    "map": "Mapa"
+  },
+  "default_actions": {
+    "start_mowing": "Iniciar corte",
+    "pause": "Pausar",
+    "return_to_dock": "Volver a base"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "mower": {
+    "start": "Start",
+    "stop": "Stop",
+    "dock": "Dock"
+  },
+  "status": {
+    "mowing": "Maaien",
+    "docked": "Gedockt",
+    "charging": "Opladen",
+    "paused": "Gepauzeerd",
+    "returning": "Terugkeren naar dock",
+    "error": "Fout",
+    "unavailable": "Niet beschikbaar",
+    "unknown": "Onbekend"
+  },
+  "editor": {
+    "loading": "Editor laden...",
+    "loading_components": "Componenten laden...",
+    "version": "Versie",
+    "entity": "Grasmaaier",
+    "camera_entity": "Camera-entiteit (Optioneel)",
+    "map_entity": "Kaart-entiteit (Optioneel, Device Tracker)",
+    "camera_fit_mode": "Camera aanpasmodus",
+    "camera_fit_mode_label": {
+      "cover": "Bedekken (ruimte vullen, kan bijsnijden)",
+      "contain": "Bevatten (binnen passen, kan balken tonen)"
+    },
+    "section": {
+      "main": "Grasmaaier en camera",
+      "main_description": "Grasmaaier en optionele camera",
+      "power": "Voortgang, batterij en opladen",
+      "power_description": "Optionele entiteiten voor het weergeven van aanvullende grasmaaier-informatie zoals batterijniveau, oplaadstatus of huidige voortgang",
+      "options": "Opties",
+      "options_description": "Aanvullende opties"
+    },
+    "power": {
+      "battery_entity": "Batterij-entiteit (Optioneel)",
+      "charging_entity": "Oplaad-entiteit (Optioneel, Binaire sensor: Aan/Uit)",
+      "progress_entity": "Voortgang-entiteit (Optioneel)"
+    },
+    "options": {
+      "default_view": "Standaardweergave",
+      "google_maps_api_key": "Google Maps API-sleutel (Optioneel)",
+      "use_google_maps": "Google Maps gebruiken (met API-sleutel)",
+      "enable_map": "Kaartweergave inschakelen",
+      "map_type": "Kaarttype",
+      "map_type_label": {
+        "roadmap": "Wegenkaart",
+        "satellite": "Satelliet",
+        "hybrid": "Hybride"
+      },
+      "map_options_title": "Kaart",
+      "color_options_title": "Kleur",
+      "model_options_title": "Model",
+      "mower_model": "Grasmaaiermodel",
+      "badge_text_color": "Badge tekstkleur",
+      "badge_icon_color": "Badge pictogramkleur",
+      "mower_models": {
+        "default": "Standaard"
+      },
+      "color": {
+        "sky": "Lucht",
+        "grass": "Gras",
+        "top": "Boven",
+        "bottom": "Onder"
+      }
+    },
+    "actions": {
+      "title": "Acties",
+      "description": "Aangepaste actieknoppen. Je kunt maximaal 3 aangepaste acties definiëren",
+      "confirm_reset": "Weet je zeker dat je de standaardacties wilt herstellen? Dit overschrijft je huidige acties",
+      "reset_to_defaults": "Standaardwaarden herstellen",
+      "edit": "Actie bewerken",
+      "remove": "Actie verwijderen",
+      "no_actions_configured": "Geen acties geconfigureerd.",
+      "add": "Nieuwe actie toevoegen",
+      "name": "Actienaam",
+      "icon": "Actiepictogram",
+      "icon_custom": "Aangepast pictogram",
+      "icon_custom_helper": "bijv. mdi:robot-mower of mdi:grass",
+      "config": "Actieconfiguratie",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "add_button": "Actie toevoegen",
+      "max_reached": "Maximaal aantal van {MAX_ACTIONS} acties bereikt. Verwijder een actie om een nieuwe toe te voegen",
+      "service": "Service",
+      "target": "Doel",
+      "target_entity": "Doelentiteit (Optioneel)",
+      "use_custom_target": "Andere doelentiteit gebruiken",
+      "using_default_entity": "Standaardentiteit gebruiken",
+      "default_entity": "Standaardentiteit",
+      "no_entity_selected": "geen entiteit geselecteerd",
+      "not_set": "niet ingesteld",
+      "service_data": "Servicegegevens",
+      "service_data_configured": "Geconfigureerd",
+      "service_data_none": "Geen",
+      "target_mode": "Doel",
+      "target_mode_label": {
+        "default": "Standaardentiteit",
+        "custom": "Aangepast",
+        "none": "Geen"
+      },
+      "target_mode_none_helper": "De service wordt aangeroepen zonder doelentiteit.",
+      "target_none": "Geen",
+      "action_type": {
+        "call_service": "Service",
+        "navigate": "Navigatie",
+        "url": "URL",
+        "toggle": "Entiteit schakelen",
+        "more_info": "Meer info",
+        "none": "Geen actie",
+        "not_configured": "Niet geconfigureerd"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Selecteer een grasmaaier-entiteit",
+    "loading_components": "Fout bij laden van componenten",
+    "entity_not_found": "Entiteit niet gevonden."
+  },
+  "camera": {
+    "camera_title": "Camera",
+    "not_available": "Camera niet beschikbaar",
+    "not_reachable": "Camera niet bereikbaar"
+  },
+  "map": {
+    "not_available": "Kaart niet beschikbaar",
+    "no_gps_coordinates": "Geen GPS-gegevens"
+  },
+  "view": {
+    "mower": "Grasmaaier",
+    "camera": "Camera",
+    "map": "Kaart"
+  },
+  "default_actions": {
+    "start_mowing": "Start maaien",
+    "pause": "Pauzeren",
+    "return_to_dock": "Terugkeren naar dock"
+  }
+}

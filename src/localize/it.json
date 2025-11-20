@@ -1,0 +1,141 @@
+{
+  "mower": {
+    "start": "Avvia",
+    "stop": "Ferma",
+    "dock": "Base"
+  },
+  "status": {
+    "mowing": "In taglio",
+    "docked": "In base",
+    "charging": "In carica",
+    "paused": "In pausa",
+    "returning": "Ritorno alla base",
+    "error": "Errore",
+    "unavailable": "Non disponibile",
+    "unknown": "Sconosciuto"
+  },
+  "editor": {
+    "loading": "Caricamento editor...",
+    "loading_components": "Caricamento componenti...",
+    "version": "Versione",
+    "entity": "Tagliaerba",
+    "camera_entity": "Entità telecamera (Opzionale)",
+    "map_entity": "Entità mappa (Opzionale, Device Tracker)",
+    "camera_fit_mode": "Modalità adattamento telecamera",
+    "camera_fit_mode_label": {
+      "cover": "Coprire (riempie lo spazio, può ritagliare)",
+      "contain": "Contenere (adatta all'interno, può mostrare barre)"
+    },
+    "section": {
+      "main": "Tagliaerba e telecamera",
+      "main_description": "Tagliaerba e telecamera opzionale",
+      "power": "Progresso, batteria e ricarica",
+      "power_description": "Entità opzionali per visualizzare informazioni aggiuntive del tagliaerba come livello batteria, stato di ricarica o progresso attuale",
+      "options": "Opzioni",
+      "options_description": "Opzioni aggiuntive"
+    },
+    "power": {
+      "battery_entity": "Entità batteria (Opzionale)",
+      "charging_entity": "Entità ricarica (Opzionale, Sensore binario: On/Off)",
+      "progress_entity": "Entità progresso (Opzionale)"
+    },
+    "options": {
+      "default_view": "Vista predefinita",
+      "google_maps_api_key": "Chiave API Google Maps (Opzionale)",
+      "use_google_maps": "Usa Google Maps (con chiave API)",
+      "enable_map": "Abilita vista mappa",
+      "map_type": "Tipo di mappa",
+      "map_type_label": {
+        "roadmap": "Mappa stradale",
+        "satellite": "Satellite",
+        "hybrid": "Ibrido"
+      },
+      "map_options_title": "Mappa",
+      "color_options_title": "Colore",
+      "model_options_title": "Modello",
+      "mower_model": "Modello tagliaerba",
+      "badge_text_color": "Colore testo badge",
+      "badge_icon_color": "Colore icona badge",
+      "mower_models": {
+        "default": "Predefinito"
+      },
+      "color": {
+        "sky": "Cielo",
+        "grass": "Erba",
+        "top": "Superiore",
+        "bottom": "Inferiore"
+      }
+    },
+    "actions": {
+      "title": "Azioni",
+      "description": "Pulsanti azione personalizzati. Puoi definire fino a 3 azioni personalizzate",
+      "confirm_reset": "Sei sicuro di voler ripristinare le azioni predefinite? Questo sovrascriverà le tue azioni attuali",
+      "reset_to_defaults": "Ripristina predefiniti",
+      "edit": "Modifica azione",
+      "remove": "Rimuovi azione",
+      "no_actions_configured": "Nessuna azione configurata.",
+      "add": "Aggiungi nuova azione",
+      "name": "Nome azione",
+      "icon": "Icona azione",
+      "icon_custom": "Icona personalizzata",
+      "icon_custom_helper": "es. mdi:robot-mower o mdi:grass",
+      "config": "Configurazione azione",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "add_button": "Aggiungi azione",
+      "max_reached": "Numero massimo di {MAX_ACTIONS} azioni raggiunto. Rimuovi un'azione per aggiungerne una nuova",
+      "service": "Servizio",
+      "target": "Destinazione",
+      "target_entity": "Entità destinazione (Opzionale)",
+      "use_custom_target": "Usa entità destinazione diversa",
+      "using_default_entity": "Usando entità predefinita",
+      "default_entity": "Entità predefinita",
+      "no_entity_selected": "nessuna entità selezionata",
+      "not_set": "non impostato",
+      "service_data": "Dati servizio",
+      "service_data_configured": "Configurato",
+      "service_data_none": "Nessuno",
+      "target_mode": "Destinazione",
+      "target_mode_label": {
+        "default": "Entità predefinita",
+        "custom": "Personalizzato",
+        "none": "Nessuno"
+      },
+      "target_mode_none_helper": "Il servizio verrà chiamato senza entità destinazione.",
+      "target_none": "Nessuno",
+      "action_type": {
+        "call_service": "Servizio",
+        "navigate": "Navigazione",
+        "url": "URL",
+        "toggle": "Attiva/disattiva entità",
+        "more_info": "Più informazioni",
+        "none": "Nessuna azione",
+        "not_configured": "Non configurato"
+      }
+    }
+  },
+  "error": {
+    "missing_entity": "Seleziona un'entità tagliaerba",
+    "loading_components": "Errore nel caricamento componenti",
+    "entity_not_found": "Entità non trovata."
+  },
+  "camera": {
+    "camera_title": "Telecamera",
+    "not_available": "Telecamera non disponibile",
+    "not_reachable": "Telecamera non raggiungibile"
+  },
+  "map": {
+    "not_available": "Mappa non disponibile",
+    "no_gps_coordinates": "Nessun dato GPS"
+  },
+  "view": {
+    "mower": "Tagliaerba",
+    "camera": "Telecamera",
+    "map": "Mappa"
+  },
+  "default_actions": {
+    "start_mowing": "Avvia taglio",
+    "pause": "Pausa",
+    "return_to_dock": "Ritorna alla base"
+  }
+}
