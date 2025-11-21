@@ -22,7 +22,7 @@ Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
 A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the individual colors
 * **Localization:**   
-Comes with English, German and French translation - ready to be extended with more languages
+Comes with English, German, Spanish and a broad selection of more languages - ready to grow even more
 
 
 ---
@@ -195,6 +195,11 @@ custom_actions:
 * English
 * German
 * French
+* Spanish
+* Italian
+* Dutch
+* Polish
+* Swedish
 
 ---
 
