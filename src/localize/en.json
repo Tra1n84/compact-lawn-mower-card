@@ -50,6 +50,7 @@
         "satellite": "Satellite",
         "hybrid": "Hybrid"
       },
+      "default_map_zoom": "Default Map Zoom Level",
       "map_options_title": "Map",
       "color_options_title": "Color",
 		"model_options_title": "Model",
@@ -68,7 +69,7 @@
     },
     "actions": {
       "title": "Actions",
-      "description": "Custom Action Buttons. You can define up to 3 custom actions",
+      "description": "Custom Action Buttons. You can define up to 6 custom actions",
       "confirm_reset": "Are you sure you want to reset to the default actions? This will overwrite your current actions",
       "reset_to_defaults": "Restore Defaults",
       "edit": "Edit Action",

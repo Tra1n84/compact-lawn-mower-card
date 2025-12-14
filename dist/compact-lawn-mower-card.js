@@ -86,7 +86,7 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '0.11.0';
+const CARD_VERSION = '1.0.0';
 // Map constants
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
@@ -152,6 +152,7 @@ var editor$7 = {
 			satellite: "Satellite",
 			hybrid: "Hybrid"
 		},
+		default_map_zoom: "Default Map Zoom Level",
 		map_options_title: "Map",
 		color_options_title: "Color",
 		model_options_title: "Model",
@@ -170,7 +171,7 @@ var editor$7 = {
 	},
 	actions: {
 		title: "Actions",
-		description: "Custom Action Buttons. You can define up to 3 custom actions",
+		description: "Custom Action Buttons. You can define up to 6 custom actions",
 		confirm_reset: "Are you sure you want to reset to the default actions? This will overwrite your current actions",
 		reset_to_defaults: "Restore Defaults",
 		edit: "Edit Action",
@@ -302,6 +303,7 @@ var editor$6 = {
 			satellite: "Satellit",
 			hybrid: "Hybrid"
 		},
+		default_map_zoom: "Standard Zoom-Level der Karte",
 		map_options_title: "Karte",
 		color_options_title: "Farben",
 		model_options_title: "Modell",
@@ -320,7 +322,7 @@ var editor$6 = {
 	},
 	actions: {
 		title: "Aktionen",
-		description: "Benutzerdefinierte Aktions-Buttons. Du kannst bis zu 3 benutzerdefinierte Aktionen definieren",
+		description: "Benutzerdefinierte Aktions-Buttons. Du kannst bis zu 6 benutzerdefinierte Aktionen definieren",
 		confirm_reset: "Möchten Sie wirklich die Standardaktionen wiederherstellen? Ihre aktuellen Aktionen werden überschrieben",
 		reset_to_defaults: "Standard wiederherstellen",
 		edit: "Aktion bearbeiten",
@@ -452,6 +454,7 @@ var editor$5 = {
 			satellite: "Satellite",
 			hybrid: "Hybride"
 		},
+		default_map_zoom: "Niveau de zoom par défaut de la carte",
 		map_options_title: "Carte",
 		color_options_title: "Couleur",
 		model_options_title: "Modèle",
@@ -470,7 +473,7 @@ var editor$5 = {
 	},
 	actions: {
 		title: "Actions",
-		description: "Boutons d'action personnalisés. Vous pouvez définir jusqu'à trois actions personnalisées.",
+		description: "Boutons d'action personnalisés. Vous pouvez définir jusqu'à six actions personnalisées.",
 		confirm_reset: "Voulez-vous vraiment rétablir les actions par défaut ? Vos actions actuelles seront écrasées.",
 		reset_to_defaults: "Restaurer les paramètres par défaut",
 		edit: "Modifier l'action",
@@ -602,6 +605,7 @@ var editor$4 = {
 			satellite: "Satélite",
 			hybrid: "Híbrido"
 		},
+		default_map_zoom: "Nivel de zoom predeterminado del mapa",
 		map_options_title: "Mapa",
 		color_options_title: "Color",
 		model_options_title: "Modelo",
@@ -620,7 +624,7 @@ var editor$4 = {
 	},
 	actions: {
 		title: "Acciones",
-		description: "Botones de acción personalizados. Puedes definir hasta 3 acciones personalizadas",
+		description: "Botones de acción personalizados. Puedes definir hasta 6 acciones personalizadas",
 		confirm_reset: "¿Estás seguro de que quieres restablecer las acciones predeterminadas? Esto sobrescribirá tus acciones actuales",
 		reset_to_defaults: "Restaurar predeterminados",
 		edit: "Editar acción",
@@ -752,6 +756,7 @@ var editor$3 = {
 			satellite: "Satellite",
 			hybrid: "Ibrido"
 		},
+		default_map_zoom: "Livello di zoom predefinito della mappa",
 		map_options_title: "Mappa",
 		color_options_title: "Colore",
 		model_options_title: "Modello",
@@ -770,7 +775,7 @@ var editor$3 = {
 	},
 	actions: {
 		title: "Azioni",
-		description: "Pulsanti azione personalizzati. Puoi definire fino a 3 azioni personalizzate",
+		description: "Pulsanti azione personalizzati. Puoi definire fino a 6 azioni personalizzate",
 		confirm_reset: "Sei sicuro di voler ripristinare le azioni predefinite? Questo sovrascriverà le tue azioni attuali",
 		reset_to_defaults: "Ripristina predefiniti",
 		edit: "Modifica azione",
@@ -902,6 +907,7 @@ var editor$2 = {
 			satellite: "Satelliet",
 			hybrid: "Hybride"
 		},
+		default_map_zoom: "Standaard zoomniveau van de kaart",
 		map_options_title: "Kaart",
 		color_options_title: "Kleur",
 		model_options_title: "Model",
@@ -920,7 +926,7 @@ var editor$2 = {
 	},
 	actions: {
 		title: "Acties",
-		description: "Aangepaste actieknoppen. Je kunt maximaal 3 aangepaste acties definiëren",
+		description: "Aangepaste actieknoppen. Je kunt maximaal 6 aangepaste acties definiëren",
 		confirm_reset: "Weet je zeker dat je de standaardacties wilt herstellen? Dit overschrijft je huidige acties",
 		reset_to_defaults: "Standaardwaarden herstellen",
 		edit: "Actie bewerken",
@@ -1052,6 +1058,7 @@ var editor$1 = {
 			satellite: "Satelita",
 			hybrid: "Hybrydowa"
 		},
+		default_map_zoom: "Domyślny poziom powiększenia mapy",
 		map_options_title: "Mapa",
 		color_options_title: "Kolor",
 		model_options_title: "Model",
@@ -1070,7 +1077,7 @@ var editor$1 = {
 	},
 	actions: {
 		title: "Akcje",
-		description: "Niestandardowe przyciski akcji. Możesz zdefiniować do 3 niestandardowych akcji",
+		description: "Niestandardowe przyciski akcji. Możesz zdefiniować do 6 niestandardowych akcji",
 		confirm_reset: "Czy na pewno chcesz przywrócić domyślne akcje? To nadpisze twoje obecne akcje",
 		reset_to_defaults: "Przywróć domyślne",
 		edit: "Edytuj akcję",
@@ -1202,6 +1209,7 @@ var editor = {
 			satellite: "Satellit",
 			hybrid: "Hybrid"
 		},
+		default_map_zoom: "Standard zoomnivå för kartan",
 		map_options_title: "Karta",
 		color_options_title: "Färg",
 		model_options_title: "Modell",
@@ -1220,7 +1228,7 @@ var editor = {
 	},
 	actions: {
 		title: "Åtgärder",
-		description: "Anpassade åtgärdsknappar. Du kan definiera upp till 3 anpassade åtgärder",
+		description: "Anpassade åtgärdsknappar. Du kan definiera upp till 6 anpassade åtgärder",
 		confirm_reset: "Är du säker på att du vill återställa till standardåtgärder? Detta kommer att skriva över dina nuvarande åtgärder",
 		reset_to_defaults: "Återställ standardvärden",
 		edit: "Redigera åtgärd",
@@ -1502,11 +1510,12 @@ const cameraPopupStyles = i$3 `
       height: 100vh;
       z-index: 999999;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(2px);
       animation: fadeIn 0.3s ease;
+      padding-top: 5vh;
     }
 
     @keyframes fadeIn {
@@ -1515,72 +1524,76 @@ const cameraPopupStyles = i$3 `
     }
 
     @keyframes slideIn {
-      from { 
+      from {
         opacity: 0;
         transform: translateY(-20px) scale(0.95);
       }
-      to { 
+      to {
         opacity: 1;
         transform: translateY(0) scale(1);
       }
     }
-    
+
+    .popup-wrapper {
+      position: relative;
+      animation: slideIn 0.3s ease;
+      will-change: transform, opacity;
+    }
+
     .popup-content {
-      background: var(--ha-card-background, var(--card-background-color, #fff));
+      background: #fff;
       border-radius: 16px;
       max-width: 90vw;
       max-height: 90vh;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      animation: slideIn 0.3s ease;
       display: flex;
       flex-direction: column;
       min-width: 40vw;
-      will-change: transform, opacity;
+      margin-top: 60px;
     }
-    
-    .popup-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-      background: var(--secondary-background-color);
-      border-bottom: 1px solid var(--divider-color);
-    }
-    
-    .popup-title {
-      margin: 0;
-      color: var(--primary-text-color);
-      font-size: 16px;
-      font-weight: 500;
-    }
-    
+
     .popup-close {
-      background: rgba(255, 255, 255, 0.85);
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #fff;
       border: none;
-      font-size: 24px;
       cursor: pointer;
       color: var(--primary-text-color);
-      width: 40px;
-      height: 40px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.2s ease;
-      will-change: background-color;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 1;
     }
-    
+
+    .popup-close ha-icon {
+      --mdc-icon-size: 24px;
+      color: var(--primary-text-color);
+    }
+
     .popup-close:hover {
-      background: rgba(208, 208, 208, 0.85);
+      background: #f5f5f5;
+      transform: scale(1.05);
+    }
+
+    .popup-close:active {
+      transform: scale(0.95);
     }
     
     .popup-stream-container {
       width: 100%;
       height: auto;
-      max-height: calc(90vh - 65px);
+      max-height: calc(90vh - 60px);
       display: flex;
       min-height: 30vh;
+      box-sizing: border-box;
+      position: relative;
     }
 
     .popup-stream-container.camera-error {
@@ -1588,8 +1601,6 @@ const cameraPopupStyles = i$3 `
       align-items: center;
       justify-content: center;
       color: var(--secondary-text-color);
-      padding: 40px;
-      box-sizing: border-box;
     }
 
     .popup-stream-container.camera-error ha-icon {
@@ -1603,6 +1614,36 @@ const cameraPopupStyles = i$3 `
       height: 100%;
       object-fit: contain;
       background: #000;
+    }
+
+    .loading-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: all 0.3s ease;
+    }
+
+    .loader {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid rgba(var(--rgb-primary-text-color), 0.2);
+      border-top-color: var(--primary-color);
+      animation: spin 1s linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
 `;
 /* =================== */
@@ -2305,9 +2346,11 @@ const compactLawnMowerCardStyles = i$3 `
       cursor: pointer;
       transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
       min-height: 40px;
+      min-width: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       backdrop-filter: blur(10px);
       will-change: background-color, box-shadow;
     }
@@ -2319,6 +2362,12 @@ const compactLawnMowerCardStyles = i$3 `
 
     .action-button ha-icon {
       --mdc-icon-size: 20px;
+    }
+
+    .action-button.more-button {
+      flex-shrink: 0;
+      min-width: 40px;
+      max-width: 40px;
     }
 
     /* =================== */
@@ -3283,7 +3332,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
         this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
         this._boundComputeActionsLabel = this._computeActionsLabel.bind(this);
-        this.MAX_ACTIONS = 3;
+        this.MAX_ACTIONS = 6;
         this.MOWER_ICONS = [
             'mdi:play', 'mdi:pause', 'mdi:stop', 'mdi:home-map-marker',
             'mdi:robot-mower', 'mdi:map-marker', 'mdi:battery', 'mdi:map',
@@ -3931,6 +3980,18 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 },
                 disabled: !mapIsEnabled || !hasApiKey || !useGoogleMaps,
             },
+            {
+                name: 'default_map_zoom',
+                selector: {
+                    number: {
+                        min: MIN_MAP_ZOOM,
+                        max: MAX_MAP_ZOOM,
+                        mode: 'slider',
+                        step: 1,
+                    },
+                },
+                disabled: !mapIsEnabled,
+            },
         ];
         return schema;
     }
@@ -3995,6 +4056,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             google_maps_api_key: this.config.google_maps_api_key || '',
             map_type: this.config.map_type || 'hybrid',
             use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
+            default_map_zoom: this.config.default_map_zoom ?? DEFAULT_MAP_ZOOM,
             mower_model: this.config.mower_model || 'default',
             sky_color_top: this._parseColor(this.config.sky_color_top) || [41, 128, 185],
             sky_color_bottom: this._parseColor(this.config.sky_color_bottom) || [109, 213, 250],
@@ -4200,6 +4262,7 @@ let CameraPopup = class CameraPopup extends i {
         super(...arguments);
         this.title = '';
         this.isReachable = true;
+        this._isLoading = true;
     }
     connectedCallback() {
         super.connectedCallback();
@@ -4209,12 +4272,19 @@ let CameraPopup = class CameraPopup extends i {
             }
         };
         document.addEventListener('keydown', this._escHandler);
+        this._loadingTimeout = window.setTimeout(() => {
+            this._isLoading = false;
+        }, 1000);
     }
     disconnectedCallback() {
         super.disconnectedCallback();
         if (this._escHandler) {
             document.removeEventListener('keydown', this._escHandler);
             this._escHandler = undefined;
+        }
+        if (this._loadingTimeout) {
+            clearTimeout(this._loadingTimeout);
+            this._loadingTimeout = undefined;
         }
     }
     _close() {
@@ -4251,22 +4321,29 @@ let CameraPopup = class CameraPopup extends i {
         else {
             content = x `
         <div class="popup-stream-container">
+          ${this._isLoading ? x `
+            <div class="loading-indicator">
+              <div class="loader"></div>
+            </div>
+          ` : ''}
           <ha-camera-stream
             .hass=${this.hass}
             .stateObj=${stateObj}
             controls
             muted
+            style="opacity: ${this._isLoading ? 0 : 1};"
           ></ha-camera-stream>
         </div>
       `;
         }
         return x `
-      <div class="popup-content" @click=${(e) => e.stopPropagation()}>
-        <div class="popup-header">
-          <h3 class="popup-title">${this.title}</h3>
-          <button class="popup-close" @click=${this._close}>×</button>
+      <div class="popup-wrapper" @click=${(e) => e.stopPropagation()}>
+        <button class="popup-close" @click=${this._close}>
+          <ha-icon icon="mdi:close"></ha-icon>
+        </button>
+        <div class="popup-content">
+          ${content}
         </div>
-        ${content}
       </div>
     `;
     }
@@ -4287,6 +4364,9 @@ __decorate([
 __decorate([
     n({ type: Boolean })
 ], CameraPopup.prototype, "isReachable", void 0);
+__decorate([
+    r()
+], CameraPopup.prototype, "_isLoading", void 0);
 CameraPopup = __decorate([
     t('camera-popup')
 ], CameraPopup);
@@ -4304,6 +4384,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._isCameraReachable = true;
         this._isPopupOpen = false;
         this._isMapLoading = false;
+        this._areActionsExpanded = false;
         this._viewMode = 'mower';
         this._mapWidth = 0;
         this._mapHeight = 0;
@@ -4635,6 +4716,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             throw new Error(`${localize("error.missing_entity", { hass: this.hass })}`);
         }
         this.config = config;
+        this._mapZoom = config.default_map_zoom ?? DEFAULT_MAP_ZOOM;
     }
     static getStubConfig(hass, entities) {
         const lawnMowerEntity = entities.find(entity => entity.startsWith('lawn_mower.'));
@@ -5198,6 +5280,42 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const mowerStateLower = mowerState.toLowerCase();
         return ['charging'].includes(mowerStateLower);
     }
+    _renderActionButtons() {
+        if (!this.config.custom_actions || this.config.custom_actions.length === 0) {
+            return E;
+        }
+        const MAX_VISIBLE_ACTIONS = 3;
+        const totalActions = this.config.custom_actions.length;
+        const hasMoreActions = totalActions > MAX_VISIBLE_ACTIONS;
+        const visibleActions = this._areActionsExpanded
+            ? this.config.custom_actions.slice(MAX_VISIBLE_ACTIONS, MAX_VISIBLE_ACTIONS * 2)
+            : this.config.custom_actions.slice(0, MAX_VISIBLE_ACTIONS);
+        return x `
+      ${visibleActions.map((action) => x `
+        <button
+          class="action-button"
+          @click=${() => this._executeCustomAction(action)}
+          aria-label=${action.name}
+          title=${action.name}
+        >
+          <ha-icon icon=${action.icon}></ha-icon>
+        </button>
+      `)}
+      ${hasMoreActions ? x `
+        <button
+          class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
+          @click=${() => this._toggleActionsExpanded()}
+          aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+          title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+        >
+          <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
+        </button>
+      ` : E}
+    `;
+    }
+    _toggleActionsExpanded() {
+        this._areActionsExpanded = !this._areActionsExpanded;
+    }
     render() {
         const mower = this.mower;
         if (!mower) {
@@ -5245,17 +5363,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
           
           ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? x `
             <div class="controls-area">
-              <div class="buttons-section">
-                ${this.config.custom_actions.map((action) => x `
-                  <button
-                    class="action-button"
-                    @click=${() => this._executeCustomAction(action)}
-                    aria-label=${action.name}
-                    title=${action.name}
-                  >
-                    <ha-icon icon=${action.icon}></ha-icon>
-                  </button>
-                `)}
+              <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
+                ${this._renderActionButtons()}
               </div>
             </div>
           ` : E}
@@ -5303,6 +5412,9 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_isMapLoading", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_areActionsExpanded", void 0);
 __decorate([
     e('.main-display-area')
 ], CompactLawnMowerCard.prototype, "_mainDisplayArea", void 0);

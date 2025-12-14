@@ -50,6 +50,7 @@
         "satellite": "Satellite",
         "hybrid": "Hybride"
       },
+      "default_map_zoom": "Niveau de zoom par défaut de la carte",
       "map_options_title": "Carte",
       "color_options_title": "Couleur",
       "model_options_title": "Modèle",
@@ -68,7 +69,7 @@
     },
     "actions": {
       "title": "Actions",
-      "description": "Boutons d'action personnalisés. Vous pouvez définir jusqu'à trois actions personnalisées.",
+      "description": "Boutons d'action personnalisés. Vous pouvez définir jusqu'à six actions personnalisées.",
       "confirm_reset": "Voulez-vous vraiment rétablir les actions par défaut ? Vos actions actuelles seront écrasées.",
       "reset_to_defaults": "Restaurer les paramètres par défaut",
       "edit": "Modifier l'action",

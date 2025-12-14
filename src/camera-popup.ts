@@ -1,5 +1,5 @@
 import { LitElement, html, nothing, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
 import { localize } from './localize';
 import { cameraPopupStyles } from './styles';
@@ -11,10 +11,12 @@ export class CameraPopup extends LitElement {
   @property() hass?: HomeAssistant;
   @property() entityId?: string;
   @property({ type: Boolean }) isReachable = true;
+  @state() private _isLoading = true;
 
   static styles = cameraPopupStyles;
 
   private _escHandler?: (e: KeyboardEvent) => void;
+  private _loadingTimeout?: number;
 
   connectedCallback() {
     super.connectedCallback();
@@ -24,6 +26,10 @@ export class CameraPopup extends LitElement {
       }
     };
     document.addEventListener('keydown', this._escHandler);
+
+    this._loadingTimeout = window.setTimeout(() => {
+      this._isLoading = false;
+    }, 1000);
   }
 
   disconnectedCallback() {
@@ -31,6 +37,10 @@ export class CameraPopup extends LitElement {
     if (this._escHandler) {
       document.removeEventListener('keydown', this._escHandler);
       this._escHandler = undefined;
+    }
+    if (this._loadingTimeout) {
+      clearTimeout(this._loadingTimeout);
+      this._loadingTimeout = undefined;
     }
   }
 
@@ -69,23 +79,30 @@ export class CameraPopup extends LitElement {
     } else {
       content = html`
         <div class="popup-stream-container">
+          ${this._isLoading ? html`
+            <div class="loading-indicator">
+              <div class="loader"></div>
+            </div>
+          ` : ''}
           <ha-camera-stream
             .hass=${this.hass}
             .stateObj=${stateObj}
             controls
             muted
+            style="opacity: ${this._isLoading ? 0 : 1};"
           ></ha-camera-stream>
         </div>
       `;
     }
 
     return html`
-      <div class="popup-content" @click=${(e: Event) => e.stopPropagation()}>
-        <div class="popup-header">
-          <h3 class="popup-title">${this.title}</h3>
-          <button class="popup-close" @click=${this._close}>×</button>
+      <div class="popup-wrapper" @click=${(e: Event) => e.stopPropagation()}>
+        <button class="popup-close" @click=${this._close}>
+          <ha-icon icon="mdi:close"></ha-icon>
+        </button>
+        <div class="popup-content">
+          ${content}
         </div>
-        ${content}
       </div>
     `;
   }

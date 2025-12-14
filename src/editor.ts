@@ -1,14 +1,14 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
-import { CARD_NAME, CARD_VERSION } from './constants';
+import { CARD_NAME, CARD_VERSION, MIN_MAP_ZOOM, MAX_MAP_ZOOM, DEFAULT_MAP_ZOOM } from './constants';
 import { getDefaultActions } from './defaults';
 import { getAvailableMowerModels } from './graphics';
 import { localize } from './localize';
 import { editorStyles } from './styles';
-import type { 
+import type {
   CompactLawnMowerCardConfig,
-  CustomAction, 
+  CustomAction,
   ServiceCallActionConfig
 } from './types';
 
@@ -42,8 +42,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   private _boundComputePowerLabel = this._computePowerLabel.bind(this);
   private _boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
   private _boundComputeActionsLabel = this._computeActionsLabel.bind(this);
-  
-  private readonly MAX_ACTIONS = 3;
+
+  private readonly MAX_ACTIONS = 6;
 
   private readonly MOWER_ICONS = [
     'mdi:play', 'mdi:pause', 'mdi:stop', 'mdi:home-map-marker',
@@ -756,6 +756,18 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
         },
         disabled: !mapIsEnabled || !hasApiKey || !useGoogleMaps,
       },
+      {
+        name: 'default_map_zoom',
+        selector: {
+          number: {
+            min: MIN_MAP_ZOOM,
+            max: MAX_MAP_ZOOM,
+            mode: 'slider',
+            step: 1,
+          },
+        },
+        disabled: !mapIsEnabled,
+      },
     ];
 
     return schema;
@@ -828,6 +840,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       google_maps_api_key: this.config.google_maps_api_key || '',
       map_type: this.config.map_type || 'hybrid',
       use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
+      default_map_zoom: this.config.default_map_zoom ?? DEFAULT_MAP_ZOOM,
       mower_model: this.config.mower_model || 'default',
       sky_color_top: this._parseColor(this.config.sky_color_top) || [41, 128, 185],
       sky_color_bottom: this._parseColor(this.config.sky_color_bottom) || [109, 213, 250],

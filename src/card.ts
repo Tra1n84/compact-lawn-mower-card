@@ -52,6 +52,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @state() private _isCameraReachable = true;
   @state() private _isPopupOpen = false;
   @state() private _isMapLoading = false;
+  @state() private _areActionsExpanded = false;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
   @query('.progress-badge') private _progressBadge?: HTMLElement;
@@ -446,6 +447,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
 
     this.config = config;
+    this._mapZoom = config.default_map_zoom ?? DEFAULT_MAP_ZOOM;
   }
 
   static getStubConfig(hass: HomeAssistant, entities: string[]): CompactLawnMowerCardConfig {
@@ -1089,6 +1091,47 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     return ['charging'].includes(mowerStateLower);
   }
 
+  private _renderActionButtons() {
+    if (!this.config.custom_actions || this.config.custom_actions.length === 0) {
+      return nothing;
+    }
+
+    const MAX_VISIBLE_ACTIONS = 3;
+    const totalActions = this.config.custom_actions.length;
+    const hasMoreActions = totalActions > MAX_VISIBLE_ACTIONS;
+
+    const visibleActions = this._areActionsExpanded
+      ? this.config.custom_actions.slice(MAX_VISIBLE_ACTIONS, MAX_VISIBLE_ACTIONS * 2)
+      : this.config.custom_actions.slice(0, MAX_VISIBLE_ACTIONS);
+
+    return html`
+      ${visibleActions.map((action) => html`
+        <button
+          class="action-button"
+          @click=${() => this._executeCustomAction(action)}
+          aria-label=${action.name}
+          title=${action.name}
+        >
+          <ha-icon icon=${action.icon}></ha-icon>
+        </button>
+      `)}
+      ${hasMoreActions ? html`
+        <button
+          class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
+          @click=${() => this._toggleActionsExpanded()}
+          aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+          title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+        >
+          <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
+        </button>
+      ` : nothing}
+    `;
+  }
+
+  private _toggleActionsExpanded(): void {
+    this._areActionsExpanded = !this._areActionsExpanded;
+  }
+
   render() {
     const mower = this.mower;
     if (!mower) {
@@ -1138,17 +1181,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           
           ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? html`
             <div class="controls-area">
-              <div class="buttons-section">
-                ${this.config.custom_actions.map((action) => html`
-                  <button
-                    class="action-button"
-                    @click=${() => this._executeCustomAction(action)}
-                    aria-label=${action.name}
-                    title=${action.name}
-                  >
-                    <ha-icon icon=${action.icon}></ha-icon>
-                  </button>
-                `)}
+              <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
+                ${this._renderActionButtons()}
               </div>
             </div>
           ` : nothing}

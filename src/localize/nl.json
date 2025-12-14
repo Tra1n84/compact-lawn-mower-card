@@ -50,6 +50,7 @@
         "satellite": "Satelliet",
         "hybrid": "Hybride"
       },
+      "default_map_zoom": "Standaard zoomniveau van de kaart",
       "map_options_title": "Kaart",
       "color_options_title": "Kleur",
       "model_options_title": "Model",
@@ -68,7 +69,7 @@
     },
     "actions": {
       "title": "Acties",
-      "description": "Aangepaste actieknoppen. Je kunt maximaal 3 aangepaste acties definiëren",
+      "description": "Aangepaste actieknoppen. Je kunt maximaal 6 aangepaste acties definiëren",
       "confirm_reset": "Weet je zeker dat je de standaardacties wilt herstellen? Dit overschrijft je huidige acties",
       "reset_to_defaults": "Standaardwaarden herstellen",
       "edit": "Actie bewerken",

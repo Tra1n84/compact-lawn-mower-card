@@ -50,6 +50,7 @@
         "satellite": "Satellite",
         "hybrid": "Ibrido"
       },
+      "default_map_zoom": "Livello di zoom predefinito della mappa",
       "map_options_title": "Mappa",
       "color_options_title": "Colore",
       "model_options_title": "Modello",
@@ -68,7 +69,7 @@
     },
     "actions": {
       "title": "Azioni",
-      "description": "Pulsanti azione personalizzati. Puoi definire fino a 3 azioni personalizzate",
+      "description": "Pulsanti azione personalizzati. Puoi definire fino a 6 azioni personalizzate",
       "confirm_reset": "Sei sicuro di voler ripristinare le azioni predefinite? Questo sovrascriverà le tue azioni attuali",
       "reset_to_defaults": "Ripristina predefiniti",
       "edit": "Modifica azione",

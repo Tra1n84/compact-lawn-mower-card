@@ -50,6 +50,7 @@
         "satellite": "Satellit",
         "hybrid": "Hybrid"
       },
+      "default_map_zoom": "Standard zoomnivå för kartan",
       "map_options_title": "Karta",
       "color_options_title": "Färg",
       "model_options_title": "Modell",
@@ -68,7 +69,7 @@
     },
     "actions": {
       "title": "Åtgärder",
-      "description": "Anpassade åtgärdsknappar. Du kan definiera upp till 3 anpassade åtgärder",
+      "description": "Anpassade åtgärdsknappar. Du kan definiera upp till 6 anpassade åtgärder",
       "confirm_reset": "Är du säker på att du vill återställa till standardåtgärder? Detta kommer att skriva över dina nuvarande åtgärder",
       "reset_to_defaults": "Återställ standardvärden",
       "edit": "Redigera åtgärd",

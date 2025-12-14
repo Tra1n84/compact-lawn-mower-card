@@ -50,6 +50,7 @@
         "satellite": "Satelita",
         "hybrid": "Hybrydowa"
       },
+      "default_map_zoom": "Domyślny poziom powiększenia mapy",
       "map_options_title": "Mapa",
       "color_options_title": "Kolor",
       "model_options_title": "Model",
@@ -68,7 +69,7 @@
     },
     "actions": {
       "title": "Akcje",
-      "description": "Niestandardowe przyciski akcji. Możesz zdefiniować do 3 niestandardowych akcji",
+      "description": "Niestandardowe przyciski akcji. Możesz zdefiniować do 6 niestandardowych akcji",
       "confirm_reset": "Czy na pewno chcesz przywrócić domyślne akcje? To nadpisze twoje obecne akcje",
       "reset_to_defaults": "Przywróć domyślne",
       "edit": "Edytuj akcję",

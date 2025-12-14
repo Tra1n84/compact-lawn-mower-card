@@ -12,11 +12,12 @@ export const cameraPopupStyles = css`
       height: 100vh;
       z-index: 999999;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(2px);
       animation: fadeIn 0.3s ease;
+      padding-top: 5vh;
     }
 
     @keyframes fadeIn {
@@ -25,72 +26,76 @@ export const cameraPopupStyles = css`
     }
 
     @keyframes slideIn {
-      from { 
+      from {
         opacity: 0;
         transform: translateY(-20px) scale(0.95);
       }
-      to { 
+      to {
         opacity: 1;
         transform: translateY(0) scale(1);
       }
     }
-    
+
+    .popup-wrapper {
+      position: relative;
+      animation: slideIn 0.3s ease;
+      will-change: transform, opacity;
+    }
+
     .popup-content {
-      background: var(--ha-card-background, var(--card-background-color, #fff));
+      background: #fff;
       border-radius: 16px;
       max-width: 90vw;
       max-height: 90vh;
       overflow: hidden;
       box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      animation: slideIn 0.3s ease;
       display: flex;
       flex-direction: column;
       min-width: 40vw;
-      will-change: transform, opacity;
+      margin-top: 60px;
     }
-    
-    .popup-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-      background: var(--secondary-background-color);
-      border-bottom: 1px solid var(--divider-color);
-    }
-    
-    .popup-title {
-      margin: 0;
-      color: var(--primary-text-color);
-      font-size: 16px;
-      font-weight: 500;
-    }
-    
+
     .popup-close {
-      background: rgba(255, 255, 255, 0.85);
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #fff;
       border: none;
-      font-size: 24px;
       cursor: pointer;
       color: var(--primary-text-color);
-      width: 40px;
-      height: 40px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.2s ease;
-      will-change: background-color;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 1;
     }
-    
+
+    .popup-close ha-icon {
+      --mdc-icon-size: 24px;
+      color: var(--primary-text-color);
+    }
+
     .popup-close:hover {
-      background: rgba(208, 208, 208, 0.85);
+      background: #f5f5f5;
+      transform: scale(1.05);
+    }
+
+    .popup-close:active {
+      transform: scale(0.95);
     }
     
     .popup-stream-container {
       width: 100%;
       height: auto;
-      max-height: calc(90vh - 65px);
+      max-height: calc(90vh - 60px);
       display: flex;
       min-height: 30vh;
+      box-sizing: border-box;
+      position: relative;
     }
 
     .popup-stream-container.camera-error {
@@ -98,8 +103,6 @@ export const cameraPopupStyles = css`
       align-items: center;
       justify-content: center;
       color: var(--secondary-text-color);
-      padding: 40px;
-      box-sizing: border-box;
     }
 
     .popup-stream-container.camera-error ha-icon {
@@ -113,6 +116,36 @@ export const cameraPopupStyles = css`
       height: 100%;
       object-fit: contain;
       background: #000;
+    }
+
+    .loading-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: all 0.3s ease;
+    }
+
+    .loader {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 4px solid rgba(var(--rgb-primary-text-color), 0.2);
+      border-top-color: var(--primary-color);
+      animation: spin 1s linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
 `;
 
@@ -816,9 +849,11 @@ export const compactLawnMowerCardStyles = css`
       cursor: pointer;
       transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
       min-height: 40px;
+      min-width: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       backdrop-filter: blur(10px);
       will-change: background-color, box-shadow;
     }
@@ -830,6 +865,12 @@ export const compactLawnMowerCardStyles = css`
 
     .action-button ha-icon {
       --mdc-icon-size: 20px;
+    }
+
+    .action-button.more-button {
+      flex-shrink: 0;
+      min-width: 40px;
+      max-width: 40px;
     }
 
     /* =================== */
