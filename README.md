@@ -31,14 +31,14 @@ Comes with English, German, Spanish and a broad selection of more languages - re
 
 Ideas for future development - no guarantee, but candidates for upcoming features
 
-* ~~Support for additional service-call parameters** at the action buttons~~ ✅ (implemented in v0.10.0)
-* **More than 3 custom actions** (but card would need a slighlty different layout)
+* ~~Support for additional service-call parameters at the action buttons~~ ✅ (implemented in v0.10.0)
+* ~~More than 3 custom actions~~ ✅ (implemented in v1.0.0)
 * **Improved graphic** for the default mower graphic
 * ~~Improved animations for the mower view~~ ✅ (implemented in v0.9.0)
 * **Additional Mower Models / Graphics** - technically prepared with a modular file structure for models including an model selection within the UI editor
 * **Support for more languages** if contributed by the community
 * **A more advanced map view** with mowing paths, mower maps, no-go zones etc. (Need to validated with individual lawn mower integrations)
-* **More customization options** like default map zoom levels and more
+* ~~More customization options like default map zoom levels and more~~ ✅ (implemented in v1.0.0)
 * **...and more Ideas to come!**
 
 
