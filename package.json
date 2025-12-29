@@ -17,6 +17,6 @@
   "type": "module",
   "dependencies": {
     "custom-card-helpers": "^1.9.0",
-    "lit": "^3.1.4"
+    "lit": "^3.3.2"
   }
 }
