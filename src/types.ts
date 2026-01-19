@@ -54,9 +54,7 @@ export interface ServiceCallActionConfig {
   };
 }
 
-export type CustomActionConfig = 
-  | ServiceCallActionConfig 
-  | ActionConfig;
+export type CustomActionConfig = ServiceCallActionConfig | ActionConfig;
 
 export type MowerModel = 'default' | string;
 

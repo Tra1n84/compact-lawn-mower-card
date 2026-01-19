@@ -66,24 +66,26 @@ export class CameraPopup extends LitElement {
       content = html`
         <div class="popup-stream-container camera-error">
           <ha-icon icon="mdi:camera-off"></ha-icon>
-          <span>${localize("camera.not_available", { hass: this.hass })}</span>
+          <span>${localize('camera.not_available', { hass: this.hass })}</span>
         </div>
       `;
     } else if (!this.isReachable) {
       content = html`
         <div class="popup-stream-container camera-error">
           <ha-icon icon="mdi:lan-disconnect"></ha-icon>
-          <span>${localize("camera.not_reachable", { hass: this.hass })}</span>
+          <span>${localize('camera.not_reachable', { hass: this.hass })}</span>
         </div>
       `;
     } else {
       content = html`
         <div class="popup-stream-container">
-          ${this._isLoading ? html`
-            <div class="loading-indicator">
-              <div class="loader"></div>
-            </div>
-          ` : ''}
+          ${this._isLoading
+            ? html`
+                <div class="loading-indicator">
+                  <div class="loader"></div>
+                </div>
+              `
+            : ''}
           <ha-camera-stream
             .hass=${this.hass}
             .stateObj=${stateObj}
@@ -100,9 +102,7 @@ export class CameraPopup extends LitElement {
         <button class="popup-close" @click=${this._close}>
           <ha-icon icon="mdi:close"></ha-icon>
         </button>
-        <div class="popup-content">
-          ${content}
-        </div>
+        <div class="popup-content">${content}</div>
       </div>
     `;
   }

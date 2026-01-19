@@ -17,7 +17,7 @@ const languages: Record<string, Translation> = {
   it,
   nl,
   pl,
-  sv
+  sv,
 };
 
 interface LocalizeOptions {
@@ -27,19 +27,21 @@ interface LocalizeOptions {
 }
 
 const getLanguage = (hass?: HomeAssistant): string => {
-  const lang = hass?.locale?.language || hass?.language || localStorage.getItem('selectedLanguage') || navigator.language || 'en';
+  const lang =
+    hass?.locale?.language || hass?.language || localStorage.getItem('selectedLanguage') || navigator.language || 'en';
   return lang.split('-')[0].toLowerCase();
-}
+};
 
 const getNestedProperty = (obj: Translation, path: string): string | undefined => {
-  const value = path.split('.').reduce<string | Translation | undefined>((o, i) => (o && typeof o === 'object' ? (o as Translation)[i] : undefined), obj);
+  const value = path
+    .split('.')
+    .reduce<
+      string | Translation | undefined
+    >((o, i) => (o && typeof o === 'object' ? (o as Translation)[i] : undefined), obj);
 
   return typeof value === 'string' ? value : undefined;
 };
-export const localize = (
-  key: string,
-  options: LocalizeOptions = {}
-): string => {
+export const localize = (key: string, options: LocalizeOptions = {}): string => {
   const { hass, search, replace } = options;
   const lang = getLanguage(hass);
   const source = languages[lang] ?? languages.en;
