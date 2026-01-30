@@ -1,4 +1,4 @@
-import { LovelaceCard, LovelaceCardConfig, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
+import { LovelaceCard, LovelaceCardConfig, LovelaceCardEditor } from 'custom-card-helpers';
 import { TemplateResult } from 'lit';
 
 export interface HassEntity {
@@ -54,7 +54,39 @@ export interface ServiceCallActionConfig {
   };
 }
 
-export type CustomActionConfig = ServiceCallActionConfig | ActionConfig;
+export interface NavigateActionConfig {
+  action: 'navigate';
+  navigation_path: string;
+}
+
+export interface UrlActionConfig {
+  action: 'url';
+  url_path: string;
+}
+
+export interface ToggleActionConfig {
+  action: 'toggle';
+  entity?: string;
+}
+
+export interface MoreInfoActionConfig {
+  action: 'more-info';
+  entity?: string;
+}
+
+export interface NoneActionConfig {
+  action: 'none';
+}
+
+export type ActionType = 'call-service' | 'navigate' | 'url' | 'toggle' | 'more-info' | 'none';
+
+export type CustomActionConfig =
+  | ServiceCallActionConfig
+  | NavigateActionConfig
+  | UrlActionConfig
+  | ToggleActionConfig
+  | MoreInfoActionConfig
+  | NoneActionConfig;
 
 export type MowerModel = 'default' | string;
 

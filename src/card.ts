@@ -1,6 +1,6 @@
 import { LitElement, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { HomeAssistant, LovelaceCard, fireEvent, forwardHaptic } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceCard, fireEvent, forwardHaptic, navigate, toggleEntity } from 'custom-card-helpers';
 import './editor';
 import './camera-popup';
 import { CameraPopup } from './camera-popup';
@@ -27,6 +27,10 @@ import {
   MowerModel,
   CustomAction,
   ServiceCallActionConfig,
+  NavigateActionConfig,
+  UrlActionConfig,
+  ToggleActionConfig,
+  MoreInfoActionConfig,
 } from './types';
 import { compactLawnMowerCardStyles } from './styles';
 
@@ -555,14 +559,33 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const action = customAction.action;
 
     try {
-      if (action.action === 'call-service') {
-        this._executeServiceCall(action as ServiceCallActionConfig);
-      } else {
-        console.warn('Unsupported action type:', (action as any).action);
+      switch (action.action) {
+        case 'call-service':
+          this._executeServiceCall(action as ServiceCallActionConfig);
+          break;
+        case 'navigate':
+          navigate(this, (action as NavigateActionConfig).navigation_path);
+          break;
+        case 'url':
+          window.open((action as UrlActionConfig).url_path, '_blank');
+          break;
+        case 'toggle':
+          toggleEntity(this.hass, (action as ToggleActionConfig).entity || this.config.entity);
+          break;
+        case 'more-info':
+          fireEvent(this, 'hass-more-info' as any, {
+            entityId: (action as MoreInfoActionConfig).entity || this.config.entity,
+          });
+          break;
+        case 'none':
+          break;
+        default:
+          console.warn('Unsupported action type:', (action as any).action);
+          break;
       }
     } catch (error) {
       console.error('Error executing custom action:', error);
-      this._showError(`Fehler beim Ausführen der Aktion: ${customAction.name}`);
+      this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
     }
   }
 

@@ -104,6 +104,9 @@
       },
       "target_mode_none_helper": "Usługa zostanie wywołana bez encji docelowej.",
       "target_none": "Brak",
+      "type": "Typ akcji",
+      "navigation_path": "Ścieżka nawigacji",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Usługa",
         "navigate": "Nawigacja",
@@ -118,7 +121,8 @@
   "error": {
     "missing_entity": "Wybierz encję kosiarki",
     "loading_components": "Błąd ładowania komponentów",
-    "entity_not_found": "Nie znaleziono encji."
+    "entity_not_found": "Nie znaleziono encji.",
+    "action_failed": "Błąd podczas wykonywania akcji"
   },
   "camera": {
     "camera_title": "Kamera",

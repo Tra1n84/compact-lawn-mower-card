@@ -104,6 +104,9 @@
       },
       "target_mode_none_helper": "De service wordt aangeroepen zonder doelentiteit.",
       "target_none": "Geen",
+      "type": "Actietype",
+      "navigation_path": "Navigatiepad",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigatie",
@@ -118,7 +121,8 @@
   "error": {
     "missing_entity": "Selecteer een grasmaaier-entiteit",
     "loading_components": "Fout bij laden van componenten",
-    "entity_not_found": "Entiteit niet gevonden."
+    "entity_not_found": "Entiteit niet gevonden.",
+    "action_failed": "Fout bij uitvoeren van actie"
   },
   "camera": {
     "camera_title": "Camera",

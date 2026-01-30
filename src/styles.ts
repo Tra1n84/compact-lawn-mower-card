@@ -1683,35 +1683,33 @@ export const editorStyles = css`
     line-height: 1.2;
   }
 
-  .action-type {
+  .action-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 13px;
-    color: var(--secondary-text-color);
     line-height: 1.3;
+    min-width: 0;
+  }
+
+  .action-type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: var(--text-primary-color, white);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .action-detail {
+    color: var(--secondary-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
-    position: relative;
-  }
-
-  .action-target,
-  .action-service-data {
-    font-size: 12px;
-    color: var(--secondary-text-color);
-    font-style: italic;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .action-target.custom-target {
-    color: var(--primary-color);
-    font-weight: 500;
-  }
-
-  .action-target.default-target {
-    color: var(--secondary-text-color);
-    font-style: italic;
+    min-width: 0;
   }
 
   .action-buttons {

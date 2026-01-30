@@ -104,6 +104,9 @@
       },
       "target_mode_none_helper": "The service will be called without a target entity.",
       "target_none": "None",
+      "type": "Action Type",
+      "navigation_path": "Navigation Path",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigation",
@@ -118,7 +121,8 @@
   "error": {
     "missing_entity": "Please select a Lawn Mower entity",
     "loading_components": "Error loading components",
-    "entity_not_found": "Entity not found."
+    "entity_not_found": "Entity not found.",
+    "action_failed": "Error executing action"
   },
   "camera": {
     "camera_title": "Camera",

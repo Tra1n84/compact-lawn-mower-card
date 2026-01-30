@@ -45,7 +45,7 @@ const t$3=globalThis,e$4=t$3.ShadowRoot&&(void 0===t$3.ShadyCSS||t$3.ShadyCSS.na
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t$2=globalThis,i$1=t$2.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$2="?"+h,n$1=`<${o$2}>`,r$3=document,l=()=>r$3.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),A=new WeakMap,C=r$3.createTreeWalker(r$3,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$1?i$1.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$2)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$3.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$3).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$3,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E||null==t||""===t?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$3.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E?t=E:t!==E&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E);}}class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E)===T)return;const s=this._$AH,e=t===E&&s!==E||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E&&(s===E||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$2.litHtmlPolyfillSupport;j?.(N,R),(t$2.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
+const t$2=globalThis,i$1=t$2.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$2="?"+h,n$1=`<${o$2}>`,r$3=document,l=()=>r$3.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E$1=Symbol.for("lit-nothing"),A=new WeakMap,C=r$3.createTreeWalker(r$3,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$1?i$1.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$2)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$3.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$3).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$3,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E$1,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E$1||null==t||""===t?(this._$AH!==E$1&&this._$AR(),this._$AH=E$1):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E$1&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$3.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E$1,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E$1;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E$1?t=E$1:t!==E$1&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E$1?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E$1?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E$1);}}class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E$1)===T)return;const s=this._$AH,e=t===E$1&&s!==E$1||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E$1&&(s===E$1||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$2.litHtmlPolyfillSupport;j?.(N,R),(t$2.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
 
 /**
  * @license
@@ -85,10 +85,10 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  * SPDX-License-Identifier: BSD-3-Clause
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
-var t,r;!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none";}(t||(t={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24";}(r||(r={}));var ne=function(e,t,r,n){n=n||{},r=null==r?{}:r;var i=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return i.detail=r,e.dispatchEvent(i),i};var le=function(e){ne(window,"haptic",e);};
+var t,r;!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none";}(t||(t={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24";}(r||(r={}));function E(e){return e.substr(0,e.indexOf("."))}var Z=["closed","locked","off"],ne=function(e,t,r,n){n=n||{},r=null==r?{}:r;var i=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return i.detail=r,e.dispatchEvent(i),i};var le=function(e){ne(window,"haptic",e);},de$1=function(e,t,r){ void 0===r&&(r=false),r?history.replaceState(null,"",t):history.pushState(null,"",t),ne(window,"location-changed",{replace:r});},fe=function(e,t,r){ void 0===r&&(r=true);var n,i=E(t),a="group"===i?"homeassistant":i;switch(i){case "lock":n=r?"unlock":"lock";break;case "cover":n=r?"open_cover":"close_cover";break;default:n=r?"turn_on":"turn_off";}return e.callService(a,n,{entity_id:t})},ge=function(e,t){var r=Z.includes(e.states[t].state);return fe(e,t,r)};
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.0.2';
+const CARD_VERSION = '1.1.0';
 // Map constants
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
@@ -208,6 +208,9 @@ var editor$7 = {
 		},
 		target_mode_none_helper: "The service will be called without a target entity.",
 		target_none: "None",
+		type: "Action Type",
+		navigation_path: "Navigation Path",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -222,7 +225,8 @@ var editor$7 = {
 var error$7 = {
 	missing_entity: "Please select a Lawn Mower entity",
 	loading_components: "Error loading components",
-	entity_not_found: "Entity not found."
+	entity_not_found: "Entity not found.",
+	action_failed: "Error executing action"
 };
 var camera$7 = {
 	camera_title: "Camera",
@@ -359,6 +363,9 @@ var editor$6 = {
 		},
 		target_mode_none_helper: "Der Service wird ohne eine Ziel-Entität aufgerufen.",
 		target_none: "Ohne",
+		type: "Aktionstyp",
+		navigation_path: "Navigationspfad",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -373,7 +380,8 @@ var editor$6 = {
 var error$6 = {
 	missing_entity: "Bitte wähle eine Mähroboter-Entität",
 	loading_components: "Fehler beim Laden der Komponenten",
-	entity_not_found: "Entität wurde nicht gefunden."
+	entity_not_found: "Entität wurde nicht gefunden.",
+	action_failed: "Fehler beim Ausführen der Aktion"
 };
 var camera$6 = {
 	camera_title: "Kamera",
@@ -510,6 +518,9 @@ var editor$5 = {
 		},
 		target_mode_none_helper: "Le service sera appelé sans entité cible.",
 		target_none: "Aucune",
+		type: "Type d'action",
+		navigation_path: "Chemin de navigation",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -524,7 +535,8 @@ var editor$5 = {
 var error$5 = {
 	missing_entity: "Veuillez sélectionner une entité Tondeuse à gazon",
 	loading_components: "Erreur lors du chargement des composants",
-	entity_not_found: "Entité non trouvée."
+	entity_not_found: "Entité non trouvée.",
+	action_failed: "Erreur lors de l'exécution de l'action"
 };
 var camera$5 = {
 	camera_title: "Caméra",
@@ -661,6 +673,9 @@ var editor$4 = {
 		},
 		target_mode_none_helper: "El servicio se llamará sin entidad objetivo.",
 		target_none: "Ninguno",
+		type: "Tipo de acción",
+		navigation_path: "Ruta de navegación",
+		url_path: "URL",
 		action_type: {
 			call_service: "Servicio",
 			navigate: "Navegación",
@@ -675,7 +690,8 @@ var editor$4 = {
 var error$4 = {
 	missing_entity: "Por favor selecciona una entidad de cortacésped",
 	loading_components: "Error al cargar componentes",
-	entity_not_found: "Entidad no encontrada."
+	entity_not_found: "Entidad no encontrada.",
+	action_failed: "Error al ejecutar la acción"
 };
 var camera$4 = {
 	camera_title: "Cámara",
@@ -812,6 +828,9 @@ var editor$3 = {
 		},
 		target_mode_none_helper: "Il servizio verrà chiamato senza entità destinazione.",
 		target_none: "Nessuno",
+		type: "Tipo di azione",
+		navigation_path: "Percorso di navigazione",
+		url_path: "URL",
 		action_type: {
 			call_service: "Servizio",
 			navigate: "Navigazione",
@@ -826,7 +845,8 @@ var editor$3 = {
 var error$3 = {
 	missing_entity: "Seleziona un'entità tagliaerba",
 	loading_components: "Errore nel caricamento componenti",
-	entity_not_found: "Entità non trovata."
+	entity_not_found: "Entità non trovata.",
+	action_failed: "Errore nell'esecuzione dell'azione"
 };
 var camera$3 = {
 	camera_title: "Telecamera",
@@ -963,6 +983,9 @@ var editor$2 = {
 		},
 		target_mode_none_helper: "De service wordt aangeroepen zonder doelentiteit.",
 		target_none: "Geen",
+		type: "Actietype",
+		navigation_path: "Navigatiepad",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigatie",
@@ -977,7 +1000,8 @@ var editor$2 = {
 var error$2 = {
 	missing_entity: "Selecteer een grasmaaier-entiteit",
 	loading_components: "Fout bij laden van componenten",
-	entity_not_found: "Entiteit niet gevonden."
+	entity_not_found: "Entiteit niet gevonden.",
+	action_failed: "Fout bij uitvoeren van actie"
 };
 var camera$2 = {
 	camera_title: "Camera",
@@ -1114,6 +1138,9 @@ var editor$1 = {
 		},
 		target_mode_none_helper: "Usługa zostanie wywołana bez encji docelowej.",
 		target_none: "Brak",
+		type: "Typ akcji",
+		navigation_path: "Ścieżka nawigacji",
+		url_path: "URL",
 		action_type: {
 			call_service: "Usługa",
 			navigate: "Nawigacja",
@@ -1128,7 +1155,8 @@ var editor$1 = {
 var error$1 = {
 	missing_entity: "Wybierz encję kosiarki",
 	loading_components: "Błąd ładowania komponentów",
-	entity_not_found: "Nie znaleziono encji."
+	entity_not_found: "Nie znaleziono encji.",
+	action_failed: "Błąd podczas wykonywania akcji"
 };
 var camera$1 = {
 	camera_title: "Kamera",
@@ -1265,6 +1293,9 @@ var editor = {
 		},
 		target_mode_none_helper: "Tjänsten kommer att anropas utan målenhet.",
 		target_none: "Ingen",
+		type: "Åtgärdstyp",
+		navigation_path: "Navigeringssökväg",
+		url_path: "URL",
 		action_type: {
 			call_service: "Tjänst",
 			navigate: "Navigering",
@@ -1279,7 +1310,8 @@ var editor = {
 var error = {
 	missing_entity: "Välj en gräsklipparenhet",
 	loading_components: "Fel vid laddning av komponenter",
-	entity_not_found: "Enhet hittades inte."
+	entity_not_found: "Enhet hittades inte.",
+	action_failed: "Fel vid utförande av åtgärd"
 };
 var camera = {
 	camera_title: "Kamera",
@@ -3226,35 +3258,33 @@ const editorStyles = i$3 `
     line-height: 1.2;
   }
 
-  .action-type {
+  .action-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 13px;
-    color: var(--secondary-text-color);
     line-height: 1.3;
+    min-width: 0;
+  }
+
+  .action-type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: var(--text-primary-color, white);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .action-detail {
+    color: var(--secondary-text-color);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
-    position: relative;
-  }
-
-  .action-target,
-  .action-service-data {
-    font-size: 12px;
-    color: var(--secondary-text-color);
-    font-style: italic;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .action-target.custom-target {
-    color: var(--primary-color);
-    font-weight: 500;
-  }
-
-  .action-target.default-target {
-    color: var(--secondary-text-color);
-    font-style: italic;
+    min-width: 0;
   }
 
   .action-buttons {
@@ -3513,10 +3543,14 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._newActionName = '';
         this._newActionIcon = 'mdi:play';
         this._editingActionIndex = null;
+        this._newActionType = 'call-service';
         this._newActionService = '';
         this._newActionTarget = '';
         this._newActionServiceData = {};
         this._targetMode = 'default';
+        this._newActionNavigationPath = '';
+        this._newActionUrlPath = '';
+        this._newActionEntity = '';
         this._boundComputeLabel = this._computeLabel.bind(this);
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
         this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
@@ -3606,12 +3640,17 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     _actionFormValueChanged(ev) {
         ev.stopPropagation();
-        const { action_name, action_service, action_target, action_service_data, target_mode } = ev.detail.value;
+        const { action_name, action_type, action_service, action_target, action_service_data, target_mode, action_navigation_path, action_url_path, } = ev.detail.value;
         this._newActionName = action_name ?? '';
         this._newActionService = action_service ?? '';
         this._newActionTarget = action_target ?? '';
         this._newActionServiceData = action_service_data ?? {};
         this._targetMode = target_mode ?? this._targetMode;
+        this._newActionNavigationPath = action_navigation_path ?? '';
+        this._newActionUrlPath = action_url_path ?? '';
+        if (action_type !== undefined && action_type !== this._newActionType) {
+            this._newActionType = action_type;
+        }
     }
     _fireConfigChanged(config) {
         this.config = config;
@@ -3627,30 +3666,77 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             [section]: !this._sectionsExpanded[section],
         };
     }
+    _buildActionConfig() {
+        switch (this._newActionType) {
+            case 'call-service': {
+                let target;
+                if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
+                    target = { entity_id: this._newActionTarget.trim() };
+                }
+                else if (this._targetMode === 'default') {
+                    target = { entity_id: this.config.entity || '{{ entity }}' };
+                }
+                return {
+                    action: 'call-service',
+                    service: this._newActionService.trim(),
+                    target: target,
+                    data: this._newActionServiceData,
+                };
+            }
+            case 'navigate':
+                return { action: 'navigate', navigation_path: this._newActionNavigationPath.trim() };
+            case 'url':
+                return { action: 'url', url_path: this._newActionUrlPath.trim() };
+            case 'toggle': {
+                const entity = this._targetMode === 'custom' && this._newActionTarget.trim() ? this._newActionTarget.trim() : undefined;
+                return { action: 'toggle', entity };
+            }
+            case 'more-info': {
+                const entity = this._targetMode === 'custom' && this._newActionTarget.trim() ? this._newActionTarget.trim() : undefined;
+                return { action: 'more-info', entity };
+            }
+            case 'none':
+                return { action: 'none' };
+            default:
+                return { action: 'none' };
+        }
+    }
+    _isActionFormValid() {
+        if (!this._newActionName.trim())
+            return false;
+        switch (this._newActionType) {
+            case 'call-service':
+                if (!this._newActionService.trim())
+                    return false;
+                if (this._targetMode === 'custom' && !this._newActionTarget.trim())
+                    return false;
+                return true;
+            case 'navigate':
+                return !!this._newActionNavigationPath.trim();
+            case 'url':
+                return !!this._newActionUrlPath.trim();
+            case 'toggle':
+            case 'more-info':
+                if (this._targetMode === 'custom' && !this._newActionTarget.trim())
+                    return false;
+                return true;
+            case 'none':
+                return true;
+            default:
+                return false;
+        }
+    }
     _addAction() {
-        const service = this._newActionService.trim();
-        if (!this.config || !this._newActionName.trim() || !service) {
+        if (!this.config || !this._isActionFormValid()) {
             return;
         }
         if (this.config.custom_actions && this.config.custom_actions.length >= this.MAX_ACTIONS) {
             return;
         }
-        let target;
-        if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
-            target = { entity_id: this._newActionTarget.trim() };
-        }
-        else if (this._targetMode === 'default') {
-            target = { entity_id: this.config.entity || '{{ entity }}' };
-        }
         const newAction = {
             name: this._newActionName.trim(),
             icon: this._newActionIcon,
-            action: {
-                action: 'call-service',
-                service: service,
-                target: target,
-                data: this._newActionServiceData,
-            },
+            action: this._buildActionConfig(),
         };
         const newActions = [...(this.config.custom_actions || []), newAction];
         this._fireConfigChanged({ ...this.config, custom_actions: newActions });
@@ -3659,56 +3745,76 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     _editAction(index) {
         if (!this.config?.custom_actions?.[index])
             return;
+        this._resetActionForm();
         this._editingActionIndex = index;
         const action = this.config.custom_actions[index];
         this._newActionName = action.name;
         this._newActionIcon = action.icon || 'mdi:play';
-        if (action.action.action === 'call-service') {
-            const serviceCall = action.action;
-            this._newActionService = serviceCall.service || '';
-            const target = serviceCall.target;
-            if (!target || (!target.entity_id && !target.device_id && !target.area_id)) {
-                this._targetMode = 'none';
-                this._newActionTarget = '';
-            }
-            else {
-                const targetEntityId = serviceCall.target?.entity_id || '';
-                const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
-                const isDefaultEntity = entityIdString === '{{ entity }}' || entityIdString === this.config.entity;
-                if (isDefaultEntity || !entityIdString) {
-                    this._targetMode = 'default';
+        this._newActionType = action.action.action || 'call-service';
+        switch (action.action.action) {
+            case 'call-service': {
+                const serviceCall = action.action;
+                this._newActionService = serviceCall.service || '';
+                const target = serviceCall.target;
+                if (!target || (!target.entity_id && !target.device_id && !target.area_id)) {
+                    this._targetMode = 'none';
                     this._newActionTarget = '';
                 }
                 else {
-                    this._targetMode = 'custom';
-                    this._newActionTarget = entityIdString;
+                    const targetEntityId = serviceCall.target?.entity_id || '';
+                    const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
+                    const isDefaultEntity = entityIdString === '{{ entity }}' || entityIdString === this.config.entity;
+                    if (isDefaultEntity || !entityIdString) {
+                        this._targetMode = 'default';
+                        this._newActionTarget = '';
+                    }
+                    else {
+                        this._targetMode = 'custom';
+                        this._newActionTarget = entityIdString;
+                    }
                 }
+                this._newActionServiceData = serviceCall.data || serviceCall.service_data || {};
+                break;
             }
-            this._newActionServiceData = serviceCall.data || serviceCall.service_data || {};
+            case 'navigate':
+                this._newActionNavigationPath = action.action.navigation_path || '';
+                break;
+            case 'url':
+                this._newActionUrlPath = action.action.url_path || '';
+                break;
+            case 'toggle': {
+                const entity = action.action.entity;
+                if (entity) {
+                    this._targetMode = 'custom';
+                    this._newActionTarget = entity;
+                }
+                else {
+                    this._targetMode = 'default';
+                }
+                break;
+            }
+            case 'more-info': {
+                const entity = action.action.entity;
+                if (entity) {
+                    this._targetMode = 'custom';
+                    this._newActionTarget = entity;
+                }
+                else {
+                    this._targetMode = 'default';
+                }
+                break;
+            }
         }
         this._showActionForm = true;
     }
     _saveEditingAction() {
-        if (!this.config?.custom_actions || this._editingActionIndex === null || !this._newActionService.trim())
+        if (!this.config?.custom_actions || this._editingActionIndex === null || !this._isActionFormValid())
             return;
         const newActions = [...this.config.custom_actions];
-        const service = this._newActionService.trim();
-        let target;
-        if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
-            target = { entity_id: this._newActionTarget.trim() };
-        }
-        else if (this._targetMode === 'default') {
-            target = { entity_id: this.config.entity || '{{ entity }}' };
-        }
         newActions[this._editingActionIndex] = {
             name: this._newActionName.trim(),
             icon: this._newActionIcon,
-            action: {
-                action: 'call-service',
-                service: service,
-                target: target,
-                data: this._newActionServiceData,
-            },
+            action: this._buildActionConfig(),
         };
         this._fireConfigChanged({ ...this.config, custom_actions: newActions });
         this._hideActionForm();
@@ -3717,10 +3823,14 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._editingActionIndex = null;
         this._newActionName = '';
         this._newActionIcon = 'mdi:play';
+        this._newActionType = 'call-service';
         this._newActionService = '';
         this._newActionTarget = '';
         this._newActionServiceData = {};
         this._targetMode = 'default';
+        this._newActionNavigationPath = '';
+        this._newActionUrlPath = '';
+        this._newActionEntity = '';
     }
     _showAddActionForm() {
         this._resetActionForm();
@@ -3753,38 +3863,24 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         const schema = [
             {
                 name: 'action_name',
-                selector: {
-                    text: {},
-                },
+                selector: { text: {} },
                 required: true,
             },
             {
-                name: 'action_service',
-                selector: {
-                    select: {
-                        mode: 'dropdown',
-                        options: this._getAvailableServices(),
-                        custom_value: true,
-                    },
-                },
-                required: true,
-            },
-            {
-                name: 'action_service_data',
-                selector: {
-                    object: {},
-                },
-                required: false,
-            },
-            {
-                name: 'target_mode',
+                name: 'action_type',
                 selector: {
                     select: {
                         mode: 'dropdown',
                         options: [
-                            { value: 'default', label: localize('editor.actions.target_mode_label.default', { hass: this.hass }) },
-                            { value: 'custom', label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
-                            { value: 'none', label: localize('editor.actions.target_mode_label.none', { hass: this.hass }) },
+                            {
+                                value: 'call-service',
+                                label: localize('editor.actions.action_type.call_service', { hass: this.hass }),
+                            },
+                            { value: 'navigate', label: localize('editor.actions.action_type.navigate', { hass: this.hass }) },
+                            { value: 'url', label: localize('editor.actions.action_type.url', { hass: this.hass }) },
+                            { value: 'toggle', label: localize('editor.actions.action_type.toggle', { hass: this.hass }) },
+                            { value: 'more-info', label: localize('editor.actions.action_type.more_info', { hass: this.hass }) },
+                            { value: 'none', label: localize('editor.actions.action_type.none', { hass: this.hass }) },
                         ],
                         custom_value: false,
                     },
@@ -3792,8 +3888,78 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 required: true,
             },
         ];
-        if (this._targetMode === 'custom') {
-            schema.push({ name: 'action_target', selector: { entity: {} } });
+        switch (this._newActionType) {
+            case 'call-service':
+                schema.push({
+                    name: 'action_service',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: this._getAvailableServices(),
+                            custom_value: true,
+                        },
+                    },
+                    required: true,
+                }, {
+                    name: 'action_service_data',
+                    selector: { object: {} },
+                    required: false,
+                }, {
+                    name: 'target_mode',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: [
+                                {
+                                    value: 'default',
+                                    label: localize('editor.actions.target_mode_label.default', { hass: this.hass }),
+                                },
+                                { value: 'custom', label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
+                                { value: 'none', label: localize('editor.actions.target_mode_label.none', { hass: this.hass }) },
+                            ],
+                            custom_value: false,
+                        },
+                    },
+                    required: true,
+                });
+                if (this._targetMode === 'custom') {
+                    schema.push({ name: 'action_target', selector: { entity: {} } });
+                }
+                break;
+            case 'navigate':
+                schema.push({
+                    name: 'action_navigation_path',
+                    selector: { text: {} },
+                    required: true,
+                });
+                break;
+            case 'url':
+                schema.push({
+                    name: 'action_url_path',
+                    selector: { text: {} },
+                    required: true,
+                });
+                break;
+            case 'toggle':
+            case 'more-info':
+                schema.push({
+                    name: 'target_mode',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: [
+                                { value: 'default', label: localize('editor.actions.target_mode_label.default', { hass: this.hass }) },
+                                { value: 'custom', label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
+                            ],
+                            custom_value: false,
+                        },
+                    },
+                    required: true,
+                });
+                if (this._targetMode === 'custom') {
+                    schema.push({ name: 'action_target', selector: { entity: {} } });
+                }
+                break;
         }
         return schema;
     }
@@ -3820,29 +3986,14 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     get _actionFormData() {
         return {
             action_name: this._newActionName,
+            action_type: this._newActionType,
             action_service: this._newActionService,
             action_target: this._newActionTarget,
             action_service_data: this._newActionServiceData,
             target_mode: this._targetMode,
+            action_navigation_path: this._newActionNavigationPath,
+            action_url_path: this._newActionUrlPath,
         };
-    }
-    _getServiceDisplayName(service) {
-        const maxLength = 25;
-        if (service.length <= maxLength) {
-            return { display: service, tooltip: service };
-        }
-        const parts = service.split('.');
-        if (parts.length > 1) {
-            const domain = parts[0];
-            const serviceName = parts.slice(1).join('.');
-            if (serviceName.length <= maxLength - 3) {
-                return { display: `${domain}.${serviceName}`, tooltip: service };
-            }
-            else {
-                return { display: `${domain}.${serviceName.substring(0, maxLength - domain.length - 4)}...`, tooltip: service };
-            }
-        }
-        return { display: `${service.substring(0, maxLength)}...`, tooltip: service };
     }
     _getEntityDisplayName(entityId) {
         if (!entityId) {
@@ -3863,6 +4014,38 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             tooltip: entityId,
             isDefault: isDefault,
         };
+    }
+    _getActionTypeBadge(actionType) {
+        const typeKey = actionType.replace('-', '_');
+        return localize(`editor.actions.action_type.${typeKey}`, { hass: this.hass });
+    }
+    _getActionDetailLine(action) {
+        switch (action.action.action) {
+            case 'call-service': {
+                const serviceCall = action.action;
+                return serviceCall.service || localize('editor.actions.action_type.not_configured', { hass: this.hass });
+            }
+            case 'navigate':
+                return action.action.navigation_path || '';
+            case 'url':
+                return action.action.url_path || '';
+            case 'toggle': {
+                const entity = action.action.entity;
+                return entity
+                    ? this._getEntityDisplayName(entity).display
+                    : localize('editor.actions.default_entity', { hass: this.hass });
+            }
+            case 'more-info': {
+                const entity = action.action.entity;
+                return entity
+                    ? this._getEntityDisplayName(entity).display
+                    : localize('editor.actions.default_entity', { hass: this.hass });
+            }
+            case 'none':
+                return '';
+            default:
+                return '';
+        }
     }
     _handleIconClick(e) {
         const target = e.target;
@@ -3927,10 +4110,13 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     _computeActionsLabel(schema) {
         const labelMap = {
             action_name: localize('editor.actions.name', { hass: this.hass }),
+            action_type: localize('editor.actions.type', { hass: this.hass }),
             action_service: localize('editor.actions.service', { hass: this.hass }),
             action_target: localize('editor.actions.target_entity', { hass: this.hass }),
             action_service_data: localize('editor.actions.service_data', { hass: this.hass }),
             target_mode: localize('editor.actions.target_mode', { hass: this.hass }),
+            action_navigation_path: localize('editor.actions.navigation_path', { hass: this.hass }),
+            action_url_path: localize('editor.actions.url_path', { hass: this.hass }),
         };
         return labelMap[schema.name] || schema.name;
     }
@@ -3960,17 +4146,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
 
           ${this.config.custom_actions && this.config.custom_actions.length > 0
             ? this.config.custom_actions.map((action, index) => {
-                const serviceInfo = this._getServiceDisplayName(action.action.service || 'N/A');
-                action.action.target?.entity_id || '';
-                const target = action.action.target;
-                const entityIdString = target && target.entity_id
-                    ? Array.isArray(target.entity_id)
-                        ? target.entity_id[0]
-                        : target.entity_id
-                    : '';
-                const entityInfo = this._getEntityDisplayName(entityIdString);
-                const serviceData = action.action.data || action.action.service_data;
-                const hasServiceData = serviceData && Object.keys(serviceData).length > 0;
+                const typeBadge = this._getActionTypeBadge(action.action.action);
+                const detailLine = this._getActionDetailLine(action);
                 return x `
                   <div class="action-item">
                     <div class="action-icon">
@@ -3978,17 +4155,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                     </div>
                     <div class="action-info">
                       <div class="action-name">${action.name}</div>
-                      <div class="action-type">
-                        ${localize('editor.actions.service', { hass: this.hass })}: ${serviceInfo.display}
-                      </div>
-                      <div class="action-target ${entityInfo.isDefault ? 'default-target' : 'custom-target'}">
-                        ${localize('editor.actions.target', { hass: this.hass })}: ${entityInfo.display}
-                      </div>
-                      <div class="action-service-data">
-                        ${localize('editor.actions.service_data', { hass: this.hass })}:
-                        ${hasServiceData
-                    ? localize('editor.actions.service_data_configured', { hass: this.hass })
-                    : localize('editor.actions.service_data_none', { hass: this.hass })}
+                      <div class="action-meta">
+                        <span class="action-type-badge">${typeBadge}</span>
+                        ${detailLine ? x `<span class="action-detail" title=${detailLine}>${detailLine}</span>` : ''}
                       </div>
                     </div>
                     <div class="action-buttons">
@@ -4031,7 +4200,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                     ></ha-form>
                   </div>
 
-                  ${this._targetMode === 'default'
+                  ${this._targetMode === 'default' &&
+                ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
                 ? x `
                         <div class="default-target-info form-section">
                           <ha-icon icon="mdi:information-outline"></ha-icon>
@@ -4046,7 +4216,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                         </div>
                       `
                 : ''}
-                  ${this._targetMode === 'none'
+                  ${this._targetMode === 'none' && this._newActionType === 'call-service'
                 ? x `
                         <div class="default-target-info form-section">
                           <ha-icon icon="mdi:information-outline"></ha-icon>
@@ -4063,23 +4233,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   <div class="form-buttons">
                     ${this._editingActionIndex !== null
                 ? x `
-                          <ha-button
-                            @click=${this._saveEditingAction}
-                            .disabled=${!this._newActionName.trim() ||
-                    !this._newActionService.trim() ||
-                    (this._targetMode === 'custom' && !this._newActionTarget.trim())}
-                          >
+                          <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
                             ${localize('editor.actions.save', { hass: this.hass })}
                           </ha-button>
                         `
                 : x `
-                          <ha-button
-                            @click=${this._addAction}
-                            .disabled=${!this._newActionName.trim() ||
-                    !this._newActionService.trim() ||
-                    !canAddAction ||
-                    (this._targetMode === 'custom' && !this._newActionTarget.trim())}
-                          >
+                          <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
                             ${localize('editor.actions.add_button', { hass: this.hass })}
                           </ha-button>
                         `}
@@ -4447,6 +4606,9 @@ __decorate([
 ], CompactLawnMowerCardEditor.prototype, "_editingActionIndex", void 0);
 __decorate([
     r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionType", void 0);
+__decorate([
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_newActionService", void 0);
 __decorate([
     r$1()
@@ -4457,6 +4619,15 @@ __decorate([
 __decorate([
     r$1()
 ], CompactLawnMowerCardEditor.prototype, "_targetMode", void 0);
+__decorate([
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionNavigationPath", void 0);
+__decorate([
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionUrlPath", void 0);
+__decorate([
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionEntity", void 0);
 CompactLawnMowerCardEditor = __decorate([
     t$1('compact-lawn-mower-card-editor')
 ], CompactLawnMowerCardEditor);
@@ -4499,11 +4670,11 @@ let CameraPopup = class CameraPopup extends i {
     }
     render() {
         if (!this.hass || !this.entityId) {
-            return E;
+            return E$1;
         }
         const stateObj = this.hass.states[this.entityId];
         if (!stateObj) {
-            return E;
+            return E$1;
         }
         let content;
         if (stateObj.state === 'unavailable') {
@@ -5005,16 +5176,34 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         le('light');
         const action = customAction.action;
         try {
-            if (action.action === 'call-service') {
-                this._executeServiceCall(action);
-            }
-            else {
-                console.warn('Unsupported action type:', action.action);
+            switch (action.action) {
+                case 'call-service':
+                    this._executeServiceCall(action);
+                    break;
+                case 'navigate':
+                    de$1(this, action.navigation_path);
+                    break;
+                case 'url':
+                    window.open(action.url_path, '_blank');
+                    break;
+                case 'toggle':
+                    ge(this.hass, action.entity || this.config.entity);
+                    break;
+                case 'more-info':
+                    ne(this, 'hass-more-info', {
+                        entityId: action.entity || this.config.entity,
+                    });
+                    break;
+                case 'none':
+                    break;
+                default:
+                    console.warn('Unsupported action type:', action.action);
+                    break;
             }
         }
         catch (error) {
             console.error('Error executing custom action:', error);
-            this._showError(`Fehler beim Ausführen der Aktion: ${customAction.name}`);
+            this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
         }
     }
     _executeServiceCall(action) {
@@ -5155,7 +5344,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const state = this.mowerState;
         const shouldShowSleep = state === 'paused' && !this.chargingStatus && this._viewMode === 'mower';
         if (!shouldShowSleep)
-            return E;
+            return E$1;
         return x `
       <div class="sleep-animation">
         <span class="sleep-z">z</span>
@@ -5514,7 +5703,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _renderActionButtons() {
         if (!this.config.custom_actions || this.config.custom_actions.length === 0) {
-            return E;
+            return E$1;
         }
         const MAX_VISIBLE_ACTIONS = 3;
         const totalActions = this.config.custom_actions.length;
@@ -5544,7 +5733,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
               <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
             </button>
           `
-            : E}
+            : E$1}
     `;
     }
     _toggleActionsExpanded() {
@@ -5563,7 +5752,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 ? localize('error.entity_not_found', { hass: this.hass })
                 : localize('error.missing_entity', { hass: this.hass })}</span
               >
-              ${this.config.entity ? x `<span class="error-entity">${this.config.entity}</span>` : E}
+              ${this.config.entity ? x `<span class="error-entity">${this.config.entity}</span>` : E$1}
             </div>
           </div>
         </div>
@@ -5609,7 +5798,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                   </div>
                 </div>
               `
-            : E}
+            : E$1}
         </div>
       </ha-card>
     `;

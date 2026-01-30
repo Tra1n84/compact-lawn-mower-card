@@ -104,6 +104,9 @@
       },
       "target_mode_none_helper": "El servicio se llamará sin entidad objetivo.",
       "target_none": "Ninguno",
+      "type": "Tipo de acción",
+      "navigation_path": "Ruta de navegación",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Servicio",
         "navigate": "Navegación",
@@ -118,7 +121,8 @@
   "error": {
     "missing_entity": "Por favor selecciona una entidad de cortacésped",
     "loading_components": "Error al cargar componentes",
-    "entity_not_found": "Entidad no encontrada."
+    "entity_not_found": "Entidad no encontrada.",
+    "action_failed": "Error al ejecutar la acción"
   },
   "camera": {
     "camera_title": "Cámara",

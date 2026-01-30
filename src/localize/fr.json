@@ -104,6 +104,9 @@
       },
       "target_mode_none_helper": "Le service sera appelé sans entité cible.",
       "target_none": "Aucune",
+      "type": "Type d'action",
+      "navigation_path": "Chemin de navigation",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigation",
@@ -118,7 +121,8 @@
   "error": {
     "missing_entity": "Veuillez sélectionner une entité Tondeuse à gazon",
     "loading_components": "Erreur lors du chargement des composants",
-    "entity_not_found": "Entité non trouvée."
+    "entity_not_found": "Entité non trouvée.",
+    "action_failed": "Erreur lors de l'exécution de l'action"
   },
   "camera": {
     "camera_title": "Caméra",
