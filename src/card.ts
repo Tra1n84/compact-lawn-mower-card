@@ -65,6 +65,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _mainResizeObserver?: ResizeObserver;
   private _mowerResizeObserver?: ResizeObserver;
   private _badgeOverlapCheckTimeout?: number;
+  private _hadValidMower = false;
   @state() private _mapCardElement?: HTMLElement;
 
   connectedCallback() {
@@ -429,6 +430,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if ((changedProperties as any).has('_viewMode') && this._viewMode !== 'mower') {
       this._mowerResizeObserver?.disconnect();
     }
+
+    const hasValidMower = !!this.mower;
+    if (hasValidMower && !this._hadValidMower && this._viewMode === 'mower') {
+      this.updateComplete.then(() => {
+        this._updateMowerPosition();
+        this._setupMowerResizeObserver();
+      });
+    }
+    this._hadValidMower = hasValidMower;
 
     this.updateComplete.then(() => {
       this._checkBadgeOverlap();

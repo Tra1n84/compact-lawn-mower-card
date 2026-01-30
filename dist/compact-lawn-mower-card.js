@@ -4591,6 +4591,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._mapWidth = 0;
         this._mapHeight = 0;
         this._mapZoom = DEFAULT_MAP_ZOOM;
+        this._hadValidMower = false;
     }
     connectedCallback() {
         super.connectedCallback();
@@ -4904,6 +4905,14 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (changedProperties.has('_viewMode') && this._viewMode !== 'mower') {
             this._mowerResizeObserver?.disconnect();
         }
+        const hasValidMower = !!this.mower;
+        if (hasValidMower && !this._hadValidMower && this._viewMode === 'mower') {
+            this.updateComplete.then(() => {
+                this._updateMowerPosition();
+                this._setupMowerResizeObserver();
+            });
+        }
+        this._hadValidMower = hasValidMower;
         this.updateComplete.then(() => {
             this._checkBadgeOverlap();
         });
