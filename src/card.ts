@@ -1,6 +1,6 @@
 import { LitElement, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { HomeAssistant, LovelaceCard } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceCard, fireEvent, forwardHaptic } from 'custom-card-helpers';
 import './editor';
 import './camera-popup';
 import { CameraPopup } from './camera-popup';
@@ -107,7 +107,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._checkBadgeOverlap();
         }
       }
-      this.dispatchEvent(new Event('iron-resize', { bubbles: true, composed: true }));
+      fireEvent(this, 'iron-resize' as any);
     });
 
     if (this._mainDisplayArea) {
@@ -551,6 +551,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return;
     }
 
+    forwardHaptic('light');
     const action = customAction.action;
 
     try {
@@ -614,12 +615,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _showError(message: string): void {
-    const event = new Event('hass-notification', {
-      bubbles: true,
-      composed: true,
-    });
-    (event as any).detail = { message };
-    this.dispatchEvent(event);
+    fireEvent(this, 'hass-notification' as any, { message });
   }
 
   private _getMowerSVGClass(state: string): string {
