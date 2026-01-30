@@ -43,6 +43,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   @state() private _newActionUrlPath = '';
   @state() private _newActionEntity = '';
   private _resizeObserver?: ResizeObserver;
+  private _serviceTranslationsLoaded = false;
   private _cachedServices?: {
     services: Array<{ value: string; label: string }>;
     hassServices: HomeAssistant['services'];
@@ -94,6 +95,24 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   disconnectedCallback() {
     super.disconnectedCallback();
     this._resizeObserver?.disconnect();
+  }
+
+  updated(changedProps: Map<string, unknown>) {
+    super.updated(changedProps);
+    if (changedProps.has('hass') && this.hass && !this._serviceTranslationsLoaded) {
+      this._loadServiceTranslations();
+    }
+  }
+
+  private async _loadServiceTranslations(): Promise<void> {
+    try {
+      await (this.hass as any).loadBackendTranslation?.('services');
+      this._serviceTranslationsLoaded = true;
+      this._cachedServices = undefined;
+      this.requestUpdate();
+    } catch (e) {
+      // Translations not available, fall back to raw service IDs
+    }
   }
 
   setConfig(config: CompactLawnMowerCardConfig): void {
@@ -509,6 +528,17 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return schema;
   }
 
+  private _getServiceFriendlyName(serviceId: string): string | undefined {
+    if (!this.hass || !serviceId) return undefined;
+    const [domain, service] = serviceId.split('.', 2);
+    if (!domain || !service) return undefined;
+    const name = this.hass.services?.[domain]?.[service]?.name;
+    if (name) return name;
+    const localized = this.hass.localize?.(`component.${domain}.services.${service}.name`);
+    if (localized && localized !== `component.${domain}.services.${service}.name`) return localized;
+    return undefined;
+  }
+
   private _getAvailableServices(): Array<{ value: string; label: string }> {
     if (this._cachedServices && this._cachedServices.hassServices === this.hass.services) {
       return this._cachedServices.services;
@@ -521,9 +551,10 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     for (const domain of Object.keys(this.hass.services)) {
       for (const service of Object.keys(this.hass.services[domain])) {
         const fullService = `${domain}.${service}`;
+        const friendlyName = this._getServiceFriendlyName(fullService);
         services.push({
           value: fullService,
-          label: fullService,
+          label: friendlyName ? `${friendlyName} (${fullService})` : fullService,
         });
       }
     }
@@ -580,7 +611,9 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     switch (action.action.action) {
       case 'call-service': {
         const serviceCall = action.action as ServiceCallActionConfig;
-        return serviceCall.service || localize('editor.actions.action_type.not_configured', { hass: this.hass });
+        if (!serviceCall.service) return localize('editor.actions.action_type.not_configured', { hass: this.hass });
+        const friendlyName = this._getServiceFriendlyName(serviceCall.service);
+        return friendlyName ? `${friendlyName} (${serviceCall.service})` : serviceCall.service;
       }
       case 'navigate':
         return (action.action as NavigateActionConfig).navigation_path || '';

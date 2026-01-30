@@ -3551,6 +3551,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._newActionNavigationPath = '';
         this._newActionUrlPath = '';
         this._newActionEntity = '';
+        this._serviceTranslationsLoaded = false;
         this._boundComputeLabel = this._computeLabel.bind(this);
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
         this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
@@ -3598,6 +3599,23 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     disconnectedCallback() {
         super.disconnectedCallback();
         this._resizeObserver?.disconnect();
+    }
+    updated(changedProps) {
+        super.updated(changedProps);
+        if (changedProps.has('hass') && this.hass && !this._serviceTranslationsLoaded) {
+            this._loadServiceTranslations();
+        }
+    }
+    async _loadServiceTranslations() {
+        try {
+            await this.hass.loadBackendTranslation?.('services');
+            this._serviceTranslationsLoaded = true;
+            this._cachedServices = undefined;
+            this.requestUpdate();
+        }
+        catch (e) {
+            // Translations not available, fall back to raw service IDs
+        }
     }
     setConfig(config) {
         if (config.custom_actions === undefined) {
@@ -3963,6 +3981,20 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         }
         return schema;
     }
+    _getServiceFriendlyName(serviceId) {
+        if (!this.hass || !serviceId)
+            return undefined;
+        const [domain, service] = serviceId.split('.', 2);
+        if (!domain || !service)
+            return undefined;
+        const name = this.hass.services?.[domain]?.[service]?.name;
+        if (name)
+            return name;
+        const localized = this.hass.localize?.(`component.${domain}.services.${service}.name`);
+        if (localized && localized !== `component.${domain}.services.${service}.name`)
+            return localized;
+        return undefined;
+    }
     _getAvailableServices() {
         if (this._cachedServices && this._cachedServices.hassServices === this.hass.services) {
             return this._cachedServices.services;
@@ -3973,9 +4005,10 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         for (const domain of Object.keys(this.hass.services)) {
             for (const service of Object.keys(this.hass.services[domain])) {
                 const fullService = `${domain}.${service}`;
+                const friendlyName = this._getServiceFriendlyName(fullService);
                 services.push({
                     value: fullService,
-                    label: fullService,
+                    label: friendlyName ? `${friendlyName} (${fullService})` : fullService,
                 });
             }
         }
@@ -4023,7 +4056,10 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         switch (action.action.action) {
             case 'call-service': {
                 const serviceCall = action.action;
-                return serviceCall.service || localize('editor.actions.action_type.not_configured', { hass: this.hass });
+                if (!serviceCall.service)
+                    return localize('editor.actions.action_type.not_configured', { hass: this.hass });
+                const friendlyName = this._getServiceFriendlyName(serviceCall.service);
+                return friendlyName ? `${friendlyName} (${serviceCall.service})` : serviceCall.service;
             }
             case 'navigate':
                 return action.action.navigation_path || '';
