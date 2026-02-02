@@ -1600,6 +1600,10 @@ export const editorStyles = css`
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
+  .add-action-form.hidden {
+    display: none;
+  }
+
   .form-header {
     font-weight: 600;
     color: var(--primary-text-color);
@@ -1673,30 +1677,28 @@ export const editorStyles = css`
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   .action-name {
     font-weight: 600;
     color: var(--primary-text-color);
-    font-size: 15px;
-    line-height: 1.2;
+    font-size: 14px;
+    line-height: 1.3;
   }
 
   .action-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.3;
+    gap: 6px;
     min-width: 0;
   }
 
   .action-type-badge {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
     font-weight: 600;
     background: var(--primary-color);
     color: var(--text-primary-color, white);
@@ -1706,6 +1708,18 @@ export const editorStyles = css`
 
   .action-detail {
     color: var(--secondary-text-color);
+    font-size: 12px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .action-service-id {
+    color: var(--disabled-text-color, #999);
+    font-size: 11px;
+    line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

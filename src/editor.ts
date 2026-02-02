@@ -612,8 +612,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       case 'call-service': {
         const serviceCall = action.action as ServiceCallActionConfig;
         if (!serviceCall.service) return localize('editor.actions.action_type.not_configured', { hass: this.hass });
-        const friendlyName = this._getServiceFriendlyName(serviceCall.service);
-        return friendlyName ? `${friendlyName} (${serviceCall.service})` : serviceCall.service;
+        return this._getServiceFriendlyName(serviceCall.service) || serviceCall.service;
       }
       case 'navigate':
         return (action.action as NavigateActionConfig).navigation_path || '';
@@ -636,6 +635,14 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       default:
         return '';
     }
+  }
+
+  private _getActionServiceId(action: CustomAction): string | null {
+    if (action.action.action !== 'call-service') return null;
+    const serviceCall = action.action as ServiceCallActionConfig;
+    if (!serviceCall.service) return null;
+    const friendlyName = this._getServiceFriendlyName(serviceCall.service);
+    return friendlyName ? serviceCall.service : null;
   }
 
   private _handleIconClick(e: MouseEvent): void {
@@ -749,6 +756,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             ? this.config.custom_actions.map((action, index) => {
                 const typeBadge = this._getActionTypeBadge(action.action.action);
                 const detailLine = this._getActionDetailLine(action);
+                const serviceId = this._getActionServiceId(action);
 
                 return html`
                   <div class="action-item">
@@ -759,8 +767,9 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                       <div class="action-name">${action.name}</div>
                       <div class="action-meta">
                         <span class="action-type-badge">${typeBadge}</span>
-                        ${detailLine ? html`<span class="action-detail" title=${detailLine}>${detailLine}</span>` : ''}
+                        ${detailLine ? html`<span class="action-detail">${detailLine}</span>` : ''}
                       </div>
+                      ${serviceId ? html`<div class="action-service-id">(${serviceId})</div>` : ''}
                     </div>
                     <div class="action-buttons">
                       <ha-icon-button
@@ -783,9 +792,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             : html`<p class="no-actions-text">
                 ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
               </p>`}
-          ${this._showActionForm
-            ? html`
-                <div class="add-action-form">
+          <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
                   <div class="form-header">
                     ${this._editingActionIndex !== null
                       ? localize('editor.actions.edit', { hass: this.hass })
@@ -849,8 +856,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                     </ha-button>
                   </div>
                 </div>
-              `
-            : html`
+          ${!this._showActionForm
+            ? html`
                 ${canAddAction
                   ? html`
                       <div class="actions-header">
@@ -871,7 +878,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                         >
                       </div>
                     `}
-              `}
+              `
+            : ''}
         </div>
       </div>
     `;

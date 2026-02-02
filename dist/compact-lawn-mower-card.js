@@ -3175,6 +3175,10 @@ const editorStyles = i$3 `
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
+  .add-action-form.hidden {
+    display: none;
+  }
+
   .form-header {
     font-weight: 600;
     color: var(--primary-text-color);
@@ -3248,30 +3252,28 @@ const editorStyles = i$3 `
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   .action-name {
     font-weight: 600;
     color: var(--primary-text-color);
-    font-size: 15px;
-    line-height: 1.2;
+    font-size: 14px;
+    line-height: 1.3;
   }
 
   .action-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.3;
+    gap: 6px;
     min-width: 0;
   }
 
   .action-type-badge {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
     font-weight: 600;
     background: var(--primary-color);
     color: var(--text-primary-color, white);
@@ -3281,6 +3283,18 @@ const editorStyles = i$3 `
 
   .action-detail {
     color: var(--secondary-text-color);
+    font-size: 12px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .action-service-id {
+    color: var(--disabled-text-color, #999);
+    font-size: 11px;
+    line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -4058,8 +4072,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 const serviceCall = action.action;
                 if (!serviceCall.service)
                     return localize('editor.actions.action_type.not_configured', { hass: this.hass });
-                const friendlyName = this._getServiceFriendlyName(serviceCall.service);
-                return friendlyName ? `${friendlyName} (${serviceCall.service})` : serviceCall.service;
+                return this._getServiceFriendlyName(serviceCall.service) || serviceCall.service;
             }
             case 'navigate':
                 return action.action.navigation_path || '';
@@ -4082,6 +4095,15 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             default:
                 return '';
         }
+    }
+    _getActionServiceId(action) {
+        if (action.action.action !== 'call-service')
+            return null;
+        const serviceCall = action.action;
+        if (!serviceCall.service)
+            return null;
+        const friendlyName = this._getServiceFriendlyName(serviceCall.service);
+        return friendlyName ? serviceCall.service : null;
     }
     _handleIconClick(e) {
         const target = e.target;
@@ -4184,6 +4206,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             ? this.config.custom_actions.map((action, index) => {
                 const typeBadge = this._getActionTypeBadge(action.action.action);
                 const detailLine = this._getActionDetailLine(action);
+                const serviceId = this._getActionServiceId(action);
                 return x `
                   <div class="action-item">
                     <div class="action-icon">
@@ -4193,8 +4216,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                       <div class="action-name">${action.name}</div>
                       <div class="action-meta">
                         <span class="action-type-badge">${typeBadge}</span>
-                        ${detailLine ? x `<span class="action-detail" title=${detailLine}>${detailLine}</span>` : ''}
+                        ${detailLine ? x `<span class="action-detail">${detailLine}</span>` : ''}
                       </div>
+                      ${serviceId ? x `<div class="action-service-id">(${serviceId})</div>` : ''}
                     </div>
                     <div class="action-buttons">
                       <ha-icon-button
@@ -4217,13 +4241,11 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             : x `<p class="no-actions-text">
                 ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
               </p>`}
-          ${this._showActionForm
-            ? x `
-                <div class="add-action-form">
+          <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
                   <div class="form-header">
                     ${this._editingActionIndex !== null
-                ? localize('editor.actions.edit', { hass: this.hass })
-                : localize('editor.actions.add', { hass: this.hass })}
+            ? localize('editor.actions.edit', { hass: this.hass })
+            : localize('editor.actions.add', { hass: this.hass })}
                   </div>
 
                   <div class="form-section">
@@ -4237,29 +4259,29 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   </div>
 
                   ${this._targetMode === 'default' &&
-                ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
-                ? x `
+            ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
+            ? x `
                         <div class="default-target-info form-section">
                           <ha-icon icon="mdi:information-outline"></ha-icon>
                           <span>
                             ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
                             <strong
                               >${this.config.entity
-                    ? this._getEntityDisplayName(this.config.entity).display
-                    : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
+                ? this._getEntityDisplayName(this.config.entity).display
+                : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
                             >
                           </span>
                         </div>
                       `
-                : ''}
+            : ''}
                   ${this._targetMode === 'none' && this._newActionType === 'call-service'
-                ? x `
+            ? x `
                         <div class="default-target-info form-section">
                           <ha-icon icon="mdi:information-outline"></ha-icon>
                           <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
                         </div>
                       `
-                : ''}
+            : ''}
 
                   <div class="form-section">
                     <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
@@ -4268,12 +4290,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
 
                   <div class="form-buttons">
                     ${this._editingActionIndex !== null
-                ? x `
+            ? x `
                           <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
                             ${localize('editor.actions.save', { hass: this.hass })}
                           </ha-button>
                         `
-                : x `
+            : x `
                           <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
                             ${localize('editor.actions.add_button', { hass: this.hass })}
                           </ha-button>
@@ -4283,8 +4305,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                     </ha-button>
                   </div>
                 </div>
-              `
-            : x `
+          ${!this._showActionForm
+            ? x `
                 ${canAddAction
                 ? x `
                       <div class="actions-header">
@@ -4305,7 +4327,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                         >
                       </div>
                     `}
-              `}
+              `
+            : ''}
         </div>
       </div>
     `;
