@@ -15,8 +15,8 @@ A compact, modern and feature-rich custom card for your robotic lawn mower in Ho
 A graphical view of your robotic lawn mower with an Status LED indicating the current state, a graphical battery indicator and animations based on the current state - mowing, pausing, returning or charging
 * **Multiple Views:**   
 Switch between multiple views - the mower UI, a live video stream from your mower's camera or track your mower's location on map (Google Maps or HA Map)
-* **Custom Action Buttons:**   
-Define up to 6 customizable action buttons to trigger any Home Assistant service you choose
+* **Custom Action Buttons:**
+Define up to 6 customizable action buttons - trigger services, toggle entities, navigate within HA, open URLs or show entity details
 * **Info Badges:**   
 Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
@@ -138,6 +138,7 @@ grass_color_bottom:
   - 187
   - 88
 custom_actions:
+  # Action type: call-service (call any HA service)
   - name: Start Mowing
     icon: mdi:play
     action:
@@ -145,6 +146,8 @@ custom_actions:
       service: lawn_mower.start_mowing
       target:
         entity_id: lawn_mower.my_mower
+      data:
+        optional_param: value
   - name: Pause
     icon: mdi:pause
     action:
@@ -159,6 +162,22 @@ custom_actions:
       service: lawn_mower.dock
       target:
         entity_id: lawn_mower.my_mower
+  # Action type: toggle (toggle an entity)
+  - name: Toggle Mower
+    icon: mdi:robot-mower
+    action:
+      action: toggle
+  # Action type: navigate (navigate within HA)
+  - name: Mower Dashboard
+    icon: mdi:view-dashboard
+    action:
+      action: navigate
+      navigation_path: /lovelace/garden
+  # Action type: more-info (open entity details popup)
+  - name: Mower Info
+    icon: mdi:information
+    action:
+      action: more-info
 ```
 
 ### Configuration Options
@@ -184,8 +203,30 @@ custom_actions:
 | `sky_color_bottom`   | list     | No           | RGB value for the bottom sky color                                                           |
 | `grass_color_top`    | list     | No           | RGB value for the top grass color                                                            |
 | `grass_color_bottom` | list     | No           | RGB value for the bottom grass color                                                         |
-| `custom_actions`     | list     | No           | Define up to 3 custom actions                                                                |
+| `custom_actions`     | list     | No           | Define up to 6 custom action buttons (see action types below)                                |
 
+#### Custom Action Structure
+
+Each entry in `custom_actions` has the following structure:
+
+| Name   | Type   | Required | Description                     |
+|--------|--------|----------|---------------------------------|
+| `name` | string | Yes      | Display name for the button     |
+| `icon` | string | Yes      | MDI icon (e.g. `mdi:play`)      |
+| `action`| object | Yes     | Action configuration (see below)|
+
+#### Supported Action Types
+
+| Action Type     | Fields                                          | Description                                    |
+|-----------------|-------------------------------------------------|------------------------------------------------|
+| `call-service`  | `service`, `target` (optional), `data` (optional) | Call any Home Assistant service                |
+| `toggle`        | `entity` (optional)                              | Toggle an entity (defaults to mower entity)    |
+| `more-info`     | `entity` (optional)                              | Show entity details popup (defaults to mower entity) |
+| `navigate`      | `navigation_path`                                | Navigate to a path within Home Assistant       |
+| `url`           | `url_path`                                       | Open a URL in a new browser tab                |
+| `none`          | —                                                | No action (placeholder)                        |
+
+> **Note:** For `call-service`, `toggle` and `more-info`, the target defaults to the configured mower entity if no custom target is specified.
 
 ---
 
