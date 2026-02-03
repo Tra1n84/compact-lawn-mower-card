@@ -57,6 +57,7 @@
       "mower_model": "Modèle de tondeuse",
       "badge_text_color": "Couleur du texte du badge",
       "badge_icon_color": "Couleur de l'icône du badge",
+      "toggle_active_color": "Couleur du bouton de vue actif",
       "mower_models": {
         "default": "Defaut"
       },

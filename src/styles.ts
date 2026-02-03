@@ -167,6 +167,7 @@ export const compactLawnMowerCardStyles = css`
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 220px;
     width: 100%;
     background: var(--ha-card-background, var(--card-background-color, #fff));
     border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg));
@@ -400,7 +401,8 @@ export const compactLawnMowerCardStyles = css`
   }
 
   .view-toggle-button.active {
-    background: var(--primary-color);
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    backdrop-filter: blur(4px) saturate(120%);
     color: white;
   }
 

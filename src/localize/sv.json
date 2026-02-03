@@ -57,6 +57,7 @@
       "mower_model": "Gräsklipparmodell",
       "badge_text_color": "Märkets textfärg",
       "badge_icon_color": "Märkets ikonfärg",
+      "toggle_active_color": "Färg för aktiv vyknapp",
       "mower_models": {
         "default": "Standard"
       },

@@ -57,6 +57,7 @@
       "mower_model": "Modelo de cortacésped",
       "badge_text_color": "Color del texto de la insignia",
       "badge_icon_color": "Color del icono de la insignia",
+      "toggle_active_color": "Color del botón de vista activo",
       "mower_models": {
         "default": "Predeterminado"
       },

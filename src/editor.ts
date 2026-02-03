@@ -710,6 +710,9 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     if (schema.name === 'badge_icon_color') {
       return this._getLocalizedLabel(`editor.options.badge_icon_color`, schema.name);
     }
+    if (schema.name === 'toggle_active_color') {
+      return this._getLocalizedLabel(`editor.options.toggle_active_color`, schema.name);
+    }
     return this._getLocalizedLabel(`editor.options.${schema.name}`, schema.name);
   }
 
@@ -793,69 +796,68 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                 ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
               </p>`}
           <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
-                  <div class="form-header">
-                    ${this._editingActionIndex !== null
-                      ? localize('editor.actions.edit', { hass: this.hass })
-                      : localize('editor.actions.add', { hass: this.hass })}
+            <div class="form-header">
+              ${this._editingActionIndex !== null
+                ? localize('editor.actions.edit', { hass: this.hass })
+                : localize('editor.actions.add', { hass: this.hass })}
+            </div>
+
+            <div class="form-section">
+              <ha-form
+                .hass=${this.hass}
+                .data=${this._actionFormData}
+                .schema=${this._actionFormSchema}
+                .computeLabel=${this._boundComputeActionsLabel}
+                @value-changed=${this._actionFormValueChanged}
+              ></ha-form>
+            </div>
+
+            ${this._targetMode === 'default' && ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
+              ? html`
+                  <div class="default-target-info form-section">
+                    <ha-icon icon="mdi:information-outline"></ha-icon>
+                    <span>
+                      ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                      <strong
+                        >${this.config.entity
+                          ? this._getEntityDisplayName(this.config.entity).display
+                          : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
+                      >
+                    </span>
                   </div>
-
-                  <div class="form-section">
-                    <ha-form
-                      .hass=${this.hass}
-                      .data=${this._actionFormData}
-                      .schema=${this._actionFormSchema}
-                      .computeLabel=${this._boundComputeActionsLabel}
-                      @value-changed=${this._actionFormValueChanged}
-                    ></ha-form>
+                `
+              : ''}
+            ${this._targetMode === 'none' && this._newActionType === 'call-service'
+              ? html`
+                  <div class="default-target-info form-section">
+                    <ha-icon icon="mdi:information-outline"></ha-icon>
+                    <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
                   </div>
+                `
+              : ''}
 
-                  ${this._targetMode === 'default' &&
-                  ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
-                    ? html`
-                        <div class="default-target-info form-section">
-                          <ha-icon icon="mdi:information-outline"></ha-icon>
-                          <span>
-                            ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                            <strong
-                              >${this.config.entity
-                                ? this._getEntityDisplayName(this.config.entity).display
-                                : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
-                            >
-                          </span>
-                        </div>
-                      `
-                    : ''}
-                  ${this._targetMode === 'none' && this._newActionType === 'call-service'
-                    ? html`
-                        <div class="default-target-info form-section">
-                          <ha-icon icon="mdi:information-outline"></ha-icon>
-                          <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
-                        </div>
-                      `
-                    : ''}
+            <div class="form-section">
+              <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
+              ${this._renderIconSelector()}
+            </div>
 
-                  <div class="form-section">
-                    <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
-                    ${this._renderIconSelector()}
-                  </div>
-
-                  <div class="form-buttons">
-                    ${this._editingActionIndex !== null
-                      ? html`
-                          <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
-                            ${localize('editor.actions.save', { hass: this.hass })}
-                          </ha-button>
-                        `
-                      : html`
-                          <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
-                            ${localize('editor.actions.add_button', { hass: this.hass })}
-                          </ha-button>
-                        `}
-                    <ha-button @click=${this._hideActionForm}>
-                      ${localize('editor.actions.cancel', { hass: this.hass })}
+            <div class="form-buttons">
+              ${this._editingActionIndex !== null
+                ? html`
+                    <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
+                      ${localize('editor.actions.save', { hass: this.hass })}
                     </ha-button>
-                  </div>
-                </div>
+                  `
+                : html`
+                    <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
+                      ${localize('editor.actions.add_button', { hass: this.hass })}
+                    </ha-button>
+                  `}
+              <ha-button @click=${this._hideActionForm}>
+                ${localize('editor.actions.cancel', { hass: this.hass })}
+              </ha-button>
+            </div>
+          </div>
           ${!this._showActionForm
             ? html`
                 ${canAddAction
@@ -1004,6 +1006,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return [
       { name: 'badge_text_color', selector: { color_rgb: {} } },
       { name: 'badge_icon_color', selector: { color_rgb: {} } },
+      { name: 'toggle_active_color', selector: { color_rgb: {} } },
     ];
   }
 
@@ -1032,6 +1035,22 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       }
     }
     return undefined;
+  }
+
+  private _getPrimaryColorRgb(): number[] {
+    const fallback: number[] = [3, 169, 244];
+    try {
+      const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+      if (primaryColor) {
+        const parsed = this._parseColor(primaryColor);
+        if (parsed) {
+          return parsed;
+        }
+      }
+    } catch {
+      // Fallback if getComputedStyle fails
+    }
+    return fallback;
   }
 
   private get _mainData() {
@@ -1071,6 +1090,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return {
       badge_text_color: this._parseColor(this.config.badge_text_color) || [0, 0, 0],
       badge_icon_color: this._parseColor(this.config.badge_icon_color) || [0, 0, 0],
+      toggle_active_color: this._parseColor(this.config.toggle_active_color) || this._getPrimaryColorRgb(),
     };
   }
 

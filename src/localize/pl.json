@@ -57,6 +57,7 @@
       "mower_model": "Model kosiarki",
       "badge_text_color": "Kolor tekstu odznaki",
       "badge_icon_color": "Kolor ikony odznaki",
+      "toggle_active_color": "Kolor aktywnego przycisku widoku",
       "mower_models": {
         "default": "Domyślny"
       },

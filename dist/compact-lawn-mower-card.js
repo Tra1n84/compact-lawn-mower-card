@@ -161,6 +161,7 @@ var editor$7 = {
 		mower_model: "Lawn Mower Model",
 		badge_text_color: "Badge Text Color",
 		badge_icon_color: "Badge Icon Color",
+		toggle_active_color: "Active View Toggle Color",
 		mower_models: {
 			"default": "Default"
 		},
@@ -316,6 +317,7 @@ var editor$6 = {
 		mower_model: "Mähroboter Modell",
 		badge_text_color: "Textfarbe für Badges",
 		badge_icon_color: "Icon-Farbe für Badges",
+		toggle_active_color: "Farbe für aktive Ansicht-Buttons",
 		mower_models: {
 			"default": "Standard"
 		},
@@ -471,6 +473,7 @@ var editor$5 = {
 		mower_model: "Modèle de tondeuse",
 		badge_text_color: "Couleur du texte du badge",
 		badge_icon_color: "Couleur de l'icône du badge",
+		toggle_active_color: "Couleur du bouton de vue actif",
 		mower_models: {
 			"default": "Defaut"
 		},
@@ -626,6 +629,7 @@ var editor$4 = {
 		mower_model: "Modelo de cortacésped",
 		badge_text_color: "Color del texto de la insignia",
 		badge_icon_color: "Color del icono de la insignia",
+		toggle_active_color: "Color del botón de vista activo",
 		mower_models: {
 			"default": "Predeterminado"
 		},
@@ -781,6 +785,7 @@ var editor$3 = {
 		mower_model: "Modello tagliaerba",
 		badge_text_color: "Colore testo badge",
 		badge_icon_color: "Colore icona badge",
+		toggle_active_color: "Colore pulsante vista attivo",
 		mower_models: {
 			"default": "Predefinito"
 		},
@@ -936,6 +941,7 @@ var editor$2 = {
 		mower_model: "Grasmaaiermodel",
 		badge_text_color: "Badge tekstkleur",
 		badge_icon_color: "Badge pictogramkleur",
+		toggle_active_color: "Kleur actieve weergaveknop",
 		mower_models: {
 			"default": "Standaard"
 		},
@@ -1091,6 +1097,7 @@ var editor$1 = {
 		mower_model: "Model kosiarki",
 		badge_text_color: "Kolor tekstu odznaki",
 		badge_icon_color: "Kolor ikony odznaki",
+		toggle_active_color: "Kolor aktywnego przycisku widoku",
 		mower_models: {
 			"default": "Domyślny"
 		},
@@ -1246,6 +1253,7 @@ var editor = {
 		mower_model: "Gräsklipparmodell",
 		badge_text_color: "Märkets textfärg",
 		badge_icon_color: "Märkets ikonfärg",
+		toggle_active_color: "Färg för aktiv vyknapp",
 		mower_models: {
 			"default": "Standard"
 		},
@@ -1743,6 +1751,7 @@ const compactLawnMowerCardStyles = i$3 `
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 220px;
     width: 100%;
     background: var(--ha-card-background, var(--card-background-color, #fff));
     border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg));
@@ -1976,7 +1985,8 @@ const compactLawnMowerCardStyles = i$3 `
   }
 
   .view-toggle-button.active {
-    background: var(--primary-color);
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    backdrop-filter: blur(4px) saturate(120%);
     color: white;
   }
 
@@ -4163,6 +4173,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (schema.name === 'badge_icon_color') {
             return this._getLocalizedLabel(`editor.options.badge_icon_color`, schema.name);
         }
+        if (schema.name === 'toggle_active_color') {
+            return this._getLocalizedLabel(`editor.options.toggle_active_color`, schema.name);
+        }
         return this._getLocalizedLabel(`editor.options.${schema.name}`, schema.name);
     }
     _computeActionsLabel(schema) {
@@ -4242,69 +4255,68 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
               </p>`}
           <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
-                  <div class="form-header">
-                    ${this._editingActionIndex !== null
+            <div class="form-header">
+              ${this._editingActionIndex !== null
             ? localize('editor.actions.edit', { hass: this.hass })
             : localize('editor.actions.add', { hass: this.hass })}
-                  </div>
+            </div>
 
-                  <div class="form-section">
-                    <ha-form
-                      .hass=${this.hass}
-                      .data=${this._actionFormData}
-                      .schema=${this._actionFormSchema}
-                      .computeLabel=${this._boundComputeActionsLabel}
-                      @value-changed=${this._actionFormValueChanged}
-                    ></ha-form>
-                  </div>
+            <div class="form-section">
+              <ha-form
+                .hass=${this.hass}
+                .data=${this._actionFormData}
+                .schema=${this._actionFormSchema}
+                .computeLabel=${this._boundComputeActionsLabel}
+                @value-changed=${this._actionFormValueChanged}
+              ></ha-form>
+            </div>
 
-                  ${this._targetMode === 'default' &&
-            ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
+            ${this._targetMode === 'default' && ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
             ? x `
-                        <div class="default-target-info form-section">
-                          <ha-icon icon="mdi:information-outline"></ha-icon>
-                          <span>
-                            ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                            <strong
-                              >${this.config.entity
+                  <div class="default-target-info form-section">
+                    <ha-icon icon="mdi:information-outline"></ha-icon>
+                    <span>
+                      ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                      <strong
+                        >${this.config.entity
                 ? this._getEntityDisplayName(this.config.entity).display
                 : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
-                            >
-                          </span>
-                        </div>
-                      `
-            : ''}
-                  ${this._targetMode === 'none' && this._newActionType === 'call-service'
-            ? x `
-                        <div class="default-target-info form-section">
-                          <ha-icon icon="mdi:information-outline"></ha-icon>
-                          <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
-                        </div>
-                      `
-            : ''}
-
-                  <div class="form-section">
-                    <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
-                    ${this._renderIconSelector()}
+                      >
+                    </span>
                   </div>
-
-                  <div class="form-buttons">
-                    ${this._editingActionIndex !== null
+                `
+            : ''}
+            ${this._targetMode === 'none' && this._newActionType === 'call-service'
             ? x `
-                          <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
-                            ${localize('editor.actions.save', { hass: this.hass })}
-                          </ha-button>
-                        `
-            : x `
-                          <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
-                            ${localize('editor.actions.add_button', { hass: this.hass })}
-                          </ha-button>
-                        `}
-                    <ha-button @click=${this._hideActionForm}>
-                      ${localize('editor.actions.cancel', { hass: this.hass })}
+                  <div class="default-target-info form-section">
+                    <ha-icon icon="mdi:information-outline"></ha-icon>
+                    <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
+                  </div>
+                `
+            : ''}
+
+            <div class="form-section">
+              <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
+              ${this._renderIconSelector()}
+            </div>
+
+            <div class="form-buttons">
+              ${this._editingActionIndex !== null
+            ? x `
+                    <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
+                      ${localize('editor.actions.save', { hass: this.hass })}
                     </ha-button>
-                  </div>
-                </div>
+                  `
+            : x `
+                    <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
+                      ${localize('editor.actions.add_button', { hass: this.hass })}
+                    </ha-button>
+                  `}
+              <ha-button @click=${this._hideActionForm}>
+                ${localize('editor.actions.cancel', { hass: this.hass })}
+              </ha-button>
+            </div>
+          </div>
           ${!this._showActionForm
             ? x `
                 ${canAddAction
@@ -4437,6 +4449,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return [
             { name: 'badge_text_color', selector: { color_rgb: {} } },
             { name: 'badge_icon_color', selector: { color_rgb: {} } },
+            { name: 'toggle_active_color', selector: { color_rgb: {} } },
         ];
     }
     get _appearanceOptionsSchema() {
@@ -4463,6 +4476,22 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             }
         }
         return undefined;
+    }
+    _getPrimaryColorRgb() {
+        const fallback = [3, 169, 244];
+        try {
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            if (primaryColor) {
+                const parsed = this._parseColor(primaryColor);
+                if (parsed) {
+                    return parsed;
+                }
+            }
+        }
+        catch {
+            // Fallback if getComputedStyle fails
+        }
+        return fallback;
     }
     get _mainData() {
         return {
@@ -4498,6 +4527,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return {
             badge_text_color: this._parseColor(this.config.badge_text_color) || [0, 0, 0],
             badge_icon_color: this._parseColor(this.config.badge_icon_color) || [0, 0, 0],
+            toggle_active_color: this._parseColor(this.config.toggle_active_color) || this._getPrimaryColorRgb(),
         };
     }
     render() {
@@ -5043,6 +5073,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         style.setProperty('--grass-color-bottom', this._toCssColor(this.config.grass_color_bottom));
         style.setProperty('--badge-text-color', this._toCssColor(this.config.badge_text_color));
         style.setProperty('--badge-icon-color', this._toCssColor(this.config.badge_icon_color));
+        style.setProperty('--toggle-active-color', this._toCssColor(this.config.toggle_active_color));
     }
     willUpdate(changedProperties) {
         if (!this.hass || !this.config?.entity) {

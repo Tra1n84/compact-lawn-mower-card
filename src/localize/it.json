@@ -57,6 +57,7 @@
       "mower_model": "Modello tagliaerba",
       "badge_text_color": "Colore testo badge",
       "badge_icon_color": "Colore icona badge",
+      "toggle_active_color": "Colore pulsante vista attivo",
       "mower_models": {
         "default": "Predefinito"
       },

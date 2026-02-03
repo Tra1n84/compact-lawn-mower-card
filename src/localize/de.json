@@ -57,6 +57,7 @@
       "mower_model": "Mähroboter Modell",
       "badge_text_color": "Textfarbe für Badges",
       "badge_icon_color": "Icon-Farbe für Badges",
+      "toggle_active_color": "Farbe für aktive Ansicht-Buttons",
       "mower_models": {
         "default": "Standard"
       },

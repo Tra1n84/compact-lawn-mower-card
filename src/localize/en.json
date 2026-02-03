@@ -57,6 +57,7 @@
       "mower_model": "Lawn Mower Model",
       "badge_text_color": "Badge Text Color",
       "badge_icon_color": "Badge Icon Color",
+      "toggle_active_color": "Active View Toggle Color",
       "mower_models": {
         "default": "Default"
       },

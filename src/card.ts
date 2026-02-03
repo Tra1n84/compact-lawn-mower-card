@@ -323,6 +323,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     style.setProperty('--grass-color-bottom', this._toCssColor(this.config.grass_color_bottom));
     style.setProperty('--badge-text-color', this._toCssColor(this.config.badge_text_color));
     style.setProperty('--badge-icon-color', this._toCssColor(this.config.badge_icon_color));
+    style.setProperty('--toggle-active-color', this._toCssColor(this.config.toggle_active_color));
   }
 
   protected willUpdate(changedProperties: PropertyValues<this>): void {

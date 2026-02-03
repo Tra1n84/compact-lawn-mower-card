@@ -57,6 +57,7 @@
       "mower_model": "Grasmaaiermodel",
       "badge_text_color": "Badge tekstkleur",
       "badge_icon_color": "Badge pictogramkleur",
+      "toggle_active_color": "Kleur actieve weergaveknop",
       "mower_models": {
         "default": "Standaard"
       },
