@@ -2715,6 +2715,200 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
+  @keyframes BounceOnLawnMedium {
+    0%,
+    100% {
+      transform: translateX(20px) translateY(0px);
+    }
+    25% {
+      transform: translateX(20px) translateY(-1px);
+    }
+    50% {
+      transform: translateX(20px) translateY(-0.2px);
+    }
+    75% {
+      transform: translateX(20px) translateY(-1.2px);
+    }
+  }
+
+  @keyframes BounceOnLawnSmall {
+    0%,
+    100% {
+      transform: translateX(10px) translateY(0px);
+    }
+    25% {
+      transform: translateX(10px) translateY(-1px);
+    }
+    50% {
+      transform: translateX(10px) translateY(-0.2px);
+    }
+    75% {
+      transform: translateX(10px) translateY(-1.2px);
+    }
+  }
+
+  @keyframes driveToDockMedium {
+    0% {
+      transform: translate(20px, 0px);
+    }
+    10% {
+      transform: translate(19px, 0px);
+    }
+    20% {
+      transform: translate(17px, 0px);
+    }
+    30% {
+      transform: translate(13px, 0px);
+    }
+    40% {
+      transform: translate(7px, 0px);
+    }
+    50% {
+      transform: translate(0px, 0px);
+    }
+    60% {
+      transform: translate(-7px, 0px);
+    }
+    70% {
+      transform: translate(-13px, 0px);
+    }
+    80% {
+      transform: translate(-17px, 0px);
+    }
+    90% {
+      transform: translate(-19px, 0.3px);
+    }
+    95% {
+      transform: translate(-19.75px, 0.5px);
+    }
+    100% {
+      transform: translate(-20px, 0px);
+    }
+  }
+
+  @keyframes driveFromDockMedium {
+    0% {
+      transform: translate(-20px, 0px);
+    }
+    5% {
+      transform: translate(-19.9px, -0.3px);
+    }
+    10% {
+      transform: translate(-19.6px, -0.4px);
+    }
+    15% {
+      transform: translate(-18.8px, -0.4px);
+    }
+    20% {
+      transform: translate(-17.6px, -0.3px);
+    }
+    30% {
+      transform: translate(-14.4px, -0.2px);
+    }
+    40% {
+      transform: translate(-10.4px, 0px);
+    }
+    50% {
+      transform: translate(-5.2px, 0px);
+    }
+    60% {
+      transform: translate(0.8px, 0px);
+    }
+    70% {
+      transform: translate(7.2px, 0px);
+    }
+    80% {
+      transform: translate(13.2px, 0px);
+    }
+    90% {
+      transform: translate(17.6px, 0px);
+    }
+    100% {
+      transform: translate(20px, 0px);
+    }
+  }
+
+  @keyframes driveToDockSmall {
+    0% {
+      transform: translate(10px, 0px);
+    }
+    10% {
+      transform: translate(9px, 0px);
+    }
+    20% {
+      transform: translate(8px, 0px);
+    }
+    30% {
+      transform: translate(5px, 0px);
+    }
+    40% {
+      transform: translate(0px, 0px);
+    }
+    50% {
+      transform: translate(-5px, 0px);
+    }
+    60% {
+      transform: translate(-10px, 0px);
+    }
+    70% {
+      transform: translate(-15px, 0px);
+    }
+    80% {
+      transform: translate(-18px, 0px);
+    }
+    90% {
+      transform: translate(-19px, 0.3px);
+    }
+    95% {
+      transform: translate(-19.75px, 0.5px);
+    }
+    100% {
+      transform: translate(-20px, 0px);
+    }
+  }
+
+  @keyframes driveFromDockSmall {
+    0% {
+      transform: translate(-20px, 0px);
+    }
+    5% {
+      transform: translate(-19.9px, -0.3px);
+    }
+    10% {
+      transform: translate(-19.7px, -0.4px);
+    }
+    15% {
+      transform: translate(-19.1px, -0.4px);
+    }
+    20% {
+      transform: translate(-18.2px, -0.3px);
+    }
+    30% {
+      transform: translate(-15.8px, -0.2px);
+    }
+    40% {
+      transform: translate(-12.8px, 0px);
+    }
+    50% {
+      transform: translate(-8.9px, 0px);
+    }
+    60% {
+      transform: translate(-4.4px, 0px);
+    }
+    70% {
+      transform: translate(0.4px, 0px);
+    }
+    80% {
+      transform: translate(4.9px, 0px);
+    }
+    90% {
+      transform: translate(8.2px, 0px);
+    }
+    100% {
+      transform: translate(10px, 0px);
+    }
+  }
+
   @keyframes ledStripActive {
     0%,
     100% {
@@ -2764,6 +2958,25 @@ const compactLawnMowerCardStyles = i$3 `
   /* =================== */
   /*  Responsive Design  */
   /* =================== */
+  @container (max-width: 280px) {
+    .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+      transform: translateX(20px);
+    }
+
+    .mower-svg.on-lawn-static.active .mower-body {
+      transform: translateX(20px);
+      animation: BounceOnLawnMedium 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+
+    .mower-svg.driving-to-dock .mower-body {
+      animation: driveToDockMedium 2s linear forwards;
+    }
+
+    .mower-svg.driving-from-dock .mower-body {
+      animation: driveFromDockMedium 2s linear forwards;
+    }
+  }
+
   @container (max-width: 200px) {
     .card-content {
       padding: 4px;
@@ -2823,6 +3036,23 @@ const compactLawnMowerCardStyles = i$3 `
     .status-icon {
       width: 20px;
       height: 20px;
+    }
+
+    .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+      transform: translateX(10px);
+    }
+
+    .mower-svg.on-lawn-static.active .mower-body {
+      transform: translateX(10px);
+      animation: BounceOnLawnSmall 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+
+    .mower-svg.driving-to-dock .mower-body {
+      animation: driveToDockSmall 2s linear forwards;
+    }
+
+    .mower-svg.driving-from-dock .mower-body {
+      animation: driveFromDockSmall 2s linear forwards;
     }
   }
 
