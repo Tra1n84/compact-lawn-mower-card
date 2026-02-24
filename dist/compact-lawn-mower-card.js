@@ -88,7 +88,7 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
 var t,r;!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none";}(t||(t={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24";}(r||(r={}));function E(e){return e.substr(0,e.indexOf("."))}var Z=["closed","locked","off"],ne=function(e,t,r,n){n=n||{},r=null==r?{}:r;var i=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return i.detail=r,e.dispatchEvent(i),i};var le=function(e){ne(window,"haptic",e);},de$1=function(e,t,r){ void 0===r&&(r=false),r?history.replaceState(null,"",t):history.pushState(null,"",t),ne(window,"location-changed",{replace:r});},fe=function(e,t,r){ void 0===r&&(r=true);var n,i=E(t),a="group"===i?"homeassistant":i;switch(i){case "lock":n=r?"unlock":"lock";break;case "cover":n=r?"open_cover":"close_cover";break;default:n=r?"turn_on":"turn_off";}return e.callService(a,n,{entity_id:t})},ge=function(e,t){var r=Z.includes(e.states[t].state);return fe(e,t,r)};
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.1.0';
+const CARD_VERSION = '1.1.1';
 // Map constants
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
@@ -1825,9 +1825,10 @@ const compactLawnMowerCardStyles = i$3 `
   .card-content {
     padding: 8px;
     flex: 1;
+    min-width: 0;
     display: grid;
     grid-template-rows: 1fr auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
     height: 100%;
     position: relative;
@@ -2475,6 +2476,7 @@ const compactLawnMowerCardStyles = i$3 `
   .buttons-section {
     display: flex;
     gap: 4px;
+    overflow: hidden;
   }
 
   .action-button {
@@ -2490,7 +2492,7 @@ const compactLawnMowerCardStyles = i$3 `
       background-color 0.2s ease-out,
       box-shadow 0.2s ease-out;
     min-height: 40px;
-    min-width: 40px;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2892,6 +2894,7 @@ const compactLawnMowerCardStyles = i$3 `
     .action-button {
       padding: 8px;
       min-height: 36px;
+      font-size: 11px;
     }
 
     .action-button ha-icon {

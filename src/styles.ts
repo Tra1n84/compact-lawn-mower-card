@@ -241,9 +241,10 @@ export const compactLawnMowerCardStyles = css`
   .card-content {
     padding: 8px;
     flex: 1;
+    min-width: 0;
     display: grid;
     grid-template-rows: 1fr auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
     height: 100%;
     position: relative;
@@ -891,6 +892,7 @@ export const compactLawnMowerCardStyles = css`
   .buttons-section {
     display: flex;
     gap: 4px;
+    overflow: hidden;
   }
 
   .action-button {
@@ -906,7 +908,7 @@ export const compactLawnMowerCardStyles = css`
       background-color 0.2s ease-out,
       box-shadow 0.2s ease-out;
     min-height: 40px;
-    min-width: 40px;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1308,6 +1310,7 @@ export const compactLawnMowerCardStyles = css`
     .action-button {
       padding: 8px;
       min-height: 36px;
+      font-size: 11px;
     }
 
     .action-button ha-icon {
