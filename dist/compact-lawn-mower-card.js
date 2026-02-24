@@ -32,20 +32,20 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t$2=globalThis,e$4=t$2.ShadowRoot&&(void 0===t$2.ShadyCSS||t$2.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$2=Symbol(),o$4=new WeakMap;let n$3 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$2)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$4&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$4.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$4.set(s,t));}return t}toString(){return this.cssText}};const r$4=t=>new n$3("string"==typeof t?t:t+"",void 0,s$2),i$3=(t,...e)=>{const o=1===t.length?t[0]:e.reduce(((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1]),t[0]);return new n$3(o,t,s$2)},S$1=(s,o)=>{if(e$4)s.adoptedStyleSheets=o.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet));else for(const e of o){const o=document.createElement("style"),n=t$2.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$2=e$4?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$4(e)})(t):t;
+const t$3=globalThis,e$4=t$3.ShadowRoot&&(void 0===t$3.ShadyCSS||t$3.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$2=Symbol(),o$4=new WeakMap;let n$3 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$2)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$4&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$4.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$4.set(s,t));}return t}toString(){return this.cssText}};const r$5=t=>new n$3("string"==typeof t?t:t+"",void 0,s$2),i$3=(t,...e)=>{const o=1===t.length?t[0]:e.reduce(((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1]),t[0]);return new n$3(o,t,s$2)},S$1=(s,o)=>{if(e$4)s.adoptedStyleSheets=o.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet));else for(const e of o){const o=document.createElement("style"),n=t$3.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$2=e$4?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$5(e)})(t):t;
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const{is:i$2,defineProperty:e$3,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$3,getOwnPropertySymbols:o$3,getPrototypeOf:n$2}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$2(t,s),b={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$3(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$2(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$3(t),...o$3(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((t=>t(this)));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach((t=>t.hostConnected?.()));}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach((t=>t.hostDisconnected?.()));}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i){if(void 0!==t){const e=this.constructor,h=this[t];if(i??=e.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(e._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach((t=>t.hostUpdate?.())),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach((t=>t.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach((t=>this._$ET(t,this[t]))),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.1");
+ */const{is:i$2,defineProperty:e$3,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$4,getOwnPropertySymbols:o$3,getPrototypeOf:n$2}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$2(t,s),b={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$3(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$2(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$4(t),...o$3(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((t=>t(this)));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach((t=>t.hostConnected?.()));}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach((t=>t.hostDisconnected?.()));}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i){if(void 0!==t){const e=this.constructor,h=this[t];if(i??=e.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(e._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach((t=>t.hostUpdate?.())),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach((t=>t.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach((t=>this._$ET(t,this[t]))),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.1");
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t$1=globalThis,i$1=t$1.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$2="?"+h,n$1=`<${o$2}>`,r$2=document,l=()=>r$2.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),A=new WeakMap,C=r$2.createTreeWalker(r$2,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$1?i$1.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$2)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$2.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$2).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$2,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E||null==t||""===t?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$2.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E?t=E:t!==E&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E);}}class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E)===T)return;const s=this._$AH,e=t===E&&s!==E||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E&&(s===E||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$1.litHtmlPolyfillSupport;j?.(N,R),(t$1.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
+const t$2=globalThis,i$1=t$2.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$2="?"+h,n$1=`<${o$2}>`,r$3=document,l=()=>r$3.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E$1=Symbol.for("lit-nothing"),A=new WeakMap,C=r$3.createTreeWalker(r$3,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$1?i$1.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$2)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$3.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$3).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$3,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E$1,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E$1||null==t||""===t?(this._$AH!==E$1&&this._$AR(),this._$AH=E$1):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E$1&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$3.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E$1,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E$1;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E$1?t=E$1:t!==E$1&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E$1?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E$1?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E$1);}}class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E$1)===T)return;const s=this._$AH,e=t===E$1&&s!==E$1||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E$1&&(s===E$1||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$2.litHtmlPolyfillSupport;j?.(N,R),(t$2.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
 
 /**
  * @license
@@ -58,19 +58,19 @@ const t$1=globalThis,i$1=t$1.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{c
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=t=>(e,o)=>{ void 0!==o?o.addInitializer((()=>{customElements.define(t,e);})):customElements.define(t,e);};
+const t$1=t=>(e,o)=>{ void 0!==o?o.addInitializer((()=>{customElements.define(t,e);})):customElements.define(t,e);};
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const o={attribute:true,type:String,converter:u$1,reflect:false,hasChanged:f$1},r$1=(t=o,e,r)=>{const{kind:n,metadata:i}=r;let s=globalThis.litPropertyMetadata.get(i);if(void 0===s&&globalThis.litPropertyMetadata.set(i,s=new Map),"setter"===n&&((t=Object.create(t)).wrapped=true),s.set(r.name,t),"accessor"===n){const{name:o}=r;return {set(r){const n=e.get.call(this);e.set.call(this,r),this.requestUpdate(o,n,t);},init(e){return void 0!==e&&this.C(o,void 0,t,e),e}}}if("setter"===n){const{name:o}=r;return function(r){const n=this[o];e.call(this,r),this.requestUpdate(o,n,t);}}throw Error("Unsupported decorator location: "+n)};function n(t){return (e,o)=>"object"==typeof o?r$1(t,e,o):((t,e,o)=>{const r=e.hasOwnProperty(o);return e.constructor.createProperty(o,t),r?Object.getOwnPropertyDescriptor(e,o):void 0})(t,e,o)}
+ */const o={attribute:true,type:String,converter:u$1,reflect:false,hasChanged:f$1},r$2=(t=o,e,r)=>{const{kind:n,metadata:i}=r;let s=globalThis.litPropertyMetadata.get(i);if(void 0===s&&globalThis.litPropertyMetadata.set(i,s=new Map),"setter"===n&&((t=Object.create(t)).wrapped=true),s.set(r.name,t),"accessor"===n){const{name:o}=r;return {set(r){const n=e.get.call(this);e.set.call(this,r),this.requestUpdate(o,n,t);},init(e){return void 0!==e&&this.C(o,void 0,t,e),e}}}if("setter"===n){const{name:o}=r;return function(r){const n=this[o];e.call(this,r),this.requestUpdate(o,n,t);}}throw Error("Unsupported decorator location: "+n)};function n(t){return (e,o)=>"object"==typeof o?r$2(t,e,o):((t,e,o)=>{const r=e.hasOwnProperty(o);return e.constructor.createProperty(o,t),r?Object.getOwnPropertyDescriptor(e,o):void 0})(t,e,o)}
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function r(r){return n({...r,state:true,attribute:false})}
+ */function r$1(r){return n({...r,state:true,attribute:false})}
 
 /**
  * @license
@@ -85,8 +85,10 @@ const e$1=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"obj
  * SPDX-License-Identifier: BSD-3-Clause
  */function e(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$1(n,s,{get(){return o(this)}})}}
 
+var t,r;!function(e){e.language="language",e.system="system",e.comma_decimal="comma_decimal",e.decimal_comma="decimal_comma",e.space_comma="space_comma",e.none="none";}(t||(t={})),function(e){e.language="language",e.system="system",e.am_pm="12",e.twenty_four="24";}(r||(r={}));function E(e){return e.substr(0,e.indexOf("."))}var Z=["closed","locked","off"],ne=function(e,t,r,n){n=n||{},r=null==r?{}:r;var i=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return i.detail=r,e.dispatchEvent(i),i};var le=function(e){ne(window,"haptic",e);},de$1=function(e,t,r){ void 0===r&&(r=false),r?history.replaceState(null,"",t):history.pushState(null,"",t),ne(window,"location-changed",{replace:r});},fe=function(e,t,r){ void 0===r&&(r=true);var n,i=E(t),a="group"===i?"homeassistant":i;switch(i){case "lock":n=r?"unlock":"lock";break;case "cover":n=r?"open_cover":"close_cover";break;default:n=r?"turn_on":"turn_off";}return e.callService(a,n,{entity_id:t})},ge=function(e,t){var r=Z.includes(e.states[t].state);return fe(e,t,r)};
+
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.0.0';
+const CARD_VERSION = '1.1.1';
 // Map constants
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
@@ -159,6 +161,7 @@ var editor$7 = {
 		mower_model: "Lawn Mower Model",
 		badge_text_color: "Badge Text Color",
 		badge_icon_color: "Badge Icon Color",
+		toggle_active_color: "Active View Toggle Color",
 		mower_models: {
 			"default": "Default"
 		},
@@ -206,6 +209,9 @@ var editor$7 = {
 		},
 		target_mode_none_helper: "The service will be called without a target entity.",
 		target_none: "None",
+		type: "Action Type",
+		navigation_path: "Navigation Path",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -220,7 +226,8 @@ var editor$7 = {
 var error$7 = {
 	missing_entity: "Please select a Lawn Mower entity",
 	loading_components: "Error loading components",
-	entity_not_found: "Entity not found."
+	entity_not_found: "Entity not found.",
+	action_failed: "Error executing action"
 };
 var camera$7 = {
 	camera_title: "Camera",
@@ -310,6 +317,7 @@ var editor$6 = {
 		mower_model: "Mähroboter Modell",
 		badge_text_color: "Textfarbe für Badges",
 		badge_icon_color: "Icon-Farbe für Badges",
+		toggle_active_color: "Farbe für aktive Ansicht-Buttons",
 		mower_models: {
 			"default": "Standard"
 		},
@@ -357,6 +365,9 @@ var editor$6 = {
 		},
 		target_mode_none_helper: "Der Service wird ohne eine Ziel-Entität aufgerufen.",
 		target_none: "Ohne",
+		type: "Aktionstyp",
+		navigation_path: "Navigationspfad",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -371,7 +382,8 @@ var editor$6 = {
 var error$6 = {
 	missing_entity: "Bitte wähle eine Mähroboter-Entität",
 	loading_components: "Fehler beim Laden der Komponenten",
-	entity_not_found: "Entität wurde nicht gefunden."
+	entity_not_found: "Entität wurde nicht gefunden.",
+	action_failed: "Fehler beim Ausführen der Aktion"
 };
 var camera$6 = {
 	camera_title: "Kamera",
@@ -461,6 +473,7 @@ var editor$5 = {
 		mower_model: "Modèle de tondeuse",
 		badge_text_color: "Couleur du texte du badge",
 		badge_icon_color: "Couleur de l'icône du badge",
+		toggle_active_color: "Couleur du bouton de vue actif",
 		mower_models: {
 			"default": "Defaut"
 		},
@@ -508,6 +521,9 @@ var editor$5 = {
 		},
 		target_mode_none_helper: "Le service sera appelé sans entité cible.",
 		target_none: "Aucune",
+		type: "Type d'action",
+		navigation_path: "Chemin de navigation",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigation",
@@ -522,7 +538,8 @@ var editor$5 = {
 var error$5 = {
 	missing_entity: "Veuillez sélectionner une entité Tondeuse à gazon",
 	loading_components: "Erreur lors du chargement des composants",
-	entity_not_found: "Entité non trouvée."
+	entity_not_found: "Entité non trouvée.",
+	action_failed: "Erreur lors de l'exécution de l'action"
 };
 var camera$5 = {
 	camera_title: "Caméra",
@@ -612,6 +629,7 @@ var editor$4 = {
 		mower_model: "Modelo de cortacésped",
 		badge_text_color: "Color del texto de la insignia",
 		badge_icon_color: "Color del icono de la insignia",
+		toggle_active_color: "Color del botón de vista activo",
 		mower_models: {
 			"default": "Predeterminado"
 		},
@@ -659,6 +677,9 @@ var editor$4 = {
 		},
 		target_mode_none_helper: "El servicio se llamará sin entidad objetivo.",
 		target_none: "Ninguno",
+		type: "Tipo de acción",
+		navigation_path: "Ruta de navegación",
+		url_path: "URL",
 		action_type: {
 			call_service: "Servicio",
 			navigate: "Navegación",
@@ -673,7 +694,8 @@ var editor$4 = {
 var error$4 = {
 	missing_entity: "Por favor selecciona una entidad de cortacésped",
 	loading_components: "Error al cargar componentes",
-	entity_not_found: "Entidad no encontrada."
+	entity_not_found: "Entidad no encontrada.",
+	action_failed: "Error al ejecutar la acción"
 };
 var camera$4 = {
 	camera_title: "Cámara",
@@ -763,6 +785,7 @@ var editor$3 = {
 		mower_model: "Modello tagliaerba",
 		badge_text_color: "Colore testo badge",
 		badge_icon_color: "Colore icona badge",
+		toggle_active_color: "Colore pulsante vista attivo",
 		mower_models: {
 			"default": "Predefinito"
 		},
@@ -810,6 +833,9 @@ var editor$3 = {
 		},
 		target_mode_none_helper: "Il servizio verrà chiamato senza entità destinazione.",
 		target_none: "Nessuno",
+		type: "Tipo di azione",
+		navigation_path: "Percorso di navigazione",
+		url_path: "URL",
 		action_type: {
 			call_service: "Servizio",
 			navigate: "Navigazione",
@@ -824,7 +850,8 @@ var editor$3 = {
 var error$3 = {
 	missing_entity: "Seleziona un'entità tagliaerba",
 	loading_components: "Errore nel caricamento componenti",
-	entity_not_found: "Entità non trovata."
+	entity_not_found: "Entità non trovata.",
+	action_failed: "Errore nell'esecuzione dell'azione"
 };
 var camera$3 = {
 	camera_title: "Telecamera",
@@ -914,6 +941,7 @@ var editor$2 = {
 		mower_model: "Grasmaaiermodel",
 		badge_text_color: "Badge tekstkleur",
 		badge_icon_color: "Badge pictogramkleur",
+		toggle_active_color: "Kleur actieve weergaveknop",
 		mower_models: {
 			"default": "Standaard"
 		},
@@ -961,6 +989,9 @@ var editor$2 = {
 		},
 		target_mode_none_helper: "De service wordt aangeroepen zonder doelentiteit.",
 		target_none: "Geen",
+		type: "Actietype",
+		navigation_path: "Navigatiepad",
+		url_path: "URL",
 		action_type: {
 			call_service: "Service",
 			navigate: "Navigatie",
@@ -975,7 +1006,8 @@ var editor$2 = {
 var error$2 = {
 	missing_entity: "Selecteer een grasmaaier-entiteit",
 	loading_components: "Fout bij laden van componenten",
-	entity_not_found: "Entiteit niet gevonden."
+	entity_not_found: "Entiteit niet gevonden.",
+	action_failed: "Fout bij uitvoeren van actie"
 };
 var camera$2 = {
 	camera_title: "Camera",
@@ -1065,6 +1097,7 @@ var editor$1 = {
 		mower_model: "Model kosiarki",
 		badge_text_color: "Kolor tekstu odznaki",
 		badge_icon_color: "Kolor ikony odznaki",
+		toggle_active_color: "Kolor aktywnego przycisku widoku",
 		mower_models: {
 			"default": "Domyślny"
 		},
@@ -1112,6 +1145,9 @@ var editor$1 = {
 		},
 		target_mode_none_helper: "Usługa zostanie wywołana bez encji docelowej.",
 		target_none: "Brak",
+		type: "Typ akcji",
+		navigation_path: "Ścieżka nawigacji",
+		url_path: "URL",
 		action_type: {
 			call_service: "Usługa",
 			navigate: "Nawigacja",
@@ -1126,7 +1162,8 @@ var editor$1 = {
 var error$1 = {
 	missing_entity: "Wybierz encję kosiarki",
 	loading_components: "Błąd ładowania komponentów",
-	entity_not_found: "Nie znaleziono encji."
+	entity_not_found: "Nie znaleziono encji.",
+	action_failed: "Błąd podczas wykonywania akcji"
 };
 var camera$1 = {
 	camera_title: "Kamera",
@@ -1216,6 +1253,7 @@ var editor = {
 		mower_model: "Gräsklipparmodell",
 		badge_text_color: "Märkets textfärg",
 		badge_icon_color: "Märkets ikonfärg",
+		toggle_active_color: "Färg för aktiv vyknapp",
 		mower_models: {
 			"default": "Standard"
 		},
@@ -1263,6 +1301,9 @@ var editor = {
 		},
 		target_mode_none_helper: "Tjänsten kommer att anropas utan målenhet.",
 		target_none: "Ingen",
+		type: "Åtgärdstyp",
+		navigation_path: "Navigeringssökväg",
+		url_path: "URL",
 		action_type: {
 			call_service: "Tjänst",
 			navigate: "Navigering",
@@ -1277,7 +1318,8 @@ var editor = {
 var error = {
 	missing_entity: "Välj en gräsklipparenhet",
 	loading_components: "Fel vid laddning av komponenter",
-	entity_not_found: "Enhet hittades inte."
+	entity_not_found: "Enhet hittades inte.",
+	action_failed: "Fel vid utförande av åtgärd"
 };
 var camera = {
 	camera_title: "Kamera",
@@ -1317,14 +1359,16 @@ const languages = {
     it,
     nl,
     pl,
-    sv
+    sv,
 };
 const getLanguage = (hass) => {
     const lang = hass?.locale?.language || hass?.language || localStorage.getItem('selectedLanguage') || navigator.language || 'en';
     return lang.split('-')[0].toLowerCase();
 };
 const getNestedProperty = (obj, path) => {
-    const value = path.split('.').reduce((o, i) => (o && typeof o === 'object' ? o[i] : undefined), obj);
+    const value = path
+        .split('.')
+        .reduce((o, i) => (o && typeof o === 'object' ? o[i] : undefined), obj);
     return typeof value === 'string' ? value : undefined;
 };
 const localize = (key, options = {}) => {
@@ -1378,81 +1422,112 @@ const getDefaultActions = (hass) => [
 const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumference, ringStrokeOffset, stationLedColor) => {
     return x `
     <?xml version="1.0" encoding="utf-8"?>
-    <svg viewBox="0 0 178 100" preserveAspectRatio="xMinYMax meet" class="mower-svg ${svgClass}" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      viewBox="0 0 178 100"
+      preserveAspectRatio="xMinYMax meet"
+      class="mower-svg ${svgClass}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <defs>
         <linearGradient id="mowerBodyGradient" x1="0.5" y1="0" x2="0.5" y2="1">
-          <stop offset="0" stop-color="var(--mower-body-highlight, #f5f5f5)"/>
-          <stop offset="1" stop-color="var(--mower-body-base, #e0e0e0)"/>
+          <stop offset="0" stop-color="var(--mower-body-highlight, #f5f5f5)" />
+          <stop offset="1" stop-color="var(--mower-body-base, #e0e0e0)" />
         </linearGradient>
         <radialGradient id="wheelTireGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0.85" stop-color="var(--wheel-tire-color, #333)"/>
-          <stop offset="1" stop-color="var(--wheel-tire-edge-color, #222)"/>
+          <stop offset="0.85" stop-color="var(--wheel-tire-color, #333)" />
+          <stop offset="1" stop-color="var(--wheel-tire-edge-color, #222)" />
         </radialGradient>
         <radialGradient id="wheelRimGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stop-color="var(--wheel-rim-highlight, #ccc)"/>
-          <stop offset="1" stop-color="var(--wheel-rim-base, #999)"/>
+          <stop offset="0" stop-color="var(--wheel-rim-highlight, #ccc)" />
+          <stop offset="1" stop-color="var(--wheel-rim-base, #999)" />
         </radialGradient>
         <linearGradient id="stationBaseGradient" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#555"/>
-          <stop offset="0.5" stop-color="#444"/>
-          <stop offset="1" stop-color="#555"/>
+          <stop offset="0" stop-color="#555" />
+          <stop offset="0.5" stop-color="#444" />
+          <stop offset="1" stop-color="#555" />
         </linearGradient>
 
         <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15"/>
+          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15" />
         </filter>
         <filter id="ledGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
           <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
         <filter id="batteryGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur"/>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur" />
           <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
       </defs>
       <g transform="translate(0, 10)">
-        <g class="mower-body body-translate" filter="url(#softShadow)" transform="matrix(1, 0, 0, 0.99008, 0, 0.872922)">
+        <g
+          class="mower-body body-translate"
+          filter="url(#softShadow)"
+          transform="matrix(1, 0, 0, 0.99008, 0, 0.872922)"
+        >
           <g class="wheel-back" transform="matrix(1, 0, 0, 1, 2, 0)">
             <g class="wheel-rotation" transform-origin="55 70">
-              <circle cx="55" cy="70" r="15" fill="url(#wheelTireGradient)"/>
+              <circle cx="55" cy="70" r="15" fill="url(#wheelTireGradient)" />
               <g class="tire-profile" transform="translate(55, 70)" opacity="0.3">
-                <path d="M -10 -10 L -12 -8 L -8 -12 L -10 -10 M 10 10 L 12 8 L 8 12 L 10 10 M -10 10 L -12 8 L -8 12 L -10 10 M 10 -10 L 12 -8 L 8 -12 L 10 -10" stroke="#111" stroke-width="1" fill="none"/>
+                <path
+                  d="M -10 -10 L -12 -8 L -8 -12 L -10 -10 M 10 10 L 12 8 L 8 12 L 10 10 M -10 10 L -12 8 L -8 12 L -10 10 M 10 -10 L 12 -8 L 8 -12 L 10 -10"
+                  stroke="#111"
+                  stroke-width="1"
+                  fill="none"
+                />
               </g>
-              <circle cx="55" cy="70" r="7" fill="url(#wheelRimGradient)"/>
+              <circle cx="55" cy="70" r="7" fill="url(#wheelRimGradient)" />
               <g class="wheel-spokes" transform="translate(55, 70)" stroke="#777" stroke-width="1" opacity="0.7">
-                <line x1="0" y1="-6" x2="0" y2="6"/>
-                <line x1="-4.24" y1="-4.24" x2="4.24" y2="4.24"/>
-                <line x1="-6" y1="0" x2="6" y2="0"/>
-                <line x1="-4.24" y1="4.24" x2="4.24" y2="-4.24"/>
+                <line x1="0" y1="-6" x2="0" y2="6" />
+                <line x1="-4.24" y1="-4.24" x2="4.24" y2="4.24" />
+                <line x1="-6" y1="0" x2="6" y2="0" />
+                <line x1="-4.24" y1="4.24" x2="4.24" y2="-4.24" />
               </g>
-              <circle cx="55" cy="70" r="2" fill="#555"/>
+              <circle cx="55" cy="70" r="2" fill="#555" />
             </g>
           </g>
           <g class="wheel-front" transform="matrix(1, 0, 0, 1, 18.293166, 1.063422)">
             <g class="wheel-rotation" transform-origin="110 74">
-              <circle cx="110" cy="74" r="10" fill="url(#wheelTireGradient)"/>
-              <circle cx="110" cy="74" r="5" fill="url(#wheelRimGradient)"/>
+              <circle cx="110" cy="74" r="10" fill="url(#wheelTireGradient)" />
+              <circle cx="110" cy="74" r="5" fill="url(#wheelRimGradient)" />
               <g class="wheel-spokes" transform="translate(110, 74)" stroke="#777" stroke-width="0.8" opacity="0.7">
-                <line x1="0" y1="-4" x2="0" y2="4"/>
-                <line x1="-2.83" y1="-2.83" x2="2.83" y2="2.83"/>
-                <line x1="-4" y1="0" x2="4" y2="0"/>
-                <line x1="-2.83" y1="2.83" x2="2.83" y2="-2.83"/>
+                <line x1="0" y1="-4" x2="0" y2="4" />
+                <line x1="-2.83" y1="-2.83" x2="2.83" y2="2.83" />
+                <line x1="-4" y1="0" x2="4" y2="0" />
+                <line x1="-2.83" y1="2.83" x2="2.83" y2="-2.83" />
               </g>
-              <circle cx="110" cy="74" r="1.5" fill="#555"/>
+              <circle cx="110" cy="74" r="1.5" fill="#555" />
             </g>
           </g>
-          <path d="M 40 61.062 C 37.5 54.359 43.817 41.062 47.567 37.152 C 50.717 33.867 55.551 29.385 63.424 27.649 C 64.719 27.363 69.722 27.218 71.252 27.284 L 81.768 29.71 C 85.08 30.968 88.612 31.873 91.46 32.965 C 95.934 34.68 104.803 37.769 108.243 39.138 C 115.539 42.041 115.714 42.453 121.409 44.848 C 122.997 45.516 131.345 50.246 132.123 50.745 C 137.513 54.202 139.531 55.222 141.426 56.962 C 145.246 60.469 144.215 63.412 144.412 69.769 L 131.515 69.851 L 120 70 L 85 70 L 50 70 L 45 65.531 L 40 61.062 Z" fill="url(#mowerBodyGradient)" stroke="#ccc" stroke-width="0.5"/>
-          <rect x="79.317" y="56.547" width="30.754" height="3.655" rx="1" fill="${ledColor}" filter="url(#ledGlow)" class="mower-led-strip" style="paint-order: fill;"/>
+          <path
+            d="M 40 61.062 C 37.5 54.359 43.817 41.062 47.567 37.152 C 50.717 33.867 55.551 29.385 63.424 27.649 C 64.719 27.363 69.722 27.218 71.252 27.284 L 81.768 29.71 C 85.08 30.968 88.612 31.873 91.46 32.965 C 95.934 34.68 104.803 37.769 108.243 39.138 C 115.539 42.041 115.714 42.453 121.409 44.848 C 122.997 45.516 131.345 50.246 132.123 50.745 C 137.513 54.202 139.531 55.222 141.426 56.962 C 145.246 60.469 144.215 63.412 144.412 69.769 L 131.515 69.851 L 120 70 L 85 70 L 50 70 L 45 65.531 L 40 61.062 Z"
+            fill="url(#mowerBodyGradient)"
+            stroke="#ccc"
+            stroke-width="0.5"
+          />
+          <rect
+            x="79.317"
+            y="56.547"
+            width="30.754"
+            height="3.655"
+            rx="1"
+            fill="${ledColor}"
+            filter="url(#ledGlow)"
+            class="mower-led-strip"
+            style="paint-order: fill;"
+          />
           <g class="circular-battery-display" transform="matrix(1, 0, 0, 1, 62.883192, 29.151221)">
-            <circle cx="0" cy="0" r="10" fill="none" stroke="#333" stroke-width="2.5" opacity="0.3"/>
-            <circle 
-              cx="0" cy="0" r="10"
+            <circle cx="0" cy="0" r="10" fill="none" stroke="#333" stroke-width="2.5" opacity="0.3" />
+            <circle
+              cx="0"
+              cy="0"
+              r="10"
               fill="none"
               stroke="${batteryColor}"
               stroke-width="3"
@@ -1463,18 +1538,30 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
               filter="url(#batteryGlow)"
               class="battery-progress-ring"
             />
-            <circle cx="0" cy="0" r="7" fill="#ffffff" stroke="#333" stroke-width="1" filter="url(#batteryGlow)"/>
+            <circle cx="0" cy="0" r="7" fill="#ffffff" stroke="#333" stroke-width="1" filter="url(#batteryGlow)" />
             <g transform="scale(0.75)">
-              <rect x="-3" y="-2.5" width="6" height="5" rx="0.8" fill="none" stroke="#333" stroke-width="1"/>
-              <rect x="3" y="-1" width="1.5" height="2" rx="0.3" fill="#333"/>
-              <rect x="-2.5" y="-2" width="5" height="4" rx="0.5" fill="${batteryColor}" opacity="0.8"/>
+              <rect x="-3" y="-2.5" width="6" height="5" rx="0.8" fill="none" stroke="#333" stroke-width="1" />
+              <rect x="3" y="-1" width="1.5" height="2" rx="0.3" fill="#333" />
+              <rect x="-2.5" y="-2" width="5" height="4" rx="0.5" fill="${batteryColor}" opacity="0.8" />
             </g>
           </g>
-          <ellipse cx="87" cy="84" rx="56.319" ry="4" fill="#000" opacity="0.1" filter="blur(1px)"/>
+          <ellipse cx="87" cy="84" rx="56.319" ry="4" fill="#000" opacity="0.1" filter="blur(1px)" />
         </g>
         <g class="charging-station" filter="url(#softShadow)" transform="matrix(1, 0, 0, 1.091808, 0, -4.724333)">
-          <path d="M 0 85 L 40 85 L 40 55.652 C 40 51.459 35 51.459 30 51.459 L 10 51.459 C 5 51.459 0 51.459 0 55.652 L 0 85 Z" fill="url(#stationBaseGradient)" stroke="#222" stroke-width="0.5"/>
-          <rect x="14.474" y="54.581" width="10" height="3.751" fill="${stationLedColor}" class="charging-station-led"/>
+          <path
+            d="M 0 85 L 40 85 L 40 55.652 C 40 51.459 35 51.459 30 51.459 L 10 51.459 C 5 51.459 0 51.459 0 55.652 L 0 85 Z"
+            fill="url(#stationBaseGradient)"
+            stroke="#222"
+            stroke-width="0.5"
+          />
+          <rect
+            x="14.474"
+            y="54.581"
+            width="10"
+            height="3.751"
+            fill="${stationLedColor}"
+            class="charging-station-led"
+          />
         </g>
       </g>
     </svg>
@@ -1502,1812 +1589,2201 @@ const getAvailableMowerModels = (hass) => {
 /*    Popup Styles     */
 /* =================== */
 const cameraPopupStyles = i$3 `
-    :host {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 999999;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(2px);
-      animation: fadeIn 0.3s ease;
-      padding-top: 5vh;
-    }
+  :host {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.3s ease;
+    padding-top: 5vh;
+  }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
     }
+    to {
+      opacity: 1;
+    }
+  }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 
-    .popup-wrapper {
-      position: relative;
-      animation: slideIn 0.3s ease;
-      will-change: transform, opacity;
-    }
+  .popup-wrapper {
+    position: relative;
+    animation: slideIn 0.3s ease;
+    will-change: transform, opacity;
+  }
 
-    .popup-content {
-      background: #fff;
-      border-radius: 16px;
-      max-width: 90vw;
-      max-height: 90vh;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      display: flex;
-      flex-direction: column;
-      min-width: 40vw;
-      margin-top: 60px;
-    }
+  .popup-content {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    min-width: 40vw;
+    margin-top: 60px;
+  }
 
-    .popup-close {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: #fff;
-      border: none;
-      cursor: pointer;
-      color: var(--primary-text-color);
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      z-index: 1;
-    }
+  .popup-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-text-color);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+  }
 
-    .popup-close ha-icon {
-      --mdc-icon-size: 24px;
-      color: var(--primary-text-color);
-    }
+  .popup-close ha-icon {
+    --mdc-icon-size: 24px;
+    color: var(--primary-text-color);
+  }
 
-    .popup-close:hover {
-      background: #f5f5f5;
-      transform: scale(1.05);
-    }
+  .popup-close:hover {
+    background: #f5f5f5;
+    transform: scale(1.05);
+  }
 
-    .popup-close:active {
-      transform: scale(0.95);
-    }
-    
-    .popup-stream-container {
-      width: 100%;
-      height: auto;
-      max-height: calc(90vh - 60px);
-      display: flex;
-      min-height: 30vh;
-      box-sizing: border-box;
-      position: relative;
-    }
+  .popup-close:active {
+    transform: scale(0.95);
+  }
 
-    .popup-stream-container.camera-error {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--secondary-text-color);
-    }
+  .popup-stream-container {
+    width: 100%;
+    height: auto;
+    max-height: calc(90vh - 60px);
+    display: flex;
+    min-height: 30vh;
+    box-sizing: border-box;
+    position: relative;
+  }
 
-    .popup-stream-container.camera-error ha-icon {
-      --mdc-icon-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
+  .popup-stream-container.camera-error {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-text-color);
+  }
 
-    ha-camera-stream {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #000;
-    }
+  .popup-stream-container.camera-error ha-icon {
+    --mdc-icon-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
 
-    .loading-indicator {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 5;
-      transition: all 0.3s ease;
-    }
+  ha-camera-stream {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+  }
 
-    .loader {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 4px solid rgba(var(--rgb-primary-text-color), 0.2);
-      border-top-color: var(--primary-color);
-      animation: spin 1s linear infinite;
-      will-change: transform;
-    }
+  .loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: all 0.3s ease;
+  }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+  .loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 4px solid rgba(var(--rgb-primary-text-color), 0.2);
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
+  }
 `;
 /* =================== */
 /*    Card Styles      */
 /* =================== */
 const compactLawnMowerCardStyles = i$3 `
+  :host {
+    --tile-color: var(--surface-variant, var(--secondary-background-color));
+    --outline-color: var(--outline, rgba(var(--rgb-on-surface), 0.12));
+    --badge-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  }
 
-    :host {
-      --tile-color: var(--surface-variant, var(--secondary-background-color));
-      --outline-color: var(--outline, rgba(var(--rgb-on-surface), 0.12));
-      --badge-box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-        rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-    }
+  ha-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 220px;
+    width: 100%;
+    background: var(--ha-card-background, var(--card-background-color, #fff));
+    border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg));
+    box-shadow: var(--ha-card-box-shadow, 0 2px 8px 0 rgba(0, 0, 0, 0.08), 0 1px 16px 0 rgba(0, 0, 0, 0.04));
+    backdrop-filter: blur(20px);
+    border-width: var(--ha-card-border-width, 1px);
+    border-style: solid;
+    border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
+    overflow: hidden;
+    transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
+    font-family: var(--mdc-typography-body2-font-family, Roboto);
+    position: relative;
+    color: var(--primary-text-color);
+  }
 
-    ha-card {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      width: 100%;
-      background: var(--ha-card-background,var(--card-background-color,#fff));
-      border-radius: var(--ha-card-border-radius, var(--ha-border-radius-lg));
-      box-shadow: var(--ha-card-box-shadow,
-        0 2px 8px 0 rgba(0, 0, 0, 0.08),
-        0 1px 16px 0 rgba(0, 0, 0, 0.04)
-      );
-      backdrop-filter: blur(20px);
-      border-width: var(--ha-card-border-width, 1px);
-      border-style: solid;
-      border-color: var(--ha-card-border-color, var(--divider-color, #e0e0e0));
-      overflow: hidden;
-      transition: all 0.15s cubic-bezier(0.2, 0, 0, 1);
-      font-family: var(--mdc-typography-body2-font-family, Roboto);
-      position: relative;
-      color: var(--primary-text-color);
-    }
+  .warning {
+    padding: 16px;
+    color: var(--error-color);
+    text-align: center;
+  }
 
-    .warning {
-      padding: 16px;
-      color: var(--error-color);
-      text-align: center;
-    }
+  .error-view {
+    background: linear-gradient(
+      180deg,
+      var(--sky-color-top, #b3d4fc) 0%,
+      var(--sky-color-bottom, #e8f4ff) 40%,
+      var(--grass-color-top, #90c56a) 40%,
+      var(--grass-color-bottom, #6aa84f) 100%
+    );
+  }
 
-    .card-content {
-      padding: 8px;
-      flex: 1;
-      display: grid;
-      grid-template-rows: 1fr auto;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      height: 100%;
-      position: relative;
-      box-sizing: border-box;
-      min-height: 0;
-    }
+  .entity-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
+  }
 
-    /* =================== */
-    /*   Main Display      */
-    /* =================== */
-    .main-display-area {
-      display: grid;
-      grid-template-areas: "display";
-      grid-template-rows: 1fr;
-      grid-template-columns: 1fr;
-      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
-      border: 1px solid var(--outline-color);
-      position: relative;
-      overflow: hidden;
-      min-height: 120px;
-      container-type: inline-size;
-    }
+  .entity-error ha-icon {
+    --mdc-icon-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.9);
+  }
 
-    .mower-display {
-      grid-area: display;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-      position: relative;
-      overflow: hidden;
-      padding: 0px;
-      box-sizing: border-box;
-      background: linear-gradient(
-        to bottom, 
-        var(--sky-color-top, rgb(41, 128, 185)) 0%,
-        var(--sky-color-bottom, rgb(109, 213, 250)) var(--sky-percentage, 70%),
-        var(--grass-color-top, rgb(88, 140, 54)) var(--sky-percentage, 70%),    
-        var(--grass-color-bottom, rgb(133, 187, 88)) 100%   
-      );
-    }
+  .entity-error .error-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 4px;
+  }
 
-    /* =================== */
-    /*      Badges         */
-    /* =================== */
-    .progress-badges {
-      grid-area: display;
-      position: relative;
-      z-index: 10;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      padding: 8px;
-      pointer-events: none;
-    }
+  .entity-error .error-entity {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--code-font-family, monospace);
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
 
-    .progress-badge {
-      background: rgba(255, 255, 255, 0.70);
-      backdrop-filter: blur(20px) saturate(180%);
-      border: none;
-      border-radius: 12px;
-      padding: 6px 10px;
-      box-shadow: var(--badge-box-shadow);
-      display: flex;
-      align-items: center;
-      pointer-events: auto;
-      gap: 6px;
-      height: 38px;
-      box-sizing: border-box;
-    }
+  .card-content {
+    padding: 8px;
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    min-height: 0;
+  }
 
-    .status-badges {
-      grid-area: display;
-      position: relative;
-      z-index: 10;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-      padding: 8px;
-      pointer-events: none;
-    }
+  /* =================== */
+  /*   Main Display      */
+  /* =================== */
+  .main-display-area {
+    display: grid;
+    grid-template-areas: 'display';
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
+    border: 1px solid var(--outline-color);
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+    container-type: inline-size;
+  }
 
-    .status-ring {
-      background: rgba(255, 255, 255, 0.70);
-      backdrop-filter: blur(20px) saturate(180%);
-      border: none;
-      border-radius: 12px;
-      box-shadow: var(--badge-box-shadow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      pointer-events: auto;
-      padding: 6px 10px;
-      gap: 6px;
-      min-width: fit-content;
-      height: 38px;
-      box-sizing: border-box;
-    }
+  .mower-display {
+    grid-area: display;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+    padding: 0px;
+    box-sizing: border-box;
+    background: linear-gradient(
+      to bottom,
+      var(--sky-color-top, rgb(41, 128, 185)) 0%,
+      var(--sky-color-bottom, rgb(109, 213, 250)) var(--sky-percentage, 70%),
+      var(--grass-color-top, rgb(88, 140, 54)) var(--sky-percentage, 70%),
+      var(--grass-color-bottom, rgb(133, 187, 88)) 100%
+    );
+  }
 
-    .status-ring.charging {
-      border: 1px solid rgba(var(--rgb-success-color), 0.3);
-    }
+  /* =================== */
+  /*      Badges         */
+  /* =================== */
+  .progress-badges {
+    grid-area: display;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 8px;
+    pointer-events: none;
+  }
 
-    .view-toggle {
-      grid-area: display;
-      position: relative;
-      z-index: 10;
-      display: flex;
-      align-items: flex-end;
-      justify-content: flex-end;
-      padding: 8px;
-      gap: 4px;
-      pointer-events: none;
-    }
+  .progress-badge {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: none;
+    border-radius: 12px;
+    padding: 6px 10px;
+    box-shadow: var(--badge-box-shadow);
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+    gap: 6px;
+    height: 38px;
+    box-sizing: border-box;
+  }
 
-    .view-toggle-button {
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.60);
-      backdrop-filter: blur(10px) saturate(180%);
-      border: none;
-      border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
-      box-shadow: var(--badge-box-shadow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.2s ease-out, transform 0.15s ease-out, box-shadow 0.2s ease-out;
-      pointer-events: auto;
-      color: var(--primary-text-color);
-      will-change: background-color, box-shadow;
-    }
+  .status-badges {
+    grid-area: display;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 8px;
+    pointer-events: none;
+  }
 
-    .view-toggle-button:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px) scale(1.02);
-      box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.15),
-        0 4px 12px rgba(0, 0, 0, 0.08);
-    }
+  .status-ring {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--badge-box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    pointer-events: auto;
+    padding: 6px 10px;
+    gap: 6px;
+    min-width: fit-content;
+    height: 38px;
+    box-sizing: border-box;
+  }
 
-    .view-toggle-button:active {
-      transform: scale(0.95);
-    }
+  .status-ring.charging {
+    border: 1px solid rgba(var(--rgb-success-color), 0.3);
+  }
 
-    .view-toggle-button ha-icon {
-      --mdc-icon-size: 20px;
-      transition: transform 0.15s ease-out;
-      will-change: transform;
-    }
+  .view-toggle {
+    grid-area: display;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 8px;
+    gap: 4px;
+    pointer-events: none;
+  }
 
-    .view-toggle-button.active {
-      background: var(--primary-color);
-      color: white;
-    }
+  .view-toggle-button {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px) saturate(180%);
+    border: none;
+    border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
+    box-shadow: var(--badge-box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease-out,
+      transform 0.15s ease-out,
+      box-shadow 0.2s ease-out;
+    pointer-events: auto;
+    color: var(--primary-text-color);
+    will-change: background-color, box-shadow;
+  }
 
-    .main-display-area.camera-view .progress-badge,
-    .main-display-area.camera-view .status-ring,
-    .main-display-area.camera-view .view-toggle-button:not(.active) {
-      background: rgba(255, 255, 255, 0.85);
-    }
+  .view-toggle-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.08);
+  }
 
-    .badge-icon {
-      --mdc-icon-size: 22px;
-      color: var(--badge-icon-color, var(--primary-text-color));
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
+  .view-toggle-button:active {
+    transform: scale(0.95);
+  }
 
-    .progress-text,
-    .status-text {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--badge-text-color, var(--primary-text-color));
-      white-space: nowrap;
-      letter-spacing: 0.5px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
+  .view-toggle-button ha-icon {
+    --mdc-icon-size: 20px;
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+  }
 
-    .status-icon {
-      width: 22px;
-      height: 22px;
-      font-weight: bold;
-      flex-shrink: 0;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
+  .view-toggle-button.active {
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    backdrop-filter: blur(4px) saturate(120%);
+    color: white;
+  }
 
-    .status-icon.charging {
-      color: var(--success-color, #4caf50);
-    }
+  .main-display-area.camera-view .progress-badge,
+  .main-display-area.camera-view .status-ring,
+  .main-display-area.camera-view .view-toggle-button:not(.active) {
+    background: rgba(255, 255, 255, 0.85);
+  }
 
-    .status-icon.mowing {
-      color: #e8930f;
-    }
+  .badge-icon {
+    --mdc-icon-size: 22px;
+    color: var(--badge-icon-color, var(--primary-text-color));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    .status-icon.returning {
-      color: #1e88e5;
-    }
+  .progress-text,
+  .status-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--badge-text-color, var(--primary-text-color));
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
 
-    .status-icon.paused,
-    .status-icon.docked {
-      color: var(--badge-icon-color, rgb(0, 0, 0));
-    }
+  .status-icon {
+    width: 22px;
+    height: 22px;
+    font-weight: bold;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
 
-    .status-icon.error {
-      color: #d32f2f;
-    }
+  .status-icon.charging {
+    color: var(--success-color, #4caf50);
+  }
 
-    .status-ring.mowing .status-text {
-      color: #e8930f;
-    }
+  .status-icon.mowing {
+    color: #e8930f;
+  }
 
-    .status-ring.returning .status-text {
-      color: #1e88e5;
-    }
+  .status-icon.returning {
+    color: #1e88e5;
+  }
 
-    .status-ring.error .status-text {
-      color: #d32f2f;
-    }
+  .status-icon.paused,
+  .status-icon.docked {
+    color: var(--badge-icon-color, rgb(0, 0, 0));
+  }
 
-    .status-icon::after {
-      content: '';
-      position: absolute;
-      top: -6px;
-      left: -6px;
-      width: calc(100% + 12px);
-      height: calc(100% + 12px);
-      border-radius: 50%;
+  .status-icon.error {
+    color: #d32f2f;
+  }
+
+  .status-ring.mowing .status-text {
+    color: #e8930f;
+  }
+
+  .status-ring.returning .status-text {
+    color: #1e88e5;
+  }
+
+  .status-ring.error .status-text {
+    color: #d32f2f;
+  }
+
+  .status-icon::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    border-radius: 50%;
+    opacity: 0;
+    will-change: transform, opacity;
+    pointer-events: none;
+  }
+
+  .status-icon.charging::after,
+  .status-icon.mowing::after,
+  .status-icon.returning::after,
+  .status-icon.error::after {
+    animation: pulse-scale 2s ease-out infinite;
+  }
+
+  .status-icon.error::after {
+    animation-duration: 1s;
+  }
+
+  .status-icon.charging::after {
+    box-shadow: 0 0 8px 2px rgba(76, 175, 80, 0.7);
+  }
+
+  .status-icon.mowing::after {
+    box-shadow: 0 0 8px 2px rgba(232, 147, 15, 0.65);
+  }
+
+  .status-icon.returning::after {
+    box-shadow: 0 0 8px 2px rgba(30, 136, 229, 0.65);
+  }
+
+  .status-icon.error::after {
+    box-shadow: 0 0 8px 2px rgba(211, 47, 47, 0.6);
+  }
+
+  .status-ring.text-hidden .status-text,
+  .status-ring.text-hidden .badge-separator {
+    display: none;
+  }
+  /* =================== */
+  /*     Mower SVG       */
+  /* =================== */
+  .mower-svg {
+    width: 90%;
+    min-width: 170px;
+    max-height: 90%;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transition: filter 0.3s cubic-bezier(0.2, 0, 0, 1);
+    display: block;
+    flex-shrink: 0;
+    position: absolute;
+    left: 10px;
+    bottom: -2%;
+    will-change: filter;
+  }
+
+  .mower-svg.active {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 8px rgba(232, 147, 15, 0.3));
+  }
+
+  .mower-svg.charging {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 8px rgba(76, 175, 80, 0.3));
+  }
+
+  .mower-svg.returning {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 8px rgba(30, 136, 229, 0.3));
+  }
+
+  .mower-svg.error {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) drop-shadow(0 0 8px rgba(211, 47, 47, 0.3));
+  }
+
+  .mower-svg.active .mower-led-strip {
+    animation: ledStripActive 2s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .mower-svg.charging-animated .mower-led-strip,
+  .mower-svg.charging-animated .charging-station-led {
+    animation: ledStripCharging 2s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .mower-svg.returning .mower-led-strip {
+    animation: ledStripReturning 2s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .mower-svg.error .mower-led-strip {
+    animation: ledStripError 1s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  .mower-svg.charging-static .mower-led-strip,
+  .mower-svg.charging-static .charging-station-led {
+    opacity: 0.8;
+  }
+
+  .mower-svg.docked-static .mower-led-strip {
+    opacity: 0.8;
+  }
+
+  .mower-svg.on-lawn-static.active .wheel-back .wheel-rotation {
+    animation: rotateWheel 1.5s linear infinite;
+    will-change: transform;
+  }
+  .mower-svg.on-lawn-static.active .wheel-front .wheel-rotation {
+    animation: rotateWheel 0.6s linear infinite;
+    will-change: transform;
+  }
+
+  .mower-svg.driving-to-dock .wheel-back .wheel-rotation,
+  .mower-svg.driving-from-dock .wheel-back .wheel-rotation {
+    animation: rotateWheelDriveBack 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+    will-change: transform;
+  }
+  .mower-svg.driving-to-dock .wheel-front .wheel-rotation,
+  .mower-svg.driving-from-dock .wheel-front .wheel-rotation {
+    animation: rotateWheelDriveFront 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+    will-change: transform;
+  }
+
+  .mower-svg.driving-to-dock .mower-body {
+    animation: driveToDock 2s linear forwards;
+    will-change: transform;
+  }
+
+  .mower-svg.driving-from-dock .mower-body {
+    animation: driveFromDock 2s linear forwards;
+    will-change: transform;
+  }
+
+  .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+    transform: translateX(-20px);
+  }
+
+  .mower-svg.charging-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+    transform: translateX(-20px);
+  }
+
+  .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+    transform: translateX(30px);
+  }
+
+  .mower-svg.on-lawn-static.active .mower-body {
+    transform: translateX(30px);
+    animation: BounceOnLawn 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    will-change: transform;
+  }
+
+  .sleep-animation {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sleep-z {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-text-color);
+    opacity: 0;
+    animation: sleepZFloat 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    will-change: transform, opacity;
+  }
+
+  .sleep-z:nth-child(1) {
+    animation-delay: 0s;
+    font-size: 18px;
+  }
+
+  .sleep-z:nth-child(2) {
+    animation-delay: 0.8s;
+    font-size: 20px;
+  }
+
+  .sleep-z:nth-child(3) {
+    animation-delay: 2s;
+    font-size: 24px;
+  }
+
+  .mower-svg.sleeping .mower-led-strip {
+    opacity: 0.3;
+    animation: sleepBreathe 4s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  /* =================== */
+  /*    Camera View      */
+  /* =================== */
+  .camera-in-popup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--primary-text-color);
+    background-color: rgba(0, 0, 0, 0.05);
+    text-align: center;
+    padding: 16px;
+    cursor: pointer;
+  }
+
+  .camera-in-popup ha-icon {
+    --mdc-icon-size: 48px;
+    opacity: 0.7;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .camera-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+  }
+
+  .camera-container.clickable {
+    transition: transform 0.15s ease-out;
+    cursor: pointer;
+  }
+
+  .camera-container.clickable:hover {
+    transform: scale(1.02);
+  }
+
+  .camera-container:not(.clickable) .camera-overlay {
+    transition: opacity 0.4s ease-in-out;
+    will-change: opacity;
+  }
+
+  .camera-container ha-camera-stream {
+    width: 100%;
+    height: 100%;
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+
+  .camera-container ha-camera-stream.fit-mode-contain {
+    align-items: center;
+  }
+
+  .camera-container ha-camera-stream.fit-mode-cover {
+    align-items: stretch;
+  }
+
+  .camera-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    padding: 16px;
+  }
+
+  .camera-error ha-icon {
+    --mdc-icon-size: 32px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  .camera-overlay {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: var(--badge-box-shadow);
+    padding: 4px 8px;
+    border-radius: 12px;
+    transition:
+      background-color 0.15s ease-out,
+      transform 0.15s ease-out;
+    will-change: background-color;
+  }
+
+  .camera-overlay:hover {
+    background: rgba(var(--rgb-primary-color), 0.2);
+    transform: scale(1.05);
+  }
+
+  /* =================== */
+  /*     Map View        */
+  /* =================== */
+  .map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #f0f0f0;
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+    will-change: background-color;
+  }
+
+  .map-container.is-loading {
+    background-color: #000;
+  }
+
+  .map-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    color: #5e5e5e;
+    text-align: center;
+    padding: 16px;
+  }
+
+  .map-error ha-icon {
+    --mdc-icon-size: 32px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+  }
+
+  .map-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .mower-marker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    color: #ff6b35;
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mower-marker ha-icon {
+    --mdc-icon-size: 20px;
+    color: var(--primary-color);
+  }
+
+  .map-controls-wrapper {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .map-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .map-control-button {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    will-change: background;
+  }
+
+  .map-control-button:hover {
+    background: rgba(255, 255, 255, 1);
+  }
+
+  /* =================== */
+  /*  Action Buttons     */
+  /* =================== */
+  .controls-area {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .buttons-section {
+    display: flex;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .action-button {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--outline-color);
+    border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
+    background: var(--tile-color);
+    color: var(--primary-text-color);
+    font-size: 12px;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease-out,
+      box-shadow 0.2s ease-out;
+    min-height: 40px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    backdrop-filter: blur(10px);
+    will-change: background-color, box-shadow;
+  }
+
+  .action-button:hover {
+    background: color-mix(in srgb, var(--tile-color) 92%, black);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .action-button ha-icon {
+    --mdc-icon-size: 20px;
+  }
+
+  .action-button.more-button {
+    flex-shrink: 0;
+    min-width: 40px;
+    max-width: 40px;
+  }
+
+  /* =================== */
+  /*      Loader         */
+  /* =================== */
+  .loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: all 0.3s ease;
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
+  }
+
+  .loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 4px solid rgba(var(--rgb-primary-text-color), 0.2);
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    will-change: transform;
+  }
+
+  /* =================== */
+  /*    Animations       */
+  /* =================== */
+  @keyframes pulse-scale {
+    0% {
+      transform: scale(0.7);
       opacity: 0;
-      will-change: transform, opacity;
-      pointer-events: none;
     }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
 
-    .status-icon.charging::after,
-    .status-icon.mowing::after,
-    .status-icon.returning::after,
-    .status-icon.error::after {
-      animation: pulse-scale 2s ease-out infinite;
+  @keyframes sleepZFloat {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 10px, 0) scale(0.8);
     }
+    25% {
+      opacity: 1;
+      transform: translate3d(2px, -10px, 0) scale(1);
+    }
+    75% {
+      opacity: 0.5;
+      transform: translate3d(-2px, -35px, 0) scale(0.9);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(0, -50px, 0) scale(0.8);
+    }
+  }
 
-    .status-icon.error::after {
-      animation-duration: 1s;
+  @keyframes sleepBreathe {
+    0%,
+    100% {
+      opacity: 0.3;
     }
+    50% {
+      opacity: 0.6;
+    }
+  }
 
-    .status-icon.charging::after {
-      box-shadow: 0 0 8px 2px rgba(76, 175, 80, 0.7);
+  @keyframes rotateWheel {
+    from {
+      transform: rotate(0deg);
     }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
-    .status-icon.mowing::after {
-      box-shadow: 0 0 8px 2px rgba(232, 147, 15, 0.65);
+  @keyframes rotateWheelDriveBack {
+    from {
+      transform: rotate(0deg);
     }
+    to {
+      transform: rotate(480deg);
+    }
+  }
 
-    .status-icon.returning::after {
-      box-shadow: 0 0 8px 2px rgba(30, 136, 229, 0.65);
+  @keyframes rotateWheelDriveFront {
+    from {
+      transform: rotate(0deg);
     }
+    to {
+      transform: rotate(1200deg);
+    }
+  }
 
-    .status-icon.error::after {
-      box-shadow: 0 0 8px 2px rgba(211, 47, 47, 0.6);
+  @keyframes driveToDock {
+    0% {
+      transform: translate(30px, 0px);
     }
+    10% {
+      transform: translate(29px, 0px);
+    }
+    20% {
+      transform: translate(26px, 0px);
+    }
+    30% {
+      transform: translate(21px, 0px);
+    }
+    40% {
+      transform: translate(14px, 0px);
+    }
+    50% {
+      transform: translate(5px, 0px);
+    }
+    60% {
+      transform: translate(-4px, 0px);
+    }
+    70% {
+      transform: translate(-11px, 0px);
+    }
+    80% {
+      transform: translate(-16px, 0px);
+    }
+    90% {
+      transform: translate(-19px, 0.3px);
+    }
+    95% {
+      transform: translate(-19.75px, 0.5px);
+    }
+    100% {
+      transform: translate(-20px, 0px);
+    }
+  }
 
-    .status-ring.text-hidden .status-text,
-    .status-ring.text-hidden .badge-separator {
-      display: none;
+  @keyframes driveFromDock {
+    0% {
+      transform: translate(-20px, 0px);
     }
-    /* =================== */
-    /*     Mower SVG       */
-    /* =================== */
-    .mower-svg {
-      width: 90%;
-      min-width: 170px;
-      max-height: 90%;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-      transition: filter 0.3s cubic-bezier(0.2, 0, 0, 1);
-      display: block;
-      flex-shrink: 0;
-      position: absolute;
-      left: 10px;
-      bottom: -2%;
-      will-change: filter;
+    5% {
+      transform: translate(-19.9px, -0.3px);
     }
+    10% {
+      transform: translate(-19.5px, -0.5px);
+    }
+    15% {
+      transform: translate(-18.5px, -0.5px);
+    }
+    20% {
+      transform: translate(-17px, -0.4px);
+    }
+    30% {
+      transform: translate(-13px, -0.2px);
+    }
+    40% {
+      transform: translate(-8px, 0px);
+    }
+    50% {
+      transform: translate(-1.5px, 0px);
+    }
+    60% {
+      transform: translate(6px, 0px);
+    }
+    70% {
+      transform: translate(14px, 0px);
+    }
+    80% {
+      transform: translate(21.5px, 0px);
+    }
+    90% {
+      transform: translate(27px, 0px);
+    }
+    100% {
+      transform: translate(30px, 0px);
+    }
+  }
 
-    .mower-svg.active {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(232, 147, 15, 0.3));
+  @keyframes BounceOnLawn {
+    0%,
+    100% {
+      transform: translateX(30px) translateY(0px);
     }
-
-    .mower-svg.charging {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(76, 175, 80, 0.3));
+    25% {
+      transform: translateX(30px) translateY(-1px);
     }
-
-    .mower-svg.returning {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(30, 136, 229, 0.3));
+    50% {
+      transform: translateX(30px) translateY(-0.2px);
     }
-
-    .mower-svg.error {
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)) drop-shadow(0 0 8px rgba(211, 47, 47, 0.3));
+    75% {
+      transform: translateX(30px) translateY(-1.2px);
     }
+  }
 
-    .mower-svg.active .mower-led-strip {
-      animation: ledStripActive 2s ease-in-out infinite;
-      will-change: opacity;
+  @keyframes BounceOnLawnMedium {
+    0%,
+    100% {
+      transform: translateX(20px) translateY(0px);
     }
-
-    .mower-svg.charging-animated .mower-led-strip,
-    .mower-svg.charging-animated .charging-station-led {
-      animation: ledStripCharging 2s ease-in-out infinite;
-      will-change: opacity;
+    25% {
+      transform: translateX(20px) translateY(-1px);
     }
-
-    .mower-svg.returning .mower-led-strip {
-      animation: ledStripReturning 2s ease-in-out infinite;
-      will-change: opacity;
+    50% {
+      transform: translateX(20px) translateY(-0.2px);
     }
-
-    .mower-svg.error .mower-led-strip {
-      animation: ledStripError 1s ease-in-out infinite;
-      will-change: opacity;
+    75% {
+      transform: translateX(20px) translateY(-1.2px);
     }
+  }
 
-    .mower-svg.charging-static .mower-led-strip,
-    .mower-svg.charging-static .charging-station-led {
+  @keyframes BounceOnLawnSmall {
+    0%,
+    100% {
+      transform: translateX(10px) translateY(0px);
+    }
+    25% {
+      transform: translateX(10px) translateY(-1px);
+    }
+    50% {
+      transform: translateX(10px) translateY(-0.2px);
+    }
+    75% {
+      transform: translateX(10px) translateY(-1.2px);
+    }
+  }
+
+  @keyframes driveToDockMedium {
+    0% {
+      transform: translate(20px, 0px);
+    }
+    10% {
+      transform: translate(19px, 0px);
+    }
+    20% {
+      transform: translate(17px, 0px);
+    }
+    30% {
+      transform: translate(13px, 0px);
+    }
+    40% {
+      transform: translate(7px, 0px);
+    }
+    50% {
+      transform: translate(0px, 0px);
+    }
+    60% {
+      transform: translate(-7px, 0px);
+    }
+    70% {
+      transform: translate(-13px, 0px);
+    }
+    80% {
+      transform: translate(-17px, 0px);
+    }
+    90% {
+      transform: translate(-19px, 0.3px);
+    }
+    95% {
+      transform: translate(-19.75px, 0.5px);
+    }
+    100% {
+      transform: translate(-20px, 0px);
+    }
+  }
+
+  @keyframes driveFromDockMedium {
+    0% {
+      transform: translate(-20px, 0px);
+    }
+    5% {
+      transform: translate(-19.9px, -0.3px);
+    }
+    10% {
+      transform: translate(-19.6px, -0.4px);
+    }
+    15% {
+      transform: translate(-18.8px, -0.4px);
+    }
+    20% {
+      transform: translate(-17.6px, -0.3px);
+    }
+    30% {
+      transform: translate(-14.4px, -0.2px);
+    }
+    40% {
+      transform: translate(-10.4px, 0px);
+    }
+    50% {
+      transform: translate(-5.2px, 0px);
+    }
+    60% {
+      transform: translate(0.8px, 0px);
+    }
+    70% {
+      transform: translate(7.2px, 0px);
+    }
+    80% {
+      transform: translate(13.2px, 0px);
+    }
+    90% {
+      transform: translate(17.6px, 0px);
+    }
+    100% {
+      transform: translate(20px, 0px);
+    }
+  }
+
+  @keyframes driveToDockSmall {
+    0% {
+      transform: translate(10px, 0px);
+    }
+    10% {
+      transform: translate(9px, 0px);
+    }
+    20% {
+      transform: translate(8px, 0px);
+    }
+    30% {
+      transform: translate(5px, 0px);
+    }
+    40% {
+      transform: translate(0px, 0px);
+    }
+    50% {
+      transform: translate(-5px, 0px);
+    }
+    60% {
+      transform: translate(-10px, 0px);
+    }
+    70% {
+      transform: translate(-15px, 0px);
+    }
+    80% {
+      transform: translate(-18px, 0px);
+    }
+    90% {
+      transform: translate(-19px, 0.3px);
+    }
+    95% {
+      transform: translate(-19.75px, 0.5px);
+    }
+    100% {
+      transform: translate(-20px, 0px);
+    }
+  }
+
+  @keyframes driveFromDockSmall {
+    0% {
+      transform: translate(-20px, 0px);
+    }
+    5% {
+      transform: translate(-19.9px, -0.3px);
+    }
+    10% {
+      transform: translate(-19.7px, -0.4px);
+    }
+    15% {
+      transform: translate(-19.1px, -0.4px);
+    }
+    20% {
+      transform: translate(-18.2px, -0.3px);
+    }
+    30% {
+      transform: translate(-15.8px, -0.2px);
+    }
+    40% {
+      transform: translate(-12.8px, 0px);
+    }
+    50% {
+      transform: translate(-8.9px, 0px);
+    }
+    60% {
+      transform: translate(-4.4px, 0px);
+    }
+    70% {
+      transform: translate(0.4px, 0px);
+    }
+    80% {
+      transform: translate(4.9px, 0px);
+    }
+    90% {
+      transform: translate(8.2px, 0px);
+    }
+    100% {
+      transform: translate(10px, 0px);
+    }
+  }
+
+  @keyframes ledStripActive {
+    0%,
+    100% {
       opacity: 0.8;
     }
+    50% {
+      opacity: 1;
+    }
+  }
 
-    .mower-svg.docked-static .mower-led-strip {
-      opacity: 0.8;
+  @keyframes ledStripCharging {
+    0%,
+    100% {
+      opacity: 0.6;
     }
+    50% {
+      opacity: 1;
+    }
+  }
 
-    .mower-svg.on-lawn-static.active .wheel-back .wheel-rotation {
-      animation: rotateWheel 1.5s linear infinite;
-      will-change: transform;
+  @keyframes ledStripReturning {
+    0%,
+    100% {
+      opacity: 0.7;
     }
-    .mower-svg.on-lawn-static.active .wheel-front .wheel-rotation {
-      animation: rotateWheel 0.6s linear infinite;
-      will-change: transform;
+    50% {
+      opacity: 1;
     }
+  }
 
-    .mower-svg.driving-to-dock .wheel-back .wheel-rotation,
-    .mower-svg.driving-from-dock .wheel-back .wheel-rotation {
-      animation: rotateWheelDriveBack 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
-      will-change: transform;
+  @keyframes ledStripError {
+    0%,
+    100% {
+      opacity: 0.5;
     }
-    .mower-svg.driving-to-dock .wheel-front .wheel-rotation,
-    .mower-svg.driving-from-dock .wheel-front .wheel-rotation {
-      animation: rotateWheelDriveFront 2s cubic-bezier(0.45, 0, 0.55, 1) forwards;
-      will-change: transform;
+    50% {
+      opacity: 1;
     }
-    
-    .mower-svg.driving-to-dock .mower-body {
-      animation: driveToDock 2s linear forwards;
-      will-change: transform;
-    }
+  }
 
-    .mower-svg.driving-from-dock .mower-body {
-      animation: driveFromDock 2s linear forwards;
-      will-change: transform;
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
+  }
 
-    .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
-      transform: translateX(-20px);
-    }
-
-    .mower-svg.charging-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
-      transform: translateX(-20px);
-    }
-
+  /* =================== */
+  /*  Responsive Design  */
+  /* =================== */
+  @container (max-width: 280px) {
     .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
-      transform: translateX(30px);
+      transform: translateX(20px);
     }
 
     .mower-svg.on-lawn-static.active .mower-body {
-      transform: translateX(30px);
-      animation: BounceOnLawn 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-      will-change: transform;
+      transform: translateX(20px);
+      animation: BounceOnLawnMedium 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
     }
 
-    .sleep-animation {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 15;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
+    .mower-svg.driving-to-dock .mower-body {
+      animation: driveToDockMedium 2s linear forwards;
     }
 
-    .sleep-z {
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--primary-text-color);
-      opacity: 0;
-      animation: sleepZFloat 4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-      will-change: transform, opacity;
+    .mower-svg.driving-from-dock .mower-body {
+      animation: driveFromDockMedium 2s linear forwards;
     }
+  }
 
-    .sleep-z:nth-child(1) {
-      animation-delay: 0s;
-      font-size: 18px;
-    }
-
-    .sleep-z:nth-child(2) {
-      animation-delay: 0.8s;
-      font-size: 20px;
-    }
-
-    .sleep-z:nth-child(3) {
-      animation-delay: 2s;
-      font-size: 24px;
-    }
-
-    .mower-svg.sleeping .mower-led-strip {
-      opacity: 0.3;
-      animation: sleepBreathe 4s ease-in-out infinite;
-      will-change: opacity;
-    }
-
-    /* =================== */
-    /*    Camera View      */
-    /* =================== */
-    .camera-in-popup {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: var(--primary-text-color);
-      background-color: rgba(0,0,0,0.05);
-      text-align: center;
-      padding: 16px;
-      cursor: pointer;
-    }
-
-    .camera-in-popup ha-icon {
-      --mdc-icon-size: 48px;
-      opacity: 0.7;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .camera-container {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      position: relative;
-      background-color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: default;
-    }
-
-    .camera-container.clickable {
-      transition: transform 0.15s ease-out;
-      cursor: pointer;
-    }
-
-    .camera-container.clickable:hover {
-      transform: scale(1.02);
-    }
-
-    .camera-container:not(.clickable) .camera-overlay {
-      transition: opacity 0.4s ease-in-out;
-      will-change: opacity;
-    }
-
-    .camera-container ha-camera-stream {
-      width: 100%;
-      height: 100%;
-      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-    }
-
-    .camera-container ha-camera-stream.fit-mode-contain {
-      align-items: center;
-    }
-
-    .camera-container ha-camera-stream.fit-mode-cover {
-      align-items: stretch;
-    }
-
-    .camera-error {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-      box-sizing: border-box;
-      color: rgba(255, 255, 255, 0.9);
-      text-align: center;
-      padding: 16px;
-    }
-
-    .camera-error ha-icon {
-      --mdc-icon-size: 32px;
-      margin-bottom: 8px;
-      opacity: 0.5;
-    }
-
-    .camera-overlay {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(20px) saturate(180%);
-      box-shadow: var(--badge-box-shadow);
-      padding: 4px 8px;
-      border-radius: 12px;
-      transition: background-color 0.15s ease-out, transform 0.15s ease-out;
-      will-change: background-color;
-    }
-
-    .camera-overlay:hover {
-      background: rgba(var(--rgb-primary-color), 0.2);
-      transform: scale(1.05);
-    }
-
-    /* =================== */
-    /*     Map View        */
-    /* =================== */
-    .map-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      background-color: #f0f0f0;
-      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
-      overflow: hidden;
-      transition: background-color 0.3s ease;
-      will-change: background-color;
-    }
-
-    .map-container.is-loading {
-      background-color: #000;
-    }
-
-    .map-error {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-      box-sizing: border-box;
-      color: #5e5e5e;
-      text-align: center;
-      padding: 16px;
-    }
-
-    .map-error ha-icon {
-      --mdc-icon-size: 32px;
-      margin-bottom: 8px;
-      opacity: 0.5;
-    }
-
-    .map-image {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .mower-marker {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-      color: #ff6b35;
-      font-size: 24px;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .mower-marker ha-icon {
-      --mdc-icon-size: 20px;
-      color: var(--primary-color);
-    }
-
-    .map-controls-wrapper {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-    }
-
-    .map-controls {
-      display: flex;
-      flex-direction: column;
+  @container (max-width: 200px) {
+    .card-content {
+      padding: 4px;
       gap: 4px;
     }
 
-    .map-control-button {
-      width: 32px;
-      height: 32px;
-      background: rgba(255, 255, 255, 0.9);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-      will-change: background;
+    .main-display-area {
+      min-height: 80px;
     }
 
-    .map-control-button:hover {
-      background: rgba(255, 255, 255, 1);
+    .progress-badges,
+    .status-badges,
+    .view-toggle {
+      padding: 4px;
     }
 
-    /* =================== */
-    /*  Action Buttons     */
-    /* =================== */
+    .progress-badge {
+      padding: 6px 10px;
+      height: 36px;
+    }
+
+    .progress-text {
+      font-size: 11px;
+    }
+
     .controls-area {
-      display: grid;
       grid-template-columns: 1fr;
-      gap: 8px;
-      align-items: center;
-      min-height: 44px;
-    }
-
-    .buttons-section {
-      display: flex;
       gap: 4px;
+      min-height: auto;
     }
 
     .action-button {
-      flex: 1;
-      padding: 8px 12px;
-      border: 1px solid var(--outline-color);
-      border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
-      background: var(--tile-color);
-      color: var(--primary-text-color);
-      font-size: 12px;
-      cursor: pointer;
-      transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
-      min-height: 40px;
-      min-width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      backdrop-filter: blur(10px);
-      will-change: background-color, box-shadow;
+      padding: 6px 8px;
+      min-height: 34px;
+      font-size: 10px;
     }
 
-    .action-button:hover {
-      background: color-mix(in srgb, var(--tile-color) 92%, black);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    .action-button ha-icon {
+      --mdc-icon-size: 18px;
+    }
+
+    .status-ring,
+    .view-toggle-button {
+      width: 34px;
+      height: 36px;
+    }
+
+    .view-toggle-button ha-icon {
+      --mdc-icon-size: 18px;
+    }
+
+    .badge-icon {
+      --mdc-icon-size: 20px;
+      font-size: 12px;
+    }
+
+    .status-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+      transform: translateX(10px);
+    }
+
+    .mower-svg.on-lawn-static.active .mower-body {
+      transform: translateX(10px);
+      animation: BounceOnLawnSmall 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+
+    .mower-svg.driving-to-dock .mower-body {
+      animation: driveToDockSmall 2s linear forwards;
+    }
+
+    .mower-svg.driving-from-dock .mower-body {
+      animation: driveFromDockSmall 2s linear forwards;
+    }
+  }
+
+  @container (min-width: 300px) and (max-width: 380px) {
+    .card-content {
+      padding: 6px;
+      gap: 6px;
+    }
+
+    .main-display-area {
+      min-height: 100px;
+    }
+
+    .progress-badges,
+    .status-badges,
+    .view-toggle {
+      padding: 6px;
+    }
+
+    .progress-badge {
+      padding: 8px 12px;
+      gap: 3px;
+    }
+
+    .progress-text {
+      font-size: 12px;
+    }
+
+    .controls-area {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      min-height: auto;
+    }
+
+    .action-button {
+      padding: 6px 8px;
+      min-height: 36px;
+      font-size: 10px;
     }
 
     .action-button ha-icon {
       --mdc-icon-size: 20px;
     }
 
-    .action-button.more-button {
-      flex-shrink: 0;
-      min-width: 40px;
-      max-width: 40px;
+    .view-toggle-button {
+      width: 36px;
+      height: 36px;
     }
 
-    /* =================== */
-    /*      Loader         */
-    /* =================== */
-    .loading-indicator {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(2px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 5;
-      transition: all 0.3s ease;
-      border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
+    .view-toggle-button ha-icon {
+      --mdc-icon-size: 20px;
     }
 
-    .loader {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 4px solid rgba(var(--rgb-primary-text-color), 0.2);
-      border-top-color: var(--primary-color);
-      animation: spin 1s linear infinite;
-      will-change: transform;
+    .badge-icon {
+      font-size: 14px;
     }
 
-    /* =================== */
-    /*    Animations       */
-    /* =================== */
-    @keyframes pulse-scale {
-      0% {
-        transform: scale(0.7);
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1.0);
-        opacity: 0;
-      }
+    .status-icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .buttons-section {
+      gap: 2px;
     }
 
-    @keyframes sleepZFloat {
-      0% {
-        opacity: 0;
-        transform: translate3d(0, 10px, 0) scale(0.8);
-      }
-      25% {
-        opacity: 1;
-        transform: translate3d(2px, -10px, 0) scale(1);
-      }
-      75% {
-        opacity: 0.5;
-        transform: translate3d(-2px, -35px, 0) scale(0.9);
-      }
-      100% {
-        opacity: 0;
-        transform: translate3d(0, -50px, 0) scale(0.8);
-      }
-    }
-
-    @keyframes sleepBreathe {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.6; }
-    }
-
-    @keyframes rotateWheel {
-      from { 
-        transform: rotate(0deg);
-      }
-      to { 
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes rotateWheelDriveBack {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(480deg); }
-    }
-
-    @keyframes rotateWheelDriveFront {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(1200deg); }
-    }
-
-    @keyframes driveToDock {
-      0%    { transform: translate(30px, 0px); }
-      10%   { transform: translate(29px, 0px); }
-      20%   { transform: translate(26px, 0px); }
-      30%   { transform: translate(21px, 0px); }
-      40%   { transform: translate(14px, 0px); }
-      50%   { transform: translate(5px, 0px); }
-      60%   { transform: translate(-4px, 0px); }
-      70%   { transform: translate(-11px, 0px); }
-      80%   { transform: translate(-16px, 0px); }
-      90%   { transform: translate(-19px, 0.3px); }
-      95%   { transform: translate(-19.75px, 0.5px); }
-      100%  { transform: translate(-20px, 0px); }
-    }
-
-    @keyframes driveFromDock {
-      0%    { transform: translate(-20px, 0px); }
-      5%    { transform: translate(-19.9px, -0.3px); }
-      10%   { transform: translate(-19.5px, -0.5px); }
-      15%   { transform: translate(-18.5px, -0.5px); }
-      20%   { transform: translate(-17px, -0.4px); }
-      30%   { transform: translate(-13px, -0.2px); }
-      40%   { transform: translate(-8px, 0px); }
-      50%   { transform: translate(-1.5px, 0px); }
-      60%   { transform: translate(6px, 0px); }
-      70%   { transform: translate(14px, 0px); }
-      80%   { transform: translate(21.5px, 0px); }
-      90%   { transform: translate(27px, 0px); }
-      100%  { transform: translate(30px, 0px); }
-    }
-
-    @keyframes BounceOnLawn {
-      0%, 100% { 
-        transform: translateX(30px) translateY(0px); 
-      }
-      25% { 
-        transform: translateX(30px) translateY(-1px); 
-      }
-      50% { 
-        transform: translateX(30px) translateY(-0.2px); 
-      }
-      75% { 
-        transform: translateX(30px) translateY(-1.2px); }
-    }
-
-    @keyframes ledStripActive {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes ledStripCharging {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes ledStripReturning {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes ledStripError {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* =================== */
-    /*  Responsive Design  */
-    /* =================== */
-    @container (max-width: 200px) {
-      .card-content {
-        padding: 4px;
-        gap: 4px;
-      }
-      
-      .main-display-area {
-        min-height: 80px;
-      }
-
-      .progress-badges,
-      .status-badges,
-      .view-toggle {
-        padding: 4px;
-      }
-
-      .progress-badge {
-        padding: 6px 10px;
-        height: 36px;
-      }
-      
-      .progress-text {
-        font-size: 11px;
-      }
-      
-      .controls-area {
-        grid-template-columns: 1fr;
-        gap: 4px;
-        min-height: auto;
-      }
-
-      .action-button {
-        padding: 6px 8px;
-        min-height: 34px;
-        font-size: 10px;
-      }
-      
-      .action-button ha-icon {
-        --mdc-icon-size: 18px;
-      }
-
-      .status-ring,
-      .view-toggle-button {
-        width: 34px;
-        height: 36px;
-      }
-
-      .view-toggle-button ha-icon {
-        --mdc-icon-size: 18px;
-      }
-
-      .badge-icon {
-        --mdc-icon-size: 20px;
-        font-size: 12px;
-      }
-
-      .status-icon {
-        width: 20px;
-        height: 20px;
-      }
-    }
-
-    @container (min-width: 300px) and (max-width: 380px) {
-      .card-content {
-        padding: 6px;
-        gap: 6px;
-      }
-      
-      .main-display-area {
-        min-height: 100px;
-      }
-
-      .progress-badges,
-      .status-badges,
-      .view-toggle {
-        padding: 6px;
-      }
-
-      .progress-badge {
-        padding: 8px 12px;
-        gap: 3px;
-      }
-      
-      .progress-text {
-        font-size: 12px;
-      }
-      
-      .controls-area {
-        grid-template-columns: 1fr;
-        gap: 6px;
-        min-height: auto;
-      }
-
-      .action-button {
-        padding: 6px 8px;
-        min-height: 36px;
-        font-size: 10px;
-      }
-      
-      .action-button ha-icon {
-        --mdc-icon-size: 20px;
-      }
-
-      .view-toggle-button {
-        width: 36px;
-        height: 36px;
-      }
-
-      .view-toggle-button ha-icon {
-        --mdc-icon-size: 20px;
-      }
-
-      .badge-icon {
-        font-size: 14px;
-      }
-
-      .status-icon {
-        width: 22px;
-        height: 22px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .buttons-section {
-        gap: 2px;
-      }
-      
-      .action-button {
-        padding: 8px;
-        min-height: 36px;
-      }
-      
-      .action-button ha-icon {
-        --mdc-icon-size: 20px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .camera-container {
-        padding: 2px;
-      }
-      
-      .camera-overlay {
-        bottom: 8px;
-        right: 8px;
-        padding: 2px 6px;
-        font-size: 9px;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .status-ring {
-        padding: 8px 12px;
-        gap: 6px;
-      }
-
-      .badge-icon {
-        --mdc-icon-size: 22px;
-        font-size: 15px;
-      }
-
-      .status-icon {
-        width: 22px;
-        height: 22px;
-      }
-
-      .status-text {
-        font-size: 12px;
-      }
-
-      .progress-badge {
-        padding: 8px 12px;
-      }
-
-      .tile-card-button {
-        font-size: 13px;
-        padding: 10px 14px;
-        min-height: 40px;
-      }
-
-      .view-toggle-button {
-        width: 36px;
-        height: 36px;
-      }
-
-      .view-toggle-button ha-icon {
-        --mdc-icon-size: 20px;
-      }
-
-      .action-button ha-icon {
-        --mdc-icon-size: 20px;
-      }
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .camera-container {
-        background-color: rgba(var(--rgb-primary-background-color), 0.8);
-      }
-    }
-
-    /* =================== */
-    /*  Performance        */
-    /* =================== */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-
-    .mower-svg,
-    .status-icon,
-    .view-toggle-button,
-    .sleep-z,
-    .loader,
-    .camera-overlay,
     .action-button {
-      backface-visibility: hidden;
-      perspective: 1000px;
+      padding: 8px;
+      min-height: 36px;
+      font-size: 11px;
     }
 
+    .action-button ha-icon {
+      --mdc-icon-size: 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .camera-container {
+      padding: 2px;
+    }
+
+    .camera-overlay {
+      bottom: 8px;
+      right: 8px;
+      padding: 2px 6px;
+      font-size: 9px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .status-ring {
+      padding: 8px 12px;
+      gap: 6px;
+    }
+
+    .badge-icon {
+      --mdc-icon-size: 22px;
+      font-size: 15px;
+    }
+
+    .status-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    .status-text {
+      font-size: 12px;
+    }
+
+    .progress-badge {
+      padding: 8px 12px;
+    }
+
+    .tile-card-button {
+      font-size: 13px;
+      padding: 10px 14px;
+      min-height: 40px;
+    }
+
+    .view-toggle-button {
+      width: 36px;
+      height: 36px;
+    }
+
+    .view-toggle-button ha-icon {
+      --mdc-icon-size: 20px;
+    }
+
+    .action-button ha-icon {
+      --mdc-icon-size: 20px;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .camera-container {
+      background-color: rgba(var(--rgb-primary-background-color), 0.8);
+    }
+  }
+
+  /* =================== */
+  /*  Performance        */
+  /* =================== */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  .mower-svg,
+  .status-icon,
+  .view-toggle-button,
+  .sleep-z,
+  .loader,
+  .camera-overlay,
+  .action-button {
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
 `;
 /* =================== */
 /*   Editor Styles     */
 /* =================== */
 const editorStyles = i$3 `
+  .card-config {
+    padding: 16px;
+    overflow: visible;
+    min-height: fit-content;
+  }
 
-    .card-config {
-      padding: 16px;
-      overflow: visible;
-      min-height: fit-content;
-    }
+  .card-config.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+  }
 
-    .card-config.loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 120px;
-    }
+  .loading-text {
+    color: var(--secondary-text-color);
+    font-style: italic;
+  }
 
-    .loading-text {
-      color: var(--secondary-text-color);
-      font-style: italic;
-    }
+  /* =================== */
+  /*      Header         */
+  /* =================== */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+  }
 
-    /* =================== */
-    /*      Header         */
-    /* =================== */
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 16px;
-    }
+  .card-header .name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: rgb(86, 159, 66);
+  }
 
-    .card-header .name {
-      font-weight: bold;
-      font-size: 1.1em;
-      color: rgb(86, 159, 66);
-    }
+  .card-header .version {
+    font-size: 0.9em;
+    color: var(--secondary-text-color);
+  }
 
-    .card-header .version {
-      font-size: 0.9em;
-      color: var(--secondary-text-color);
-    }
+  .config-container {
+    background: var(--card-background-color, #fff);
+    border-radius: 16px;
+    border: 1px solid var(--divider-color, #e0e0e0);
+    overflow: visible;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
 
-    .config-container {
-      background: var(--card-background-color, #fff);
-      border-radius: 16px;
-      border: 1px solid var(--divider-color, #e0e0e0);
-      overflow: visible;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+  /* =================== */
+  /*     Sections        */
+  /* =================== */
+  .config-section {
+    border-bottom: 1px solid var(--divider-color, #e0e0e0);
+  }
 
-    /* =================== */
-    /*     Sections        */
-    /* =================== */
-    .config-section {
-      border-bottom: 1px solid var(--divider-color, #e0e0e0);
-    }
+  .config-section:last-child {
+    border-bottom: none;
+  }
 
-    .config-section:last-child {
-      border-bottom: none;
-    }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    user-select: none;
+    will-change: background-color;
+  }
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      user-select: none;
-      will-change: background-color;
-    }
+  .section-header:hover {
+    background: var(--secondary-background-color, #f8f9fa);
+  }
 
-    .section-header:hover {
-      background: var(--secondary-background-color, #f8f9fa);
-    }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-text-color);
+  }
 
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--primary-text-color);
-    }
+  .section-title ha-icon {
+    --mdc-icon-size: 20px;
+    color: var(--primary-color, #03a9f4);
+  }
 
-    .section-title ha-icon {
-      --mdc-icon-size: 20px;
-      color: var(--primary-color, #03a9f4);
-    }
+  .action-count {
+    font-size: 0.8em;
+    font-weight: 400;
+    color: var(--secondary-text-color);
+    margin-left: 4px;
+  }
 
-    .action-count {
-      font-size: 0.8em;
-      font-weight: 400;
-      color: var(--secondary-text-color);
-      margin-left: 4px;
-    }
+  .collapse-icon {
+    --mdc-icon-size: 24px;
+    color: var(--secondary-text-color);
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+    will-change: transform;
+  }
 
-    .collapse-icon {
-      --mdc-icon-size: 24px;
-      color: var(--secondary-text-color);
-      transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
-      will-change: transform;
-    }
+  .collapse-icon.expanded {
+    transform: rotate(180deg);
+  }
 
-    .collapse-icon.expanded {
-      transform: rotate(180deg);
-    }
+  .section-content {
+    overflow: hidden;
+    transition:
+      max-height 0.3s cubic-bezier(0.2, 0, 0, 1),
+      opacity 0.3s ease;
+    will-change: max-height, opacity;
+  }
 
-    .section-content {
-      overflow: hidden;
-      transition: max-height 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease;
-      will-change: max-height, opacity;
-    }
+  .section-content.expanded {
+    padding: 0 20px 20px 20px;
+    max-height: none;
+    overflow: visible;
+    opacity: 1;
+  }
 
-    .section-content.expanded {
-      padding: 0 20px 20px 20px;
-      max-height: none;
-      overflow: visible;
-      opacity: 1;
-    }
+  .section-content.collapsed {
+    padding: 0 20px;
+    max-height: 0;
+    opacity: 0;
+  }
 
-    .section-content.collapsed {
-      padding: 0 20px;
-      max-height: 0;
-      opacity: 0;
-    }
+  .section-description {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
 
-    .section-description {
-      font-size: 14px;
-      color: var(--secondary-text-color);
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
+  .form-group {
+    border: 1px solid var(--divider-color);
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 16px;
+  }
 
-    .form-group {
-      border: 1px solid var(--divider-color);
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 16px;
-    }
+  .form-group-title {
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--primary-text-color);
+    font-size: 15px;
+  }
 
-    .form-group-title {
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: var(--primary-text-color);
-      font-size: 15px;
-    }
+  .color-group {
+    padding-bottom: 16px;
+  }
 
-    .color-group {
-      padding-bottom: 16px;
-    }
+  .separator {
+    height: 1px;
+    background-color: var(--divider-color);
+    margin: 16px -16px;
+  }
 
-    .separator {
-      height: 1px;
-      background-color: var(--divider-color);
-      margin: 16px -16px;
-    }
+  .form-group ha-form + .separator + ha-form .form-group-title {
+    margin-top: 16px;
+  }
 
-    .form-group ha-form + .separator + ha-form .form-group-title {
-      margin-top: 16px;
-    }
+  /* =================== */
+  /*  Forms & Buttons    */
+  /* =================== */
+  ha-form {
+    width: 100%;
+  }
 
-    /* =================== */
-    /*  Forms & Buttons    */
-    /* =================== */
-    ha-form {
-      width: 100%;
-    }
+  .form-buttons ha-button,
+  .actions-header ha-button {
+    --mdc-theme-primary: var(--primary-color);
+    --mdc-button-outline-color: transparent;
+    --mdc-button-outline-width: 0;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    min-width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    font-weight: bold;
+  }
 
-    .form-buttons ha-button,
-    .actions-header ha-button {
-      --mdc-theme-primary: var(--primary-color);
-      --mdc-button-outline-color: transparent;
-      --mdc-button-outline-width: 0;
-      box-shadow: none;
-      border: none;
-      padding: 0;
-      min-width: 100px;
-      height: 40px;
-      border-radius: 20px;
-      font-weight: bold;
-    }
+  .add-action-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    margin: 16px 0 24px 0;
+    background: var(--card-background-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 
-    .add-action-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 20px;
-      border: 2px solid var(--primary-color);
-      border-radius: 12px;
-      margin: 16px 0 24px 0;
-      background: var(--card-background-color);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .form-header {
-      font-weight: 600;
-      color: var(--primary-text-color);
-      margin-bottom: 8px;
-      font-size: 18px;
-      padding-left: 12px;
-      border-left: 4px solid var(--primary-color);
-    }
-    
-    .form-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .form-section-title {
-      font-weight: 500;
-      color: var(--primary-text-color);
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-    
-    .form-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      justify-content: flex-end;
-    }
+  .add-action-form.hidden {
+    display: none;
+  }
 
-    /* =================== */
-    /*     Actions         */
-    /* =================== */
-    .actions-header {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 16px;
-      gap: 8px;
-    }
-    
+  .form-header {
+    font-weight: 600;
+    color: var(--primary-text-color);
+    margin-bottom: 8px;
+    font-size: 18px;
+    padding-left: 12px;
+    border-left: 4px solid var(--primary-color);
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-section-title {
+    font-weight: 500;
+    color: var(--primary-text-color);
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    justify-content: flex-end;
+  }
+
+  /* =================== */
+  /*     Actions         */
+  /* =================== */
+  .actions-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+
+  .action-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--secondary-background-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--primary-color);
+    gap: 12px;
+  }
+
+  .action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(0deg, rgba(84, 179, 122, 1) 0%, rgba(106, 217, 139, 1) 100%);
+    border-radius: 12px;
+    color: var(--text-primary-color, white);
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .action-icon ha-icon {
+    --mdc-icon-size: 24px;
+  }
+
+  .action-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .action-name {
+    font-weight: 600;
+    color: var(--primary-text-color);
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .action-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .action-type-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: var(--text-primary-color, white);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .action-detail {
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .action-service-id {
+    color: var(--disabled-text-color, #999);
+    font-size: 11px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .action-buttons ha-icon-button {
+    --mdc-icon-button-size: 42px;
+    --mdc-icon-size: 20px;
+    height: 42px;
+    color: var(--secondary-text-color);
+    background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.1);
+    border-radius: 8px;
+    --mdc-ripple-border-radius: 8px;
+    will-change: background-color, color;
+  }
+
+  .action-buttons ha-icon-button ha-icon {
+    display: flex;
+  }
+
+  .action-buttons ha-icon-button:hover {
+    background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.2);
+    color: var(--primary-color);
+  }
+
+  .action-buttons ha-icon-button:nth-child(2):hover {
+    background: rgba(var(--rgb-error-color, 244, 67, 54), 0.2);
+    color: var(--error-color, #f44336);
+  }
+
+  .max-actions-reached {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, var(--info-color, #2196f3), var(--info-color, #1976d2));
+    color: var(--text-primary-color, white);
+    border-radius: 12px;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+  }
+
+  .max-actions-reached ha-icon {
+    --mdc-icon-size: 22px;
+  }
+
+  .no-actions-text {
+    color: var(--secondary-text-color);
+    font-style: italic;
+    text-align: center;
+    margin: 24px 0;
+    padding: 32px 20px;
+    background: var(--secondary-background-color);
+    border-radius: 12px;
+    border: 2px dashed var(--divider-color);
+  }
+
+  /* =================== */
+  /*      Icons          */
+  /* =================== */
+  .icon-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .icon-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--secondary-background-color);
+    border-radius: 8px;
+    border: 2px solid var(--primary-color);
+  }
+
+  .icon-preview ha-icon {
+    --mdc-icon-size: 28px;
+    color: var(--primary-color);
+  }
+
+  .icon-preview span {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    color: var(--primary-text-color);
+    font-weight: 500;
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(36px, 1fr));
+    gap: 6px;
+    padding: 12px;
+    background: var(--secondary-background-color);
+    border-radius: 8px;
+    border: 1px solid var(--divider-color);
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .icon-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: var(--card-background-color);
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+    will-change: border-color;
+  }
+
+  .icon-option.selected {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+  }
+
+  .icon-option ha-icon {
+    --mdc-icon-size: 18px;
+    color: var(--primary-text-color);
+  }
+
+  .icon-option.selected ha-icon {
+    color: var(--primary-color);
+  }
+
+  /* =================== */
+  /*  Responsive Design  */
+  /* =================== */
+  @media (max-width: 600px) {
     .action-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       padding: 12px;
-      background: var(--secondary-background-color);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      border-left: 4px solid var(--primary-color);
       gap: 12px;
+      min-height: 64px;
     }
-    
+
     .action-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(0deg,rgba(84, 179, 122, 1) 0%, rgba(106, 217, 139, 1) 100%);
-      border-radius: 12px;
-      color: var(--text-primary-color, white);
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      width: 40px;
+      height: 40px;
     }
-    
+
     .action-icon ha-icon {
-      --mdc-icon-size: 24px;
-    }
-    
-    .action-info {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    
-    .action-name {
-      font-weight: 600;
-      color: var(--primary-text-color);
-      font-size: 15px;
-      line-height: 1.2;
-    }
-    
-    .action-type {
-      font-size: 13px;
-      color: var(--secondary-text-color);
-      line-height: 1.3;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 100%;
-      position: relative;
-    }
-
-    .action-target,
-    .action-service-data {
-      font-size: 12px;
-      color: var(--secondary-text-color);
-      font-style: italic;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .action-target.custom-target {
-      color: var(--primary-color);
-      font-weight: 500;
-    }
-
-    .action-target.default-target {
-      color: var(--secondary-text-color);
-      font-style: italic;
-    }
-    
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-      flex-shrink: 0;
+      --mdc-icon-size: 20px;
     }
 
     .action-buttons ha-icon-button {
       --mdc-icon-button-size: 42px;
       --mdc-icon-size: 20px;
-      height: 42px;
-      color: var(--secondary-text-color);
-      background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.1);
-      border-radius: 8px;
-      --mdc-ripple-border-radius: 8px;
-      will-change: background-color, color;
     }
 
-    .action-buttons ha-icon-button ha-icon {
-      display: flex;
+    .icon-grid {
+      grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
+      gap: 4px;
     }
 
-    .action-buttons ha-icon-button:hover {
-      background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.2);
-      color: var(--primary-color);
+    .icon-option {
+      width: 32px;
+      height: 32px;
     }
 
-    .action-buttons ha-icon-button:nth-child(2):hover {
-      background: rgba(var(--rgb-error-color, 244, 67, 54), 0.2);
-      color: var(--error-color, #f44336);
+    .icon-option ha-icon {
+      --mdc-icon-size: 16px;
+    }
+
+    .form-buttons {
+      flex-direction: column;
+    }
+
+    .form-buttons ha-button {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .icon-grid {
+      max-height: 500px;
+    }
+  }
+
+  @media (max-height: 600px) {
+    .icon-grid {
+      max-height: 300px;
+    }
+  }
+
+  /* =================== */
+  /*     Dark Mode       */
+  /* =================== */
+  @media (prefers-color-scheme: dark) {
+    .config-container {
+      background: var(--card-background-color, #1e1e1e);
+      border-color: var(--divider-color, #333);
+    }
+
+    .section-header:hover {
+      background: var(--secondary-background-color, #2a2a2a);
+    }
+
+    .action-item:hover {
+      background: var(--primary-background-color, #252525);
+    }
+
+    .add-action-form {
+      background: var(--primary-background-color, #1a1a1a);
+      border-color: var(--primary-color);
     }
 
     .max-actions-reached {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
-      background: linear-gradient(135deg, var(--info-color, #2196f3), var(--info-color, #1976d2));
-      color: var(--text-primary-color, white);
-      border-radius: 12px;
-      margin-top: 16px;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+      background: linear-gradient(135deg, var(--info-color, #1976d2), var(--info-color, #1565c0));
     }
-    
-    .max-actions-reached ha-icon {
-      --mdc-icon-size: 22px;
-    }
-    
-    .no-actions-text {
-      color: var(--secondary-text-color);
-      font-style: italic;
-      text-align: center;
-      margin: 24px 0;
-      padding: 32px 20px;
-      background: var(--secondary-background-color);
-      border-radius: 12px;
-      border: 2px dashed var(--divider-color);
-    }
+  }
 
-    /* =================== */
-    /*      Icons          */
-    /* =================== */
-    .icon-selector {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+  /* =================== */
+  /*  Performance        */
+  /* =================== */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
-    
-    .icon-preview {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      background: var(--secondary-background-color);
-      border-radius: 8px;
-      border: 2px solid var(--primary-color);
-    }
-    
-    .icon-preview ha-icon {
-      --mdc-icon-size: 28px;
-      color: var(--primary-color);
-    }
-    
-    .icon-preview span {
-      font-family: 'Roboto Mono', monospace;
-      font-size: 14px;
-      color: var(--primary-text-color);
-      font-weight: 500;
-    }
-    
-    .icon-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(36px, 1fr));
-      gap: 6px;
-      padding: 12px;
-      background: var(--secondary-background-color);
-      border-radius: 8px;
-      border: 1px solid var(--divider-color);
-      max-height: 400px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-    .icon-option {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      background: var(--card-background-color);
-      transition: border-color 0.15s ease, transform 0.15s ease;
-      will-change: border-color;
-    }
-    
-    .icon-option.selected {
-      border-color: var(--primary-color);
-      transform: scale(1.1);
-    }
-    
-    .icon-option ha-icon {
-      --mdc-icon-size: 18px;
-      color: var(--primary-text-color);
-    }
+  }
 
-    .icon-option.selected ha-icon {
-      color: var(--primary-color);
-    }
-
-    /* =================== */
-    /*  Responsive Design  */
-    /* =================== */
-    @media (max-width: 600px) {
-      .action-item {
-        padding: 12px;
-        gap: 12px;
-        min-height: 64px;
-      }
-
-      .action-icon {
-        width: 40px;
-        height: 40px;
-      }
-
-      .action-icon ha-icon {
-        --mdc-icon-size: 20px;
-      }
-
-      .action-buttons ha-icon-button {
-        --mdc-icon-button-size: 42px;
-        --mdc-icon-size: 20px;
-      }
-
-      .icon-grid {
-        grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
-        gap: 4px;
-      }
-      
-      .icon-option {
-        width: 32px;
-        height: 32px;
-      }
-      
-      .icon-option ha-icon {
-        --mdc-icon-size: 16px;
-      }
-
-      .form-buttons {
-        flex-direction: column;
-      }
-
-      .form-buttons ha-button {
-        width: 100%;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .icon-grid {
-        max-height: 500px;
-      }
-    }
-
-    @media (max-height: 600px) {
-      .icon-grid {
-        max-height: 300px;
-      }
-    }
-
-    /* =================== */
-    /*     Dark Mode       */
-    /* =================== */
-    @media (prefers-color-scheme: dark) {
-      .config-container {
-        background: var(--card-background-color, #1e1e1e);
-        border-color: var(--divider-color, #333);
-      }
-      
-      .section-header:hover {
-        background: var(--secondary-background-color, #2a2a2a);
-      }
-
-      .action-item:hover {
-        background: var(--primary-background-color, #252525);
-      }
-
-      .add-action-form {
-        background: var(--primary-background-color, #1a1a1a);
-        border-color: var(--primary-color);
-      }
-
-      .max-actions-reached {
-        background: linear-gradient(135deg, var(--info-color, #1976d2), var(--info-color, #1565c0));
-      }
-    }
-
-    /* =================== */
-    /*  Performance        */
-    /* =================== */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-
-    .action-item,
-    .action-icon,
-    .collapse-icon {
-      backface-visibility: hidden;
-      perspective: 1000px;
-    }
+  .action-item,
+  .action-icon,
+  .collapse-icon {
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
 `;
 
 let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
@@ -3324,31 +3800,47 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._newActionName = '';
         this._newActionIcon = 'mdi:play';
         this._editingActionIndex = null;
+        this._newActionType = 'call-service';
         this._newActionService = '';
         this._newActionTarget = '';
         this._newActionServiceData = {};
         this._targetMode = 'default';
+        this._newActionNavigationPath = '';
+        this._newActionUrlPath = '';
+        this._newActionEntity = '';
+        this._serviceTranslationsLoaded = false;
         this._boundComputeLabel = this._computeLabel.bind(this);
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
         this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
         this._boundComputeActionsLabel = this._computeActionsLabel.bind(this);
         this.MAX_ACTIONS = 6;
         this.MOWER_ICONS = [
-            'mdi:play', 'mdi:pause', 'mdi:stop', 'mdi:home-map-marker',
-            'mdi:robot-mower', 'mdi:map-marker', 'mdi:battery', 'mdi:map',
-            'mdi:cog', 'mdi:wrench', 'mdi:refresh', 'mdi:power', 'mdi:grass', 'mdi:leaf'
+            'mdi:play',
+            'mdi:pause',
+            'mdi:stop',
+            'mdi:home-map-marker',
+            'mdi:robot-mower',
+            'mdi:map-marker',
+            'mdi:battery',
+            'mdi:map',
+            'mdi:cog',
+            'mdi:wrench',
+            'mdi:refresh',
+            'mdi:power',
+            'mdi:grass',
+            'mdi:leaf',
         ];
         this._infoSchema = [
-            { name: "progress_entity", selector: { entity: { domain: "sensor" } }, required: false },
-            { name: "battery_entity", selector: { entity: { domain: "sensor", device_class: "battery" } }, required: false },
-            { name: "charging_entity", selector: { entity: { domain: ["binary_sensor", "sensor"] } }, required: false }
+            { name: 'progress_entity', selector: { entity: { domain: 'sensor' } }, required: false },
+            { name: 'battery_entity', selector: { entity: { domain: 'sensor', device_class: 'battery' } }, required: false },
+            { name: 'charging_entity', selector: { entity: { domain: ['binary_sensor', 'sensor'] } }, required: false },
         ];
     }
     connectedCallback() {
         super.connectedCallback();
         this._loadHelpers();
         this._resizeObserver = new ResizeObserver(() => {
-            this.dispatchEvent(new Event("iron-resize", { bubbles: true, composed: true }));
+            this.dispatchEvent(new Event('iron-resize', { bubbles: true, composed: true }));
         });
         this._resizeObserver.observe(this);
     }
@@ -3364,6 +3856,23 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     disconnectedCallback() {
         super.disconnectedCallback();
         this._resizeObserver?.disconnect();
+    }
+    updated(changedProps) {
+        super.updated(changedProps);
+        if (changedProps.has('hass') && this.hass && !this._serviceTranslationsLoaded) {
+            this._loadServiceTranslations();
+        }
+    }
+    async _loadServiceTranslations() {
+        try {
+            await this.hass.loadBackendTranslation?.('services');
+            this._serviceTranslationsLoaded = true;
+            this._cachedServices = undefined;
+            this.requestUpdate();
+        }
+        catch (e) {
+            // Translations not available, fall back to raw service IDs
+        }
     }
     setConfig(config) {
         if (config.custom_actions === undefined) {
@@ -3406,51 +3915,103 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     _actionFormValueChanged(ev) {
         ev.stopPropagation();
-        const { action_name, action_service, action_target, action_service_data, target_mode } = ev.detail.value;
+        const { action_name, action_type, action_service, action_target, action_service_data, target_mode, action_navigation_path, action_url_path, } = ev.detail.value;
         this._newActionName = action_name ?? '';
         this._newActionService = action_service ?? '';
         this._newActionTarget = action_target ?? '';
         this._newActionServiceData = action_service_data ?? {};
         this._targetMode = target_mode ?? this._targetMode;
+        this._newActionNavigationPath = action_navigation_path ?? '';
+        this._newActionUrlPath = action_url_path ?? '';
+        if (action_type !== undefined && action_type !== this._newActionType) {
+            this._newActionType = action_type;
+        }
     }
     _fireConfigChanged(config) {
         this.config = config;
-        this.dispatchEvent(new CustomEvent("config-changed", {
+        this.dispatchEvent(new CustomEvent('config-changed', {
             detail: { config },
             bubbles: true,
-            composed: true
+            composed: true,
         }));
     }
     _toggleSection(section) {
         this._sectionsExpanded = {
             ...this._sectionsExpanded,
-            [section]: !this._sectionsExpanded[section]
+            [section]: !this._sectionsExpanded[section],
         };
     }
+    _buildActionConfig() {
+        switch (this._newActionType) {
+            case 'call-service': {
+                let target;
+                if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
+                    target = { entity_id: this._newActionTarget.trim() };
+                }
+                else if (this._targetMode === 'default') {
+                    target = { entity_id: this.config.entity || '{{ entity }}' };
+                }
+                return {
+                    action: 'call-service',
+                    service: this._newActionService.trim(),
+                    target: target,
+                    data: this._newActionServiceData,
+                };
+            }
+            case 'navigate':
+                return { action: 'navigate', navigation_path: this._newActionNavigationPath.trim() };
+            case 'url':
+                return { action: 'url', url_path: this._newActionUrlPath.trim() };
+            case 'toggle': {
+                const entity = this._targetMode === 'custom' && this._newActionTarget.trim() ? this._newActionTarget.trim() : undefined;
+                return { action: 'toggle', entity };
+            }
+            case 'more-info': {
+                const entity = this._targetMode === 'custom' && this._newActionTarget.trim() ? this._newActionTarget.trim() : undefined;
+                return { action: 'more-info', entity };
+            }
+            case 'none':
+                return { action: 'none' };
+            default:
+                return { action: 'none' };
+        }
+    }
+    _isActionFormValid() {
+        if (!this._newActionName.trim())
+            return false;
+        switch (this._newActionType) {
+            case 'call-service':
+                if (!this._newActionService.trim())
+                    return false;
+                if (this._targetMode === 'custom' && !this._newActionTarget.trim())
+                    return false;
+                return true;
+            case 'navigate':
+                return !!this._newActionNavigationPath.trim();
+            case 'url':
+                return !!this._newActionUrlPath.trim();
+            case 'toggle':
+            case 'more-info':
+                if (this._targetMode === 'custom' && !this._newActionTarget.trim())
+                    return false;
+                return true;
+            case 'none':
+                return true;
+            default:
+                return false;
+        }
+    }
     _addAction() {
-        const service = this._newActionService.trim();
-        if (!this.config || !this._newActionName.trim() || !service) {
+        if (!this.config || !this._isActionFormValid()) {
             return;
         }
         if (this.config.custom_actions && this.config.custom_actions.length >= this.MAX_ACTIONS) {
             return;
         }
-        let target;
-        if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
-            target = { entity_id: this._newActionTarget.trim() };
-        }
-        else if (this._targetMode === 'default') {
-            target = { entity_id: this.config.entity || '{{ entity }}' };
-        }
         const newAction = {
             name: this._newActionName.trim(),
             icon: this._newActionIcon,
-            action: {
-                action: 'call-service',
-                service: service,
-                target: target,
-                data: this._newActionServiceData,
-            }
+            action: this._buildActionConfig(),
         };
         const newActions = [...(this.config.custom_actions || []), newAction];
         this._fireConfigChanged({ ...this.config, custom_actions: newActions });
@@ -3459,56 +4020,76 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     _editAction(index) {
         if (!this.config?.custom_actions?.[index])
             return;
+        this._resetActionForm();
         this._editingActionIndex = index;
         const action = this.config.custom_actions[index];
         this._newActionName = action.name;
         this._newActionIcon = action.icon || 'mdi:play';
-        if (action.action.action === 'call-service') {
-            const serviceCall = action.action;
-            this._newActionService = serviceCall.service || '';
-            const target = serviceCall.target;
-            if (!target || (!target.entity_id && !target.device_id && !target.area_id)) {
-                this._targetMode = 'none';
-                this._newActionTarget = '';
-            }
-            else {
-                const targetEntityId = serviceCall.target?.entity_id || '';
-                const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
-                const isDefaultEntity = entityIdString === '{{ entity }}' || entityIdString === this.config.entity;
-                if (isDefaultEntity || !entityIdString) {
-                    this._targetMode = 'default';
+        this._newActionType = action.action.action || 'call-service';
+        switch (action.action.action) {
+            case 'call-service': {
+                const serviceCall = action.action;
+                this._newActionService = serviceCall.service || '';
+                const target = serviceCall.target;
+                if (!target || (!target.entity_id && !target.device_id && !target.area_id)) {
+                    this._targetMode = 'none';
                     this._newActionTarget = '';
                 }
                 else {
-                    this._targetMode = 'custom';
-                    this._newActionTarget = entityIdString;
+                    const targetEntityId = serviceCall.target?.entity_id || '';
+                    const entityIdString = Array.isArray(targetEntityId) ? targetEntityId[0] : targetEntityId;
+                    const isDefaultEntity = entityIdString === '{{ entity }}' || entityIdString === this.config.entity;
+                    if (isDefaultEntity || !entityIdString) {
+                        this._targetMode = 'default';
+                        this._newActionTarget = '';
+                    }
+                    else {
+                        this._targetMode = 'custom';
+                        this._newActionTarget = entityIdString;
+                    }
                 }
+                this._newActionServiceData = serviceCall.data || serviceCall.service_data || {};
+                break;
             }
-            this._newActionServiceData = serviceCall.data || serviceCall.service_data || {};
+            case 'navigate':
+                this._newActionNavigationPath = action.action.navigation_path || '';
+                break;
+            case 'url':
+                this._newActionUrlPath = action.action.url_path || '';
+                break;
+            case 'toggle': {
+                const entity = action.action.entity;
+                if (entity) {
+                    this._targetMode = 'custom';
+                    this._newActionTarget = entity;
+                }
+                else {
+                    this._targetMode = 'default';
+                }
+                break;
+            }
+            case 'more-info': {
+                const entity = action.action.entity;
+                if (entity) {
+                    this._targetMode = 'custom';
+                    this._newActionTarget = entity;
+                }
+                else {
+                    this._targetMode = 'default';
+                }
+                break;
+            }
         }
         this._showActionForm = true;
     }
     _saveEditingAction() {
-        if (!this.config?.custom_actions || this._editingActionIndex === null || !this._newActionService.trim())
+        if (!this.config?.custom_actions || this._editingActionIndex === null || !this._isActionFormValid())
             return;
         const newActions = [...this.config.custom_actions];
-        const service = this._newActionService.trim();
-        let target;
-        if (this._targetMode === 'custom' && this._newActionTarget.trim()) {
-            target = { entity_id: this._newActionTarget.trim() };
-        }
-        else if (this._targetMode === 'default') {
-            target = { entity_id: this.config.entity || '{{ entity }}' };
-        }
         newActions[this._editingActionIndex] = {
             name: this._newActionName.trim(),
             icon: this._newActionIcon,
-            action: {
-                action: 'call-service',
-                service: service,
-                target: target,
-                data: this._newActionServiceData,
-            }
+            action: this._buildActionConfig(),
         };
         this._fireConfigChanged({ ...this.config, custom_actions: newActions });
         this._hideActionForm();
@@ -3517,10 +4098,14 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._editingActionIndex = null;
         this._newActionName = '';
         this._newActionIcon = 'mdi:play';
+        this._newActionType = 'call-service';
         this._newActionService = '';
         this._newActionTarget = '';
         this._newActionServiceData = {};
         this._targetMode = 'default';
+        this._newActionNavigationPath = '';
+        this._newActionUrlPath = '';
+        this._newActionEntity = '';
     }
     _showAddActionForm() {
         this._resetActionForm();
@@ -3552,50 +4137,120 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     get _actionFormSchema() {
         const schema = [
             {
-                name: "action_name",
-                selector: {
-                    text: {}
-                },
-                required: true
+                name: 'action_name',
+                selector: { text: {} },
+                required: true,
             },
             {
-                name: "action_service",
+                name: 'action_type',
                 selector: {
                     select: {
-                        mode: "dropdown",
-                        options: this._getAvailableServices(),
-                        custom_value: true
-                    }
-                },
-                required: true
-            },
-            {
-                name: "action_service_data",
-                selector: {
-                    object: {}
-                },
-                required: false
-            },
-            {
-                name: "target_mode",
-                selector: {
-                    select: {
-                        mode: "dropdown",
+                        mode: 'dropdown',
                         options: [
-                            { value: "default", label: localize('editor.actions.target_mode_label.default', { hass: this.hass }) },
-                            { value: "custom", label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
-                            { value: "none", label: localize('editor.actions.target_mode_label.none', { hass: this.hass }) }
+                            {
+                                value: 'call-service',
+                                label: localize('editor.actions.action_type.call_service', { hass: this.hass }),
+                            },
+                            { value: 'navigate', label: localize('editor.actions.action_type.navigate', { hass: this.hass }) },
+                            { value: 'url', label: localize('editor.actions.action_type.url', { hass: this.hass }) },
+                            { value: 'toggle', label: localize('editor.actions.action_type.toggle', { hass: this.hass }) },
+                            { value: 'more-info', label: localize('editor.actions.action_type.more_info', { hass: this.hass }) },
+                            { value: 'none', label: localize('editor.actions.action_type.none', { hass: this.hass }) },
                         ],
-                        custom_value: false
-                    }
+                        custom_value: false,
+                    },
                 },
-                required: true
-            }
+                required: true,
+            },
         ];
-        if (this._targetMode === 'custom') {
-            schema.push({ name: "action_target", selector: { entity: {} } });
+        switch (this._newActionType) {
+            case 'call-service':
+                schema.push({
+                    name: 'action_service',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: this._getAvailableServices(),
+                            custom_value: true,
+                        },
+                    },
+                    required: true,
+                }, {
+                    name: 'action_service_data',
+                    selector: { object: {} },
+                    required: false,
+                }, {
+                    name: 'target_mode',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: [
+                                {
+                                    value: 'default',
+                                    label: localize('editor.actions.target_mode_label.default', { hass: this.hass }),
+                                },
+                                { value: 'custom', label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
+                                { value: 'none', label: localize('editor.actions.target_mode_label.none', { hass: this.hass }) },
+                            ],
+                            custom_value: false,
+                        },
+                    },
+                    required: true,
+                });
+                if (this._targetMode === 'custom') {
+                    schema.push({ name: 'action_target', selector: { entity: {} } });
+                }
+                break;
+            case 'navigate':
+                schema.push({
+                    name: 'action_navigation_path',
+                    selector: { text: {} },
+                    required: true,
+                });
+                break;
+            case 'url':
+                schema.push({
+                    name: 'action_url_path',
+                    selector: { text: {} },
+                    required: true,
+                });
+                break;
+            case 'toggle':
+            case 'more-info':
+                schema.push({
+                    name: 'target_mode',
+                    selector: {
+                        select: {
+                            mode: 'dropdown',
+                            options: [
+                                { value: 'default', label: localize('editor.actions.target_mode_label.default', { hass: this.hass }) },
+                                { value: 'custom', label: localize('editor.actions.target_mode_label.custom', { hass: this.hass }) },
+                            ],
+                            custom_value: false,
+                        },
+                    },
+                    required: true,
+                });
+                if (this._targetMode === 'custom') {
+                    schema.push({ name: 'action_target', selector: { entity: {} } });
+                }
+                break;
         }
         return schema;
+    }
+    _getServiceFriendlyName(serviceId) {
+        if (!this.hass || !serviceId)
+            return undefined;
+        const [domain, service] = serviceId.split('.', 2);
+        if (!domain || !service)
+            return undefined;
+        const name = this.hass.services?.[domain]?.[service]?.name;
+        if (name)
+            return name;
+        const localized = this.hass.localize?.(`component.${domain}.services.${service}.name`);
+        if (localized && localized !== `component.${domain}.services.${service}.name`)
+            return localized;
+        return undefined;
     }
     _getAvailableServices() {
         if (this._cachedServices && this._cachedServices.hassServices === this.hass.services) {
@@ -3607,9 +4262,10 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         for (const domain of Object.keys(this.hass.services)) {
             for (const service of Object.keys(this.hass.services[domain])) {
                 const fullService = `${domain}.${service}`;
+                const friendlyName = this._getServiceFriendlyName(fullService);
                 services.push({
                     value: fullService,
-                    label: fullService
+                    label: friendlyName ? `${friendlyName} (${fullService})` : fullService,
                 });
             }
         }
@@ -3620,29 +4276,14 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     get _actionFormData() {
         return {
             action_name: this._newActionName,
+            action_type: this._newActionType,
             action_service: this._newActionService,
             action_target: this._newActionTarget,
             action_service_data: this._newActionServiceData,
             target_mode: this._targetMode,
+            action_navigation_path: this._newActionNavigationPath,
+            action_url_path: this._newActionUrlPath,
         };
-    }
-    _getServiceDisplayName(service) {
-        const maxLength = 25;
-        if (service.length <= maxLength) {
-            return { display: service, tooltip: service };
-        }
-        const parts = service.split('.');
-        if (parts.length > 1) {
-            const domain = parts[0];
-            const serviceName = parts.slice(1).join('.');
-            if (serviceName.length <= maxLength - 3) {
-                return { display: `${domain}.${serviceName}`, tooltip: service };
-            }
-            else {
-                return { display: `${domain}.${serviceName.substring(0, maxLength - domain.length - 4)}...`, tooltip: service };
-            }
-        }
-        return { display: `${service.substring(0, maxLength)}...`, tooltip: service };
     }
     _getEntityDisplayName(entityId) {
         if (!entityId) {
@@ -3654,15 +4295,58 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             return {
                 display: localize('editor.actions.default_entity', { hass: this.hass }),
                 tooltip: `${localize('editor.actions.default_entity', { hass: this.hass })} (${this.config.entity || localize('editor.actions.not_set', { hass: this.hass })})`,
-                isDefault: true
+                isDefault: true,
             };
         }
         const friendlyName = this.hass?.states[entityId]?.attributes?.friendly_name || entityId;
         return {
             display: friendlyName,
             tooltip: entityId,
-            isDefault: isDefault
+            isDefault: isDefault,
         };
+    }
+    _getActionTypeBadge(actionType) {
+        const typeKey = actionType.replace('-', '_');
+        return localize(`editor.actions.action_type.${typeKey}`, { hass: this.hass });
+    }
+    _getActionDetailLine(action) {
+        switch (action.action.action) {
+            case 'call-service': {
+                const serviceCall = action.action;
+                if (!serviceCall.service)
+                    return localize('editor.actions.action_type.not_configured', { hass: this.hass });
+                return this._getServiceFriendlyName(serviceCall.service) || serviceCall.service;
+            }
+            case 'navigate':
+                return action.action.navigation_path || '';
+            case 'url':
+                return action.action.url_path || '';
+            case 'toggle': {
+                const entity = action.action.entity;
+                return entity
+                    ? this._getEntityDisplayName(entity).display
+                    : localize('editor.actions.default_entity', { hass: this.hass });
+            }
+            case 'more-info': {
+                const entity = action.action.entity;
+                return entity
+                    ? this._getEntityDisplayName(entity).display
+                    : localize('editor.actions.default_entity', { hass: this.hass });
+            }
+            case 'none':
+                return '';
+            default:
+                return '';
+        }
+    }
+    _getActionServiceId(action) {
+        if (action.action.action !== 'call-service')
+            return null;
+        const serviceCall = action.action;
+        if (!serviceCall.service)
+            return null;
+        const friendlyName = this._getServiceFriendlyName(serviceCall.service);
+        return friendlyName ? serviceCall.service : null;
     }
     _handleIconClick(e) {
         const target = e.target;
@@ -3678,23 +4362,23 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           <ha-icon icon=${this._newActionIcon}></ha-icon>
           <span>${this._newActionIcon}</span>
         </div>
-        
+
         <div class="icon-grid" @click=${this._handleIconClick}>
           ${this.MOWER_ICONS.map(icon => x `
-            <div 
-              class="icon-option ${this._newActionIcon === icon ? 'selected' : ''}"
-              data-icon=${icon}
-              title=${icon}
-            >
-              <ha-icon icon=${icon}></ha-icon>
-            </div>
-          `)}
+              <div
+                class="icon-option ${this._newActionIcon === icon ? 'selected' : ''}"
+                data-icon=${icon}
+                title=${icon}
+              >
+                <ha-icon icon=${icon}></ha-icon>
+              </div>
+            `)}
         </div>
-        
+
         <ha-textfield
           .label=${localize('editor.actions.icon_custom', { hass: this.hass })}
           .value=${this._newActionIcon}
-          @input=${(e) => this._newActionIcon = e.target.value}
+          @input=${(e) => (this._newActionIcon = e.target.value)}
           .helper=${localize('editor.actions.icon_custom_helper', { hass: this.hass })}
         ></ha-textfield>
       </div>
@@ -3722,15 +4406,21 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (schema.name === 'badge_icon_color') {
             return this._getLocalizedLabel(`editor.options.badge_icon_color`, schema.name);
         }
+        if (schema.name === 'toggle_active_color') {
+            return this._getLocalizedLabel(`editor.options.toggle_active_color`, schema.name);
+        }
         return this._getLocalizedLabel(`editor.options.${schema.name}`, schema.name);
     }
     _computeActionsLabel(schema) {
         const labelMap = {
             action_name: localize('editor.actions.name', { hass: this.hass }),
+            action_type: localize('editor.actions.type', { hass: this.hass }),
             action_service: localize('editor.actions.service', { hass: this.hass }),
             action_target: localize('editor.actions.target_entity', { hass: this.hass }),
             action_service_data: localize('editor.actions.service_data', { hass: this.hass }),
-            target_mode: localize('editor.actions.target_mode', { hass: this.hass })
+            target_mode: localize('editor.actions.target_mode', { hass: this.hass }),
+            action_navigation_path: localize('editor.actions.navigation_path', { hass: this.hass }),
+            action_url_path: localize('editor.actions.url_path', { hass: this.hass }),
         };
         return labelMap[schema.name] || schema.name;
     }
@@ -3745,35 +4435,24 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             ${localize('editor.actions.title', { hass: this.hass })}
             <span class="action-count">(${currentActionCount}/${this.MAX_ACTIONS})</span>
           </div>
-          <ha-icon
-            class="collapse-icon ${this._sectionsExpanded.actions ? 'expanded' : ''}"
-            icon="mdi:chevron-down"
-          >
+          <ha-icon class="collapse-icon ${this._sectionsExpanded.actions ? 'expanded' : ''}" icon="mdi:chevron-down">
           </ha-icon>
         </div>
 
         <div class="section-content ${this._sectionsExpanded.actions ? 'expanded' : 'collapsed'}">
-          <div class="section-description">
-            ${localize('editor.actions.description', { hass: this.hass })}
-          </div>
-          
+          <div class="section-description">${localize('editor.actions.description', { hass: this.hass })}</div>
+
           <div class="actions-header">
-            <ha-button
-              @click=${this._resetToDefaults}
-            >
+            <ha-button @click=${this._resetToDefaults}>
               ${localize('editor.actions.reset_to_defaults', { hass: this.hass })}
             </ha-button>
           </div>
-          
+
           ${this.config.custom_actions && this.config.custom_actions.length > 0
             ? this.config.custom_actions.map((action, index) => {
-                const serviceInfo = this._getServiceDisplayName(action.action.service || 'N/A');
-                action.action.target?.entity_id || '';
-                const target = action.action.target;
-                const entityIdString = target && target.entity_id ? (Array.isArray(target.entity_id) ? target.entity_id[0] : target.entity_id) : '';
-                const entityInfo = this._getEntityDisplayName(entityIdString);
-                const serviceData = action.action.data || action.action.service_data;
-                const hasServiceData = serviceData && Object.keys(serviceData).length > 0;
+                const typeBadge = this._getActionTypeBadge(action.action.action);
+                const detailLine = this._getActionDetailLine(action);
+                const serviceId = this._getActionServiceId(action);
                 return x `
                   <div class="action-item">
                     <div class="action-icon">
@@ -3781,21 +4460,16 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                     </div>
                     <div class="action-info">
                       <div class="action-name">${action.name}</div>
-                      <div class="action-type">
-                        ${localize('editor.actions.service', { hass: this.hass })}: ${serviceInfo.display}
+                      <div class="action-meta">
+                        <span class="action-type-badge">${typeBadge}</span>
+                        ${detailLine ? x `<span class="action-detail">${detailLine}</span>` : ''}
                       </div>
-                      <div class="action-target ${entityInfo.isDefault ? 'default-target' : 'custom-target'}">
-                        ${localize('editor.actions.target', { hass: this.hass })}: ${entityInfo.display}
-                      </div>
-                      <div class="action-service-data">
-                        ${localize('editor.actions.service_data', { hass: this.hass })}:
-                        ${hasServiceData ? localize('editor.actions.service_data_configured', { hass: this.hass }) : localize('editor.actions.service_data_none', { hass: this.hass })}
-                      </div>
+                      ${serviceId ? x `<div class="action-service-id">(${serviceId})</div>` : ''}
                     </div>
                     <div class="action-buttons">
                       <ha-icon-button
                         .label=${localize('editor.actions.edit', { hass: this.hass })}
-                        @click=${() => this._editAction(index)} 
+                        @click=${() => this._editAction(index)}
                         .disabled=${this._showActionForm && this._editingActionIndex !== index}
                       >
                         <ha-icon icon="mdi:pencil"></ha-icon>
@@ -3810,103 +4484,104 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   </div>
                 `;
             })
-            : x `<p class="no-actions-text">${localize('editor.actions.no_actions_configured', { hass: this.hass })}</p>`}
+            : x `<p class="no-actions-text">
+                ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
+              </p>`}
+          <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
+            <div class="form-header">
+              ${this._editingActionIndex !== null
+            ? localize('editor.actions.edit', { hass: this.hass })
+            : localize('editor.actions.add', { hass: this.hass })}
+            </div>
 
-          ${this._showActionForm
+            <div class="form-section">
+              <ha-form
+                .hass=${this.hass}
+                .data=${this._actionFormData}
+                .schema=${this._actionFormSchema}
+                .computeLabel=${this._boundComputeActionsLabel}
+                @value-changed=${this._actionFormValueChanged}
+              ></ha-form>
+            </div>
+
+            ${this._targetMode === 'default' && ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
             ? x `
-            <div class="add-action-form">
-              <div class="form-header">
-                ${this._editingActionIndex !== null
-                ? localize('editor.actions.edit', { hass: this.hass })
-                : localize('editor.actions.add', { hass: this.hass })}
-              </div>
-              
-              <div class="form-section">
-                <ha-form
-                  .hass=${this.hass}
-                  .data=${this._actionFormData}
-                  .schema=${this._actionFormSchema}
-                  .computeLabel=${this._boundComputeActionsLabel}
-                  @value-changed=${this._actionFormValueChanged}
-                ></ha-form>
-              </div>
+                  <div class="default-target-info form-section">
+                    <ha-icon icon="mdi:information-outline"></ha-icon>
+                    <span>
+                      ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                      <strong
+                        >${this.config.entity
+                ? this._getEntityDisplayName(this.config.entity).display
+                : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
+                      >
+                    </span>
+                  </div>
+                `
+            : ''}
+            ${this._targetMode === 'none' && this._newActionType === 'call-service'
+            ? x `
+                  <div class="default-target-info form-section">
+                    <ha-icon icon="mdi:information-outline"></ha-icon>
+                    <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
+                  </div>
+                `
+            : ''}
 
-              ${this._targetMode === 'default' ? x `
-                <div class="default-target-info form-section">
-                  <ha-icon icon="mdi:information-outline"></ha-icon>
-                  <span>
-                    ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                    <strong>${this.config.entity ? this._getEntityDisplayName(this.config.entity).display : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong>
-                  </span>
-                </div>
-              ` : ''}
+            <div class="form-section">
+              <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
+              ${this._renderIconSelector()}
+            </div>
 
-              ${this._targetMode === 'none' ? x `
-                <div class="default-target-info form-section">
-                  <ha-icon icon="mdi:information-outline"></ha-icon>
-                  <span>
-                    ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })}
-                  </span>
-                </div>
-              ` : ''}
-
-              <div class="form-section">
-                <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
-                ${this._renderIconSelector()}
-              </div>
-              
-              <div class="form-buttons">
-                ${this._editingActionIndex !== null
-                ? x `
-                    <ha-button
-                      @click=${this._saveEditingAction}
-                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || (this._targetMode === 'custom' && !this._newActionTarget.trim())}
-                    >
+            <div class="form-buttons">
+              ${this._editingActionIndex !== null
+            ? x `
+                    <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
                       ${localize('editor.actions.save', { hass: this.hass })}
                     </ha-button>
                   `
-                : x `
-                    <ha-button
-                      @click=${this._addAction}
-                      .disabled=${!this._newActionName.trim() || !this._newActionService.trim() || !canAddAction || (this._targetMode === 'custom' && !this._newActionTarget.trim())}
-                    >
+            : x `
+                    <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
                       ${localize('editor.actions.add_button', { hass: this.hass })}
                     </ha-button>
                   `}
-                <ha-button
-                  @click=${this._hideActionForm}
-                >
-                  ${localize('editor.actions.cancel', { hass: this.hass })}
-                </ha-button>
-              </div>
+              <ha-button @click=${this._hideActionForm}>
+                ${localize('editor.actions.cancel', { hass: this.hass })}
+              </ha-button>
             </div>
-            `
-            : x `
-              ${canAddAction
+          </div>
+          ${!this._showActionForm
+            ? x `
+                ${canAddAction
                 ? x `
-                  <div class="actions-header">
-                    <ha-button
-                      @click=${this._showAddActionForm}
-                    >
-                      ${localize('editor.actions.add', { hass: this.hass })}
-                    </ha-button>
-                  </div>
-                `
+                      <div class="actions-header">
+                        <ha-button @click=${this._showAddActionForm}>
+                          ${localize('editor.actions.add', { hass: this.hass })}
+                        </ha-button>
+                      </div>
+                    `
                 : x `
-                  <div class="max-actions-reached">
-                    <ha-icon icon="mdi:information-outline"></ha-icon>
-                    <span>${localize('editor.actions.max_reached', { hass: this.hass, search: '{MAX_ACTIONS}', replace: String(this.MAX_ACTIONS) })}</span>
-                  </div>
-                `}
-            `}
+                      <div class="max-actions-reached">
+                        <ha-icon icon="mdi:information-outline"></ha-icon>
+                        <span
+                          >${localize('editor.actions.max_reached', {
+                    hass: this.hass,
+                    search: '{MAX_ACTIONS}',
+                    replace: String(this.MAX_ACTIONS),
+                })}</span
+                        >
+                      </div>
+                    `}
+              `
+            : ''}
         </div>
       </div>
     `;
     }
     get _mainSchema() {
         return [
-            { name: "entity", selector: { entity: { domain: "lawn_mower" } } },
-            { name: "camera_entity", selector: { entity: { domain: "camera" } }, required: false },
+            { name: 'entity', selector: { entity: { domain: 'lawn_mower' } } },
+            { name: 'camera_entity', selector: { entity: { domain: 'camera' } }, required: false },
             {
                 name: 'camera_fit_mode',
                 selector: {
@@ -3921,20 +4596,19 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 },
                 disabled: !this.config.camera_entity,
             },
-            { name: "map_entity", selector: { entity: { domain: "device_tracker" } }, required: false }
+            { name: 'map_entity', selector: { entity: { domain: 'device_tracker' } }, required: false },
         ];
     }
     get _viewOptionsSchema() {
-        const defaultViewOptions = [
-            { value: 'mower', label: localize('view.mower', { hass: this.hass }) }
-        ];
+        const defaultViewOptions = [{ value: 'mower', label: localize('view.mower', { hass: this.hass }) }];
         if (this.config.camera_entity) {
             defaultViewOptions.push({ value: 'camera', label: localize('view.camera', { hass: this.hass }) });
         }
         if (this.config.map_entity) {
             defaultViewOptions.push({ value: 'map', label: localize('view.map', { hass: this.hass }) });
         }
-        return [{
+        return [
+            {
                 name: 'default_view',
                 selector: {
                     select: {
@@ -3942,7 +4616,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                         options: defaultViewOptions,
                     },
                 },
-            }];
+            },
+        ];
     }
     get _mapOptionsSchema() {
         const hasMapEntity = !!this.config.map_entity;
@@ -3997,16 +4672,17 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     get _colorOptionsSchema() {
         return [
-            { name: 'sky_color_top', selector: { "color_rgb": {} } },
-            { name: 'sky_color_bottom', selector: { "color_rgb": {} } },
-            { name: 'grass_color_top', selector: { "color_rgb": {} } },
-            { name: 'grass_color_bottom', selector: { "color_rgb": {} } },
+            { name: 'sky_color_top', selector: { color_rgb: {} } },
+            { name: 'sky_color_bottom', selector: { color_rgb: {} } },
+            { name: 'grass_color_top', selector: { color_rgb: {} } },
+            { name: 'grass_color_bottom', selector: { color_rgb: {} } },
         ];
     }
     get _badgeColorOptionsSchema() {
         return [
-            { name: 'badge_text_color', selector: { "color_rgb": {} } },
-            { name: 'badge_icon_color', selector: { "color_rgb": {} } },
+            { name: 'badge_text_color', selector: { color_rgb: {} } },
+            { name: 'badge_icon_color', selector: { color_rgb: {} } },
+            { name: 'toggle_active_color', selector: { color_rgb: {} } },
         ];
     }
     get _appearanceOptionsSchema() {
@@ -4034,19 +4710,35 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         }
         return undefined;
     }
+    _getPrimaryColorRgb() {
+        const fallback = [3, 169, 244];
+        try {
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            if (primaryColor) {
+                const parsed = this._parseColor(primaryColor);
+                if (parsed) {
+                    return parsed;
+                }
+            }
+        }
+        catch {
+            // Fallback if getComputedStyle fails
+        }
+        return fallback;
+    }
     get _mainData() {
         return {
             entity: this.config.entity || '',
             camera_entity: this.config.camera_entity || '',
             camera_fit_mode: this.config.camera_fit_mode || 'cover',
-            map_entity: this.config.map_entity || ''
+            map_entity: this.config.map_entity || '',
         };
     }
     get _infoData() {
         return {
             progress_entity: this.config.progress_entity || '',
             battery_entity: this.config.battery_entity || '',
-            charging_entity: this.config.charging_entity || ''
+            charging_entity: this.config.charging_entity || '',
         };
     }
     get _optionsData() {
@@ -4068,6 +4760,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return {
             badge_text_color: this._parseColor(this.config.badge_text_color) || [0, 0, 0],
             badge_icon_color: this._parseColor(this.config.badge_icon_color) || [0, 0, 0],
+            toggle_active_color: this._parseColor(this.config.toggle_active_color) || this._getPrimaryColorRgb(),
         };
     }
     render() {
@@ -4082,28 +4775,21 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
       <div class="card-config">
         <div class="card-header">
           <div class="name">${CARD_NAME}</div>
-          <div class="version">
-            ${localize('editor.version', { hass: this.hass })}: ${CARD_VERSION}
-          </div>
+          <div class="version">${localize('editor.version', { hass: this.hass })}: ${CARD_VERSION}</div>
         </div>
         <div class="config-container">
-          
           <div class="config-section">
             <div class="section-header" @click=${() => this._toggleSection('main')}>
               <div class="section-title">
                 <ha-icon icon="mdi:robot-mower"></ha-icon>
-                ${localize("editor.section.main", { hass: this.hass })}
+                ${localize('editor.section.main', { hass: this.hass })}
               </div>
-              <ha-icon 
-                class="collapse-icon ${this._sectionsExpanded.main ? 'expanded' : ''}" 
-                icon="mdi:chevron-down">
+              <ha-icon class="collapse-icon ${this._sectionsExpanded.main ? 'expanded' : ''}" icon="mdi:chevron-down">
               </ha-icon>
             </div>
-            
+
             <div class="section-content ${this._sectionsExpanded.main ? 'expanded' : 'collapsed'}">
-              <div class="section-description">
-                ${localize("editor.section.main_description", { hass: this.hass })}
-              </div>
+              <div class="section-description">${localize('editor.section.main_description', { hass: this.hass })}</div>
               <ha-form
                 .hass=${this.hass}
                 .data=${this._mainData}
@@ -4118,17 +4804,15 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             <div class="section-header" @click=${() => this._toggleSection('power')}>
               <div class="section-title">
                 <ha-icon icon="mdi:battery"></ha-icon>
-                ${localize("editor.section.power", { hass: this.hass })}
+                ${localize('editor.section.power', { hass: this.hass })}
               </div>
-              <ha-icon 
-                class="collapse-icon ${this._sectionsExpanded.power ? 'expanded' : ''}" 
-                icon="mdi:chevron-down">
+              <ha-icon class="collapse-icon ${this._sectionsExpanded.power ? 'expanded' : ''}" icon="mdi:chevron-down">
               </ha-icon>
             </div>
-            
+
             <div class="section-content ${this._sectionsExpanded.power ? 'expanded' : 'collapsed'}">
               <div class="section-description">
-                ${localize("editor.section.power_description", { hass: this.hass })}
+                ${localize('editor.section.power_description', { hass: this.hass })}
               </div>
               <ha-form
                 .hass=${this.hass}
@@ -4144,17 +4828,15 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             <div class="section-header" @click=${() => this._toggleSection('ui')}>
               <div class="section-title">
                 <ha-icon icon="mdi:view-dashboard"></ha-icon>
-                ${localize("editor.section.options", { hass: this.hass })}
+                ${localize('editor.section.options', { hass: this.hass })}
               </div>
-              <ha-icon 
-                class="collapse-icon ${this._sectionsExpanded.ui ? 'expanded' : ''}" 
-                icon="mdi:chevron-down">
+              <ha-icon class="collapse-icon ${this._sectionsExpanded.ui ? 'expanded' : ''}" icon="mdi:chevron-down">
               </ha-icon>
             </div>
-            
+
             <div class="section-content ${this._sectionsExpanded.ui ? 'expanded' : 'collapsed'}">
               <div class="section-description">
-                ${localize("editor.section.options_description", { hass: this.hass })}
+                ${localize('editor.section.options_description', { hass: this.hass })}
               </div>
               <ha-form
                 .hass=${this.hass}
@@ -4176,7 +4858,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
               </div>
 
               <div class="form-group">
-                <div class="form-group-title">${localize('editor.options.model_options_title', { hass: this.hass })}</div>
+                <div class="form-group-title">
+                  ${localize('editor.options.model_options_title', { hass: this.hass })}
+                </div>
                 <ha-form
                   .hass=${this.hass}
                   .data=${this._optionsData}
@@ -4187,7 +4871,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
               </div>
 
               <div class="form-group">
-                <div class="form-group-title">${localize('editor.options.color_options_title', { hass: this.hass })}</div>
+                <div class="form-group-title">
+                  ${localize('editor.options.color_options_title', { hass: this.hass })}
+                </div>
                 <ha-form
                   .hass=${this.hass}
                   .data=${this._badgeColorData}
@@ -4206,7 +4892,6 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                   ></ha-form>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -4224,37 +4909,49 @@ __decorate([
     n()
 ], CompactLawnMowerCardEditor.prototype, "config", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_helpersLoaded", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_sectionsExpanded", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_showActionForm", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_newActionName", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_newActionIcon", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_editingActionIndex", void 0);
 __decorate([
-    r()
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionType", void 0);
+__decorate([
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_newActionService", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_newActionTarget", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_newActionServiceData", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCardEditor.prototype, "_targetMode", void 0);
+__decorate([
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionNavigationPath", void 0);
+__decorate([
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionUrlPath", void 0);
+__decorate([
+    r$1()
+], CompactLawnMowerCardEditor.prototype, "_newActionEntity", void 0);
 CompactLawnMowerCardEditor = __decorate([
-    t('compact-lawn-mower-card-editor')
+    t$1('compact-lawn-mower-card-editor')
 ], CompactLawnMowerCardEditor);
 
 let CameraPopup = class CameraPopup extends i {
@@ -4295,18 +4992,18 @@ let CameraPopup = class CameraPopup extends i {
     }
     render() {
         if (!this.hass || !this.entityId) {
-            return E;
+            return E$1;
         }
         const stateObj = this.hass.states[this.entityId];
         if (!stateObj) {
-            return E;
+            return E$1;
         }
         let content;
         if (stateObj.state === 'unavailable') {
             content = x `
         <div class="popup-stream-container camera-error">
           <ha-icon icon="mdi:camera-off"></ha-icon>
-          <span>${localize("camera.not_available", { hass: this.hass })}</span>
+          <span>${localize('camera.not_available', { hass: this.hass })}</span>
         </div>
       `;
         }
@@ -4314,18 +5011,20 @@ let CameraPopup = class CameraPopup extends i {
             content = x `
         <div class="popup-stream-container camera-error">
           <ha-icon icon="mdi:lan-disconnect"></ha-icon>
-          <span>${localize("camera.not_reachable", { hass: this.hass })}</span>
+          <span>${localize('camera.not_reachable', { hass: this.hass })}</span>
         </div>
       `;
         }
         else {
             content = x `
         <div class="popup-stream-container">
-          ${this._isLoading ? x `
-            <div class="loading-indicator">
-              <div class="loader"></div>
-            </div>
-          ` : ''}
+          ${this._isLoading
+                ? x `
+                <div class="loading-indicator">
+                  <div class="loader"></div>
+                </div>
+              `
+                : ''}
           <ha-camera-stream
             .hass=${this.hass}
             .stateObj=${stateObj}
@@ -4341,9 +5040,7 @@ let CameraPopup = class CameraPopup extends i {
         <button class="popup-close" @click=${this._close}>
           <ha-icon icon="mdi:close"></ha-icon>
         </button>
-        <div class="popup-content">
-          ${content}
-        </div>
+        <div class="popup-content">${content}</div>
       </div>
     `;
     }
@@ -4365,15 +5062,15 @@ __decorate([
     n({ type: Boolean })
 ], CameraPopup.prototype, "isReachable", void 0);
 __decorate([
-    r()
+    r$1()
 ], CameraPopup.prototype, "_isLoading", void 0);
 CameraPopup = __decorate([
-    t('camera-popup')
+    t$1('camera-popup')
 ], CameraPopup);
 
 var CompactLawnMowerCard_1;
 console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
-console.log("Github:", "https://github.com/Tra1n84/compact-lawn-mower-card");
+console.log('Github:', 'https://github.com/Tra1n84/compact-lawn-mower-card');
 console.groupEnd();
 let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard extends i {
     constructor() {
@@ -4389,6 +5086,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._mapWidth = 0;
         this._mapHeight = 0;
         this._mapZoom = DEFAULT_MAP_ZOOM;
+        this._hadValidMower = false;
     }
     connectedCallback() {
         super.connectedCallback();
@@ -4422,7 +5120,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._checkBadgeOverlap();
                 }
             }
-            this.dispatchEvent(new Event("iron-resize", { bubbles: true, composed: true }));
+            ne(this, 'iron-resize');
         });
         if (this._mainDisplayArea) {
             this._mainResizeObserver.observe(this._mainDisplayArea);
@@ -4484,7 +5182,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             else {
                 const hideThreshold = 10;
                 const positionOverlap = progressRect.right > statusRect.left - hideThreshold;
-                const widthOverlap = (progressRect.width + statusRect.width) > containerWidth - hideThreshold;
+                const widthOverlap = progressRect.width + statusRect.width > containerWidth - hideThreshold;
                 if (positionOverlap || widthOverlap) {
                     statusRing.classList.add('text-hidden');
                 }
@@ -4518,13 +5216,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         }
         const estimatedColumns = Math.max(1, Math.floor(containerWidth / MOWER_COLUMN_WIDTH));
-        const skyPercentage = Math.max(MIN_SKY_PERCENTAGE, MAX_SKY_PERCENTAGE - (estimatedColumns * 2));
+        const skyPercentage = Math.max(MIN_SKY_PERCENTAGE, MAX_SKY_PERCENTAGE - estimatedColumns * 2);
         mowerDisplay.style.setProperty('--sky-percentage', `${skyPercentage}%`);
         const mowerHeight = mowerSvg.clientHeight;
         if (mowerHeight === 0)
             return;
         const wheelOffsetFromBottomInSvg = mowerHeight * 0.05;
-        const grassHeight = containerHeight * (1 - (skyPercentage / 100));
+        const grassHeight = containerHeight * (1 - skyPercentage / 100);
         let verticalPositionFactor = 0.4;
         if (containerWidth < 300) {
             verticalPositionFactor = 0.7;
@@ -4608,6 +5306,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         style.setProperty('--grass-color-bottom', this._toCssColor(this.config.grass_color_bottom));
         style.setProperty('--badge-text-color', this._toCssColor(this.config.badge_text_color));
         style.setProperty('--badge-icon-color', this._toCssColor(this.config.badge_icon_color));
+        style.setProperty('--toggle-active-color', this._toCssColor(this.config.toggle_active_color));
     }
     willUpdate(changedProperties) {
         if (!this.hass || !this.config?.entity) {
@@ -4615,7 +5314,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         if (this.config.custom_actions === undefined) {
             this.config = {
-                ...this.config, custom_actions: getDefaultActions(this.hass)
+                ...this.config,
+                custom_actions: getDefaultActions(this.hass),
             };
         }
         if (this._mapCardElement && changedProperties.has('hass')) {
@@ -4701,6 +5401,14 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (changedProperties.has('_viewMode') && this._viewMode !== 'mower') {
             this._mowerResizeObserver?.disconnect();
         }
+        const hasValidMower = !!this.mower;
+        if (hasValidMower && !this._hadValidMower && this._viewMode === 'mower') {
+            this.updateComplete.then(() => {
+                this._updateMowerPosition();
+                this._setupMowerResizeObserver();
+            });
+        }
+        this._hadValidMower = hasValidMower;
         this.updateComplete.then(() => {
             this._checkBadgeOverlap();
         });
@@ -4712,8 +5420,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         return state === 'docked';
     }
     setConfig(config) {
-        if (!config || !config.entity) {
-            throw new Error(`${localize("error.missing_entity", { hass: this.hass })}`);
+        if (!config) {
+            throw new Error('Invalid configuration');
         }
         this.config = config;
         this._mapZoom = config.default_map_zoom ?? DEFAULT_MAP_ZOOM;
@@ -4733,7 +5441,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         };
     }
     static async getConfigElement() {
-        return document.createElement("compact-lawn-mower-card-editor");
+        return document.createElement('compact-lawn-mower-card-editor');
     }
     get mower() {
         if (!this.hass || !this.config?.entity) {
@@ -4788,18 +5496,37 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (!customAction || !customAction.action || !this.hass) {
             return;
         }
+        le('light');
         const action = customAction.action;
         try {
-            if (action.action === 'call-service') {
-                this._executeServiceCall(action);
-            }
-            else {
-                console.warn('Unsupported action type:', action.action);
+            switch (action.action) {
+                case 'call-service':
+                    this._executeServiceCall(action);
+                    break;
+                case 'navigate':
+                    de$1(this, action.navigation_path);
+                    break;
+                case 'url':
+                    window.open(action.url_path, '_blank');
+                    break;
+                case 'toggle':
+                    ge(this.hass, action.entity || this.config.entity);
+                    break;
+                case 'more-info':
+                    ne(this, 'hass-more-info', {
+                        entityId: action.entity || this.config.entity,
+                    });
+                    break;
+                case 'none':
+                    break;
+                default:
+                    console.warn('Unsupported action type:', action.action);
+                    break;
             }
         }
         catch (error) {
             console.error('Error executing custom action:', error);
-            this._showError(`Fehler beim Ausführen der Aktion: ${customAction.name}`);
+            this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
         }
     }
     _executeServiceCall(action) {
@@ -4814,8 +5541,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         const serviceData = this._processTemplates(action.data || action.service_data || {});
         const target = this._processTemplates(action.target);
-        this.hass.callService(domain, service, serviceData, target)
-            .catch((error) => {
+        this.hass.callService(domain, service, serviceData, target).catch(error => {
             console.error('Service call failed:', error);
             this._showError(`Service call failed: ${action.service}`);
         });
@@ -4842,12 +5568,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         return obj;
     }
     _showError(message) {
-        const event = new Event('hass-notification', {
-            bubbles: true,
-            composed: true,
-        });
-        event.detail = { message };
-        this.dispatchEvent(event);
+        ne(this, 'hass-notification', { message });
     }
     _getMowerSVGClass(state) {
         const classes = [];
@@ -4878,19 +5599,19 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         return classes.join(' ');
     }
     _statusClass(state) {
-        if (state === "charging")
-            return "charging";
-        if (state === "mowing")
-            return "mowing";
-        if (state === "paused")
-            return "paused";
-        if (state === "error")
-            return "error";
-        if (state === "returning")
-            return "returning";
-        if (state === "docked")
-            return "docked";
-        return "";
+        if (state === 'charging')
+            return 'charging';
+        if (state === 'mowing')
+            return 'mowing';
+        if (state === 'paused')
+            return 'paused';
+        if (state === 'error')
+            return 'error';
+        if (state === 'returning')
+            return 'returning';
+        if (state === 'docked')
+            return 'docked';
+        return '';
     }
     _getDisplayStatus(state, charging) {
         const isCharging = charging === undefined ? this.chargingStatus : charging;
@@ -4946,7 +5667,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const state = this.mowerState;
         const shouldShowSleep = state === 'paused' && !this.chargingStatus && this._viewMode === 'mower';
         if (!shouldShowSleep)
-            return E;
+            return E$1;
         return x `
       <div class="sleep-animation">
         <span class="sleep-z">z</span>
@@ -4994,19 +5715,24 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
       `;
         }
         if (!this.cameraEntity || this.cameraEntity.state === 'unavailable') {
-            return this._renderErrorView('camera-container', 'camera-error', 'mdi:camera-off', localize("camera.not_available", { hass: this.hass }));
+            return this._renderErrorView('camera-container', 'camera-error', 'mdi:camera-off', localize('camera.not_available', { hass: this.hass }));
         }
         if (!this._isCameraReachable) {
-            return this._renderErrorView('camera-container', 'camera-error', 'mdi:lan-disconnect', localize("camera.not_reachable", { hass: this.hass }));
+            return this._renderErrorView('camera-container', 'camera-error', 'mdi:lan-disconnect', localize('camera.not_reachable', { hass: this.hass }));
         }
         const fitMode = this.config.camera_fit_mode || 'cover';
         return x `
-      <div class="camera-container clickable ${this._isCameraLoading ? 'is-loading' : ''}" @click=${this._openCameraPopup}>
-        ${this._isCameraLoading ? x `
-          <div class="loading-indicator">
-            <div class="loader"></div>
-          </div>
-        ` : ''}
+      <div
+        class="camera-container clickable ${this._isCameraLoading ? 'is-loading' : ''}"
+        @click=${this._openCameraPopup}
+      >
+        ${this._isCameraLoading
+            ? x `
+              <div class="loading-indicator">
+                <div class="loader"></div>
+              </div>
+            `
+            : ''}
         <ha-camera-stream
           class="fit-mode-${fitMode}"
           .hass=${this.hass}
@@ -5015,9 +5741,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
           muted
           style="opacity: ${this._isCameraLoading ? 0.3 : 1};"
         ></ha-camera-stream>
-        <div class="camera-overlay" style="opacity: ${this._isCameraLoading ? 0 : 1};">
-
-        </div>
+        <div class="camera-overlay" style="opacity: ${this._isCameraLoading ? 0 : 1};"></div>
       </div>
     `;
     }
@@ -5064,7 +5788,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const batteryColor = this._getBatteryColor(battery);
         const ringRadius = 10;
         const ringCircumference = 2 * Math.PI * ringRadius;
-        const ringStrokeOffset = ringCircumference * (1 - (battery / 100));
+        const ringStrokeOffset = ringCircumference * (1 - battery / 100);
         const mowerModel = this.config.mower_model || 'default';
         const renderFunction = getGraphics(mowerModel);
         return renderFunction(state, this._getMowerSVGClass(state), this._getLEDColor(state), batteryColor, ringCircumference, ringStrokeOffset, this._getChargingStationColor(state));
@@ -5072,10 +5796,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     _renderMapView() {
         const deviceTracker = this.config.map_entity ? this.hass.states[this.config.map_entity] : null;
         if (!deviceTracker) {
-            return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-off-outline', localize("map.not_available", { hass: this.hass }));
+            return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-off-outline', localize('map.not_available', { hass: this.hass }));
         }
         if (!deviceTracker.attributes.latitude || !deviceTracker.attributes.longitude) {
-            return this._renderErrorView('map-container', 'map-error', 'mdi:crosshairs-gps', localize("map.no_gps_coordinates", { hass: this.hass }));
+            return this._renderErrorView('map-container', 'map-error', 'mdi:crosshairs-gps', localize('map.no_gps_coordinates', { hass: this.hass }));
         }
         const lat = deviceTracker.attributes.latitude;
         const lon = deviceTracker.attributes.longitude;
@@ -5083,30 +5807,43 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             const mapUrl = this._getMapUrl(lat, lon);
             return x `
         <div class="map-container ${this._isMapLoading ? 'is-loading' : ''}">
-          ${this._isMapLoading ? x `
-            <div class="loading-indicator">
-              <div class="loader"></div>
-            </div>
-          ` : ''}
-          <img 
-            class="map-image" 
+          ${this._isMapLoading
+                ? x `
+                <div class="loading-indicator">
+                  <div class="loader"></div>
+                </div>
+              `
+                : ''}
+          <img
+            class="map-image"
             src="${mapUrl}"
             alt="Mower Location"
-            @load=${() => this._isMapLoading = false}
-            @error=${() => { this._isMapLoading = false; this._handleMapError(); }}
+            @load=${() => (this._isMapLoading = false)}
+            @error=${() => {
+                this._isMapLoading = false;
+                this._handleMapError();
+            }}
             style="opacity: ${this._isMapLoading ? 0 : 1};"
           />
-          
+
           <div class="mower-marker" style="opacity: ${this._isMapLoading ? 0 : 1};">
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
-          
+
           <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1};">
             <div class="map-controls">
-              <button class="map-control-button" @click=${(e) => this._handleZoom(e, 'in')} .disabled=${this._isMapLoading}>
+              <button
+                class="map-control-button"
+                @click=${(e) => this._handleZoom(e, 'in')}
+                .disabled=${this._isMapLoading}
+              >
                 <ha-icon icon="mdi:plus"></ha-icon>
               </button>
-              <button class="map-control-button" @click=${(e) => this._handleZoom(e, 'out')} .disabled=${this._isMapLoading}>
+              <button
+                class="map-control-button"
+                @click=${(e) => this._handleZoom(e, 'out')}
+                .disabled=${this._isMapLoading}
+              >
                 <ha-icon icon="mdi:minus"></ha-icon>
               </button>
             </div>
@@ -5140,46 +5877,48 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (mapType === 'satellite') {
             styleParams = 'style=feature:all|element:labels|visibility:off&';
         }
-        return `https://maps.googleapis.com/maps/api/staticmap?` +
+        return (`https://maps.googleapis.com/maps/api/staticmap?` +
             `center=${lat},${lon}&` +
             `zoom=${this._mapZoom}&` +
             `size=${reqWidth}x${reqHeight}&` +
             `maptype=${mapType}&` +
             styleParams +
-            `key=${apiKey}`;
+            `key=${apiKey}`);
     }
     _renderViewToggles() {
         const buttons = [];
         buttons.push(x `
-      <button class="view-toggle-button ${this._viewMode === 'mower' ? 'active' : ''}" 
-              @click=${() => this._setViewMode('mower')}
-              aria-label=${localize('view.mower', { hass: this.hass })}>
+      <button
+        class="view-toggle-button ${this._viewMode === 'mower' ? 'active' : ''}"
+        @click=${() => this._setViewMode('mower')}
+        aria-label=${localize('view.mower', { hass: this.hass })}
+      >
         <ha-icon icon="mdi:robot-mower"></ha-icon>
       </button>
     `);
         if (this.config.camera_entity && this.cameraEntity) {
             buttons.push(x `
-        <button class="view-toggle-button ${this._viewMode === 'camera' ? 'active' : ''}" 
-                @click=${() => this._setViewMode('camera')}
-                aria-label=${localize('view.camera', { hass: this.hass })}>
+        <button
+          class="view-toggle-button ${this._viewMode === 'camera' ? 'active' : ''}"
+          @click=${() => this._setViewMode('camera')}
+          aria-label=${localize('view.camera', { hass: this.hass })}
+        >
           <ha-icon icon="mdi:camera"></ha-icon>
         </button>
       `);
         }
         if (this.config.map_entity && this.config.enable_map !== false) {
             buttons.push(x `
-        <button class="view-toggle-button ${this._viewMode === 'map' ? 'active' : ''}" 
-                @click=${() => this._setViewMode('map')}
-                aria-label=${localize('view.map', { hass: this.hass })}>
+        <button
+          class="view-toggle-button ${this._viewMode === 'map' ? 'active' : ''}"
+          @click=${() => this._setViewMode('map')}
+          aria-label=${localize('view.map', { hass: this.hass })}
+        >
           <ha-icon icon="mdi:map-marker"></ha-icon>
         </button>
       `);
         }
-        return x `
-      <div class="view-toggle">
-        ${buttons}
-      </div>
-    `;
+        return x ` <div class="view-toggle">${buttons}</div> `;
     }
     async _setViewMode(mode) {
         if (this._cameraUpdateInterval) {
@@ -5221,7 +5960,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         await this._checkCameraReachability();
         if (showLoader) {
-            setTimeout(() => { this._isCameraLoading = false; }, CAMERA_LOADING_DELAY);
+            setTimeout(() => {
+                this._isCameraLoading = false;
+            }, CAMERA_LOADING_DELAY);
         }
         if (this._isCameraReachable) {
             if (this._cameraUpdateInterval) {
@@ -5272,17 +6013,20 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     static _getChargingStatus(hass, mowerState, chargingEntityId) {
         if (chargingEntityId) {
             const chargingEntity = hass?.states[chargingEntityId];
-            if (chargingEntity) {
-                const state = chargingEntity.state?.toLowerCase();
+            if (chargingEntity?.state) {
+                const state = chargingEntity.state.toLowerCase();
                 return ['on', 'true', 'charging'].includes(state);
             }
+        }
+        if (!mowerState) {
+            return false;
         }
         const mowerStateLower = mowerState.toLowerCase();
         return ['charging'].includes(mowerStateLower);
     }
     _renderActionButtons() {
         if (!this.config.custom_actions || this.config.custom_actions.length === 0) {
-            return E;
+            return E$1;
         }
         const MAX_VISIBLE_ACTIONS = 3;
         const totalActions = this.config.custom_actions.length;
@@ -5291,26 +6035,28 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             ? this.config.custom_actions.slice(MAX_VISIBLE_ACTIONS, MAX_VISIBLE_ACTIONS * 2)
             : this.config.custom_actions.slice(0, MAX_VISIBLE_ACTIONS);
         return x `
-      ${visibleActions.map((action) => x `
-        <button
-          class="action-button"
-          @click=${() => this._executeCustomAction(action)}
-          aria-label=${action.name}
-          title=${action.name}
-        >
-          <ha-icon icon=${action.icon}></ha-icon>
-        </button>
-      `)}
-      ${hasMoreActions ? x `
-        <button
-          class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
-          @click=${() => this._toggleActionsExpanded()}
-          aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-          title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-        >
-          <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
-        </button>
-      ` : E}
+      ${visibleActions.map(action => x `
+          <button
+            class="action-button"
+            @click=${() => this._executeCustomAction(action)}
+            aria-label=${action.name}
+            title=${action.name}
+          >
+            <ha-icon icon=${action.icon}></ha-icon>
+          </button>
+        `)}
+      ${hasMoreActions
+            ? x `
+            <button
+              class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
+              @click=${() => this._toggleActionsExpanded()}
+              aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+              title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+            >
+              <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
+            </button>
+          `
+            : E$1}
     `;
     }
     _toggleActionsExpanded() {
@@ -5319,14 +6065,21 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     render() {
         const mower = this.mower;
         if (!mower) {
-            return x `
-        <ha-card>
-          <div class="warning">
-            ${this.config.entity
-                ? `${localize('error.entity_not_found', { hass: this.hass })}: ${this.config.entity}`
-                : localize('error.missing_entity', { hass: this.hass })}
+            return x ` <ha-card>
+        <div class="card-content">
+          <div class="main-display-area error-view">
+            <div class="entity-error">
+              <ha-icon icon="mdi:robot-mower-outline"></ha-icon>
+              <span class="error-title"
+                >${this.config.entity
+                ? localize('error.entity_not_found', { hass: this.hass })
+                : localize('error.missing_entity', { hass: this.hass })}</span
+              >
+              ${this.config.entity ? x `<span class="error-entity">${this.config.entity}</span>` : E$1}
+            </div>
           </div>
-        </ha-card>`;
+        </div>
+      </ha-card>`;
         }
         this.mowerState;
         const isCharging = this.chargingStatus;
@@ -5334,41 +6087,41 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
       <ha-card>
         <div class="card-content">
           <div class="main-display-area ${this._viewMode}-view">
-            <div class="mower-display">
-              ${this._renderMowerDisplay()}
-              ${this._renderSleepAnimation()}
-            </div>
-            
-            ${this.progressLevel !== '-' ? x `
-              <div class="progress-badges">
-                <div class="progress-badge">
-                  <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                  <span class="progress-text">${this.progressLevel}%</span>
-                </div>
-              </div>
-            ` : ''}
-            
+            <div class="mower-display">${this._renderMowerDisplay()} ${this._renderSleepAnimation()}</div>
+
+            ${this.progressLevel !== '-'
+            ? x `
+                  <div class="progress-badges">
+                    <div class="progress-badge">
+                      <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
+                      <span class="progress-text">${this.progressLevel}%</span>
+                    </div>
+                  </div>
+                `
+            : ''}
             ${this._renderViewToggles()}
-            
+
             <div class="status-badges">
-              <div class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
+              <div
+                class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))}"
+              >
                 <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                   <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                 </div>
                 <span class="status-text">${this._getTranslatedStatus(this._getDisplayStatus(this.mowerState))}</span>
               </div>
             </div>
-
           </div>
-          
-          ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? x `
-            <div class="controls-area">
-              <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
-                ${this._renderActionButtons()}
-              </div>
-            </div>
-          ` : E}
 
+          ${this.config?.custom_actions && this.config.custom_actions.length > 0
+            ? x `
+                <div class="controls-area">
+                  <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
+                    ${this._renderActionButtons()}
+                  </div>
+                </div>
+              `
+            : E$1}
         </div>
       </ha-card>
     `;
@@ -5395,25 +6148,25 @@ __decorate([
     n()
 ], CompactLawnMowerCard.prototype, "config", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_animationClass", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_forceCameraRefresh", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_isCameraLoading", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_isCameraReachable", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_isPopupOpen", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_isMapLoading", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_areActionsExpanded", void 0);
 __decorate([
     e('.main-display-area')
@@ -5428,28 +6181,28 @@ __decorate([
     n({ attribute: false })
 ], CompactLawnMowerCard.prototype, "_viewMode", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_mapWidth", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_mapHeight", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_mapZoom", void 0);
 __decorate([
-    r()
+    r$1()
 ], CompactLawnMowerCard.prototype, "_mapCardElement", void 0);
 CompactLawnMowerCard = CompactLawnMowerCard_1 = __decorate([
-    t('compact-lawn-mower-card')
+    t$1('compact-lawn-mower-card')
 ], CompactLawnMowerCard);
 if (!window.customCards) {
     window.customCards = [];
 }
 window.customCards.push({
-    type: "compact-lawn-mower-card",
-    name: "Compact Lawn Mower Card",
+    type: 'compact-lawn-mower-card',
+    name: 'Compact Lawn Mower Card',
     preview: true,
-    description: "A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant"
+    description: 'A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant',
 });
 
 export { CompactLawnMowerCard };

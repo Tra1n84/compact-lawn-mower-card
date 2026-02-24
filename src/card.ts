@@ -1,6 +1,6 @@
 import { LitElement, html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { HomeAssistant, LovelaceCard } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceCard, fireEvent, forwardHaptic, navigate, toggleEntity } from 'custom-card-helpers';
 import './editor';
 import './camera-popup';
 import { CameraPopup } from './camera-popup';
@@ -27,6 +27,10 @@ import {
   MowerModel,
   CustomAction,
   ServiceCallActionConfig,
+  NavigateActionConfig,
+  UrlActionConfig,
+  ToggleActionConfig,
+  MoreInfoActionConfig,
 } from './types';
 import { compactLawnMowerCardStyles } from './styles';
 
@@ -35,10 +39,7 @@ console.groupCollapsed(
   'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;',
   'color: rgb(90, 135, 91); font-weight: bold;'
 );
-console.log(
-  "Github:",
-  "https://github.com/Tra1n84/compact-lawn-mower-card"
-);
+console.log('Github:', 'https://github.com/Tra1n84/compact-lawn-mower-card');
 console.groupEnd();
 
 @customElement('compact-lawn-mower-card')
@@ -68,6 +69,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _mainResizeObserver?: ResizeObserver;
   private _mowerResizeObserver?: ResizeObserver;
   private _badgeOverlapCheckTimeout?: number;
+  private _hadValidMower = false;
   @state() private _mapCardElement?: HTMLElement;
 
   connectedCallback() {
@@ -109,7 +111,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._checkBadgeOverlap();
         }
       }
-      this.dispatchEvent(new Event("iron-resize", { bubbles: true, composed: true }));
+      fireEvent(this, 'iron-resize' as any);
     });
 
     if (this._mainDisplayArea) {
@@ -147,7 +149,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._badgeOverlapCheckTimeout = undefined;
     }
   }
-  
+
   private _checkBadgeOverlap(): void {
     const statusRing = this._statusRing;
     if (!statusRing) return;
@@ -180,7 +182,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       } else {
         const hideThreshold = 10;
         const positionOverlap = progressRect.right > statusRect.left - hideThreshold;
-        const widthOverlap = (progressRect.width + statusRect.width) > containerWidth - hideThreshold;
+        const widthOverlap = progressRect.width + statusRect.width > containerWidth - hideThreshold;
         if (positionOverlap || widthOverlap) {
           statusRing.classList.add('text-hidden');
         }
@@ -194,8 +196,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     if (isDocked) {
       this._animationClass = 'docked';
-    }
-    else if (onLawnStates.includes(currentState)) {
+    } else if (onLawnStates.includes(currentState)) {
       this._animationClass = 'on-lawn';
     } else {
       this._animationClass = '';
@@ -220,14 +221,14 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
 
     const estimatedColumns = Math.max(1, Math.floor(containerWidth / MOWER_COLUMN_WIDTH));
-    const skyPercentage = Math.max(MIN_SKY_PERCENTAGE, MAX_SKY_PERCENTAGE - (estimatedColumns * 2));
+    const skyPercentage = Math.max(MIN_SKY_PERCENTAGE, MAX_SKY_PERCENTAGE - estimatedColumns * 2);
     mowerDisplay.style.setProperty('--sky-percentage', `${skyPercentage}%`);
 
     const mowerHeight = mowerSvg.clientHeight;
     if (mowerHeight === 0) return;
 
     const wheelOffsetFromBottomInSvg = mowerHeight * 0.05;
-    const grassHeight = containerHeight * (1 - (skyPercentage / 100));
+    const grassHeight = containerHeight * (1 - skyPercentage / 100);
 
     let verticalPositionFactor = 0.4;
     if (containerWidth < 300) {
@@ -322,6 +323,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     style.setProperty('--grass-color-bottom', this._toCssColor(this.config.grass_color_bottom));
     style.setProperty('--badge-text-color', this._toCssColor(this.config.badge_text_color));
     style.setProperty('--badge-icon-color', this._toCssColor(this.config.badge_icon_color));
+    style.setProperty('--toggle-active-color', this._toCssColor(this.config.toggle_active_color));
   }
 
   protected willUpdate(changedProperties: PropertyValues<this>): void {
@@ -331,7 +333,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     if (this.config.custom_actions === undefined) {
       this.config = {
-        ...this.config, custom_actions: getDefaultActions(this.hass)
+        ...this.config,
+        custom_actions: getDefaultActions(this.hass),
       };
     }
 
@@ -374,7 +377,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         const oldMowerState = oldHass.states[this.config.entity]?.state;
         const newMowerState = this.mowerState;
 
-        const oldChargingStatus = CompactLawnMowerCard._getChargingStatus(oldHass, oldMowerState, this.config.charging_entity);
+        const oldChargingStatus = CompactLawnMowerCard._getChargingStatus(
+          oldHass,
+          oldMowerState,
+          this.config.charging_entity
+        );
         const newChargingStatus = this.chargingStatus;
 
         const wasDocked = this._isCurrentlyDocked(oldMowerState, oldChargingStatus);
@@ -429,6 +436,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._mowerResizeObserver?.disconnect();
     }
 
+    const hasValidMower = !!this.mower;
+    if (hasValidMower && !this._hadValidMower && this._viewMode === 'mower') {
+      this.updateComplete.then(() => {
+        this._updateMowerPosition();
+        this._setupMowerResizeObserver();
+      });
+    }
+    this._hadValidMower = hasValidMower;
+
     this.updateComplete.then(() => {
       this._checkBadgeOverlap();
     });
@@ -442,8 +458,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   setConfig(config: CompactLawnMowerCardConfig): void {
-    if (!config || !config.entity) {
-      throw new Error(`${localize("error.missing_entity", { hass: this.hass })}`);
+    if (!config) {
+      throw new Error('Invalid configuration');
     }
 
     this.config = config;
@@ -468,7 +484,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   static async getConfigElement() {
-    return document.createElement("compact-lawn-mower-card-editor");
+    return document.createElement('compact-lawn-mower-card-editor');
   }
 
   static styles = compactLawnMowerCardStyles;
@@ -540,17 +556,37 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return;
     }
 
+    forwardHaptic('light');
     const action = customAction.action;
 
     try {
-      if (action.action === 'call-service') {
-        this._executeServiceCall(action as ServiceCallActionConfig);
-      } else {
-        console.warn('Unsupported action type:', (action as any).action);
+      switch (action.action) {
+        case 'call-service':
+          this._executeServiceCall(action as ServiceCallActionConfig);
+          break;
+        case 'navigate':
+          navigate(this, (action as NavigateActionConfig).navigation_path);
+          break;
+        case 'url':
+          window.open((action as UrlActionConfig).url_path, '_blank');
+          break;
+        case 'toggle':
+          toggleEntity(this.hass, (action as ToggleActionConfig).entity || this.config.entity);
+          break;
+        case 'more-info':
+          fireEvent(this, 'hass-more-info' as any, {
+            entityId: (action as MoreInfoActionConfig).entity || this.config.entity,
+          });
+          break;
+        case 'none':
+          break;
+        default:
+          console.warn('Unsupported action type:', (action as any).action);
+          break;
       }
     } catch (error) {
       console.error('Error executing custom action:', error);
-      this._showError(`Fehler beim Ausführen der Aktion: ${customAction.name}`);
+      this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
     }
   }
 
@@ -569,15 +605,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const serviceData = this._processTemplates(action.data || action.service_data || {});
     const target = this._processTemplates(action.target);
 
-    this.hass.callService(domain, service, serviceData, target)
-      .catch((error) => {
-        console.error('Service call failed:', error);
-        this._showError(`Service call failed: ${action.service}`);
-      });
+    this.hass.callService(domain, service, serviceData, target).catch(error => {
+      console.error('Service call failed:', error);
+      this._showError(`Service call failed: ${action.service}`);
+    });
   }
 
   private _processTemplates(obj: any): any {
-
     if (typeof obj === 'string') {
       let processedString = obj.replace(/\{\{\s*entity\s*\}\}/g, this.config.entity);
 
@@ -605,12 +639,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _showError(message: string): void {
-    const event = new Event('hass-notification', {
-      bubbles: true,
-      composed: true,
-    });
-    (event as any).detail = { message };
-    this.dispatchEvent(event);
+    fireEvent(this, 'hass-notification' as any, { message });
   }
 
   private _getMowerSVGClass(state: string): string {
@@ -637,15 +666,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     return classes.join(' ');
   }
-  
+
   private _statusClass(state: string): string {
-    if (state === "charging") return "charging";
-    if (state === "mowing") return "mowing";
-    if (state === "paused") return "paused";
-    if (state === "error") return "error";
-    if (state === "returning") return "returning";
-    if (state === "docked") return "docked";
-    return "";
+    if (state === 'charging') return 'charging';
+    if (state === 'mowing') return 'mowing';
+    if (state === 'paused') return 'paused';
+    if (state === 'error') return 'error';
+    if (state === 'returning') return 'returning';
+    if (state === 'docked') return 'docked';
+    return '';
   }
 
   private _getDisplayStatus(state: string, charging?: boolean): string {
@@ -748,22 +777,37 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       `;
     }
     if (!this.cameraEntity || this.cameraEntity.state === 'unavailable') {
-      return this._renderErrorView('camera-container', 'camera-error', 'mdi:camera-off', localize("camera.not_available", { hass: this.hass }));
+      return this._renderErrorView(
+        'camera-container',
+        'camera-error',
+        'mdi:camera-off',
+        localize('camera.not_available', { hass: this.hass })
+      );
     }
 
     if (!this._isCameraReachable) {
-      return this._renderErrorView('camera-container', 'camera-error', 'mdi:lan-disconnect', localize("camera.not_reachable", { hass: this.hass }));
+      return this._renderErrorView(
+        'camera-container',
+        'camera-error',
+        'mdi:lan-disconnect',
+        localize('camera.not_reachable', { hass: this.hass })
+      );
     }
 
     const fitMode = this.config.camera_fit_mode || 'cover';
 
     return html`
-      <div class="camera-container clickable ${this._isCameraLoading ? 'is-loading' : ''}" @click=${this._openCameraPopup}>
-        ${this._isCameraLoading ? html`
-          <div class="loading-indicator">
-            <div class="loader"></div>
-          </div>
-        ` : ''}
+      <div
+        class="camera-container clickable ${this._isCameraLoading ? 'is-loading' : ''}"
+        @click=${this._openCameraPopup}
+      >
+        ${this._isCameraLoading
+          ? html`
+              <div class="loading-indicator">
+                <div class="loader"></div>
+              </div>
+            `
+          : ''}
         <ha-camera-stream
           class="fit-mode-${fitMode}"
           .hass=${this.hass}
@@ -772,9 +816,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           muted
           style="opacity: ${this._isCameraLoading ? 0.3 : 1};"
         ></ha-camera-stream>
-        <div class="camera-overlay" style="opacity: ${this._isCameraLoading ? 0 : 1};">
-
-        </div>
+        <div class="camera-overlay" style="opacity: ${this._isCameraLoading ? 0 : 1};"></div>
       </div>
     `;
   }
@@ -803,7 +845,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       document.body.removeChild(this._currentPopup);
       this._currentPopup = undefined;
       this._isPopupOpen = false;
-      
+
       this._forceCameraRefresh = true;
       this.updateComplete.then(() => {
         this._forceCameraRefresh = false;
@@ -832,7 +874,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     const ringRadius = 10;
     const ringCircumference = 2 * Math.PI * ringRadius;
-    const ringStrokeOffset = ringCircumference * (1 - (battery / 100));
+    const ringStrokeOffset = ringCircumference * (1 - battery / 100);
 
     const mowerModel = this.config.mower_model || 'default';
     const renderFunction = getGraphics(mowerModel as MowerModel);
@@ -852,11 +894,21 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const deviceTracker = this.config.map_entity ? this.hass.states[this.config.map_entity] : null;
 
     if (!deviceTracker) {
-      return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-off-outline', localize("map.not_available", { hass: this.hass }));
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:map-marker-off-outline',
+        localize('map.not_available', { hass: this.hass })
+      );
     }
 
     if (!deviceTracker.attributes.latitude || !deviceTracker.attributes.longitude) {
-      return this._renderErrorView('map-container', 'map-error', 'mdi:crosshairs-gps', localize("map.no_gps_coordinates", { hass: this.hass }));
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:crosshairs-gps',
+        localize('map.no_gps_coordinates', { hass: this.hass })
+      );
     }
 
     const lat = deviceTracker.attributes.latitude;
@@ -867,30 +919,43 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
       return html`
         <div class="map-container ${this._isMapLoading ? 'is-loading' : ''}">
-          ${this._isMapLoading ? html`
-            <div class="loading-indicator">
-              <div class="loader"></div>
-            </div>
-          ` : ''}
-          <img 
-            class="map-image" 
+          ${this._isMapLoading
+            ? html`
+                <div class="loading-indicator">
+                  <div class="loader"></div>
+                </div>
+              `
+            : ''}
+          <img
+            class="map-image"
             src="${mapUrl}"
             alt="Mower Location"
-            @load=${() => this._isMapLoading = false}
-            @error=${() => { this._isMapLoading = false; this._handleMapError(); }}
+            @load=${() => (this._isMapLoading = false)}
+            @error=${() => {
+              this._isMapLoading = false;
+              this._handleMapError();
+            }}
             style="opacity: ${this._isMapLoading ? 0 : 1};"
           />
-          
+
           <div class="mower-marker" style="opacity: ${this._isMapLoading ? 0 : 1};">
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
-          
+
           <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1};">
             <div class="map-controls">
-              <button class="map-control-button" @click=${(e: Event) => this._handleZoom(e, 'in')} .disabled=${this._isMapLoading}>
+              <button
+                class="map-control-button"
+                @click=${(e: Event) => this._handleZoom(e, 'in')}
+                .disabled=${this._isMapLoading}
+              >
                 <ha-icon icon="mdi:plus"></ha-icon>
               </button>
-              <button class="map-control-button" @click=${(e: Event) => this._handleZoom(e, 'out')} .disabled=${this._isMapLoading}>
+              <button
+                class="map-control-button"
+                @click=${(e: Event) => this._handleZoom(e, 'out')}
+                .disabled=${this._isMapLoading}
+              >
                 <ha-icon icon="mdi:minus"></ha-icon>
               </button>
             </div>
@@ -930,32 +995,37 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       styleParams = 'style=feature:all|element:labels|visibility:off&';
     }
 
-    return `https://maps.googleapis.com/maps/api/staticmap?` +
+    return (
+      `https://maps.googleapis.com/maps/api/staticmap?` +
       `center=${lat},${lon}&` +
       `zoom=${this._mapZoom}&` +
       `size=${reqWidth}x${reqHeight}&` +
       `maptype=${mapType}&` +
       styleParams +
-      `key=${apiKey}`;
+      `key=${apiKey}`
+    );
   }
 
   private _renderViewToggles() {
     const buttons = [];
 
-
     buttons.push(html`
-      <button class="view-toggle-button ${this._viewMode === 'mower' ? 'active' : ''}" 
-              @click=${() => this._setViewMode('mower')}
-              aria-label=${localize('view.mower', { hass: this.hass })}>
+      <button
+        class="view-toggle-button ${this._viewMode === 'mower' ? 'active' : ''}"
+        @click=${() => this._setViewMode('mower')}
+        aria-label=${localize('view.mower', { hass: this.hass })}
+      >
         <ha-icon icon="mdi:robot-mower"></ha-icon>
       </button>
     `);
 
     if (this.config.camera_entity && this.cameraEntity) {
       buttons.push(html`
-        <button class="view-toggle-button ${this._viewMode === 'camera' ? 'active' : ''}" 
-                @click=${() => this._setViewMode('camera')}
-                aria-label=${localize('view.camera', { hass: this.hass })}>
+        <button
+          class="view-toggle-button ${this._viewMode === 'camera' ? 'active' : ''}"
+          @click=${() => this._setViewMode('camera')}
+          aria-label=${localize('view.camera', { hass: this.hass })}
+        >
           <ha-icon icon="mdi:camera"></ha-icon>
         </button>
       `);
@@ -963,19 +1033,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     if (this.config.map_entity && this.config.enable_map !== false) {
       buttons.push(html`
-        <button class="view-toggle-button ${this._viewMode === 'map' ? 'active' : ''}" 
-                @click=${() => this._setViewMode('map')}
-                aria-label=${localize('view.map', { hass: this.hass })}>
+        <button
+          class="view-toggle-button ${this._viewMode === 'map' ? 'active' : ''}"
+          @click=${() => this._setViewMode('map')}
+          aria-label=${localize('view.map', { hass: this.hass })}
+        >
           <ha-icon icon="mdi:map-marker"></ha-icon>
         </button>
       `);
     }
 
-    return html`
-      <div class="view-toggle">
-        ${buttons}
-      </div>
-    `;
+    return html` <div class="view-toggle">${buttons}</div> `;
   }
 
   private async _setViewMode(mode: 'mower' | 'camera' | 'map') {
@@ -993,8 +1061,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (mode === 'camera') {
       this._isPopupOpen = false;
       this._updateCameraState(true);
-    }
-    else if (mode === 'map') {
+    } else if (mode === 'map') {
       const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
       if (useHaMap) {
         this._loadMapElement();
@@ -1021,7 +1088,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
     await this._checkCameraReachability();
     if (showLoader) {
-      setTimeout(() => { this._isCameraLoading = false; }, CAMERA_LOADING_DELAY);
+      setTimeout(() => {
+        this._isCameraLoading = false;
+      }, CAMERA_LOADING_DELAY);
     }
 
     if (this._isCameraReachable) {
@@ -1069,23 +1138,21 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       }
 
       this._mapCardElement = element;
-
     } catch (e) {
       console.error('Compact Lawn Mower Card: Error loading map card element', e);
     }
   }
 
-  private static _getChargingStatus(
-    hass: HomeAssistant,
-    mowerState: string,
-    chargingEntityId?: string
-  ): boolean {
+  private static _getChargingStatus(hass: HomeAssistant, mowerState: string, chargingEntityId?: string): boolean {
     if (chargingEntityId) {
       const chargingEntity = hass?.states[chargingEntityId];
-      if (chargingEntity) {
-        const state = chargingEntity.state?.toLowerCase();
+      if (chargingEntity?.state) {
+        const state = chargingEntity.state.toLowerCase();
         return ['on', 'true', 'charging'].includes(state);
       }
+    }
+    if (!mowerState) {
+      return false;
     }
     const mowerStateLower = mowerState.toLowerCase();
     return ['charging'].includes(mowerStateLower);
@@ -1105,26 +1172,30 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       : this.config.custom_actions.slice(0, MAX_VISIBLE_ACTIONS);
 
     return html`
-      ${visibleActions.map((action) => html`
-        <button
-          class="action-button"
-          @click=${() => this._executeCustomAction(action)}
-          aria-label=${action.name}
-          title=${action.name}
-        >
-          <ha-icon icon=${action.icon}></ha-icon>
-        </button>
-      `)}
-      ${hasMoreActions ? html`
-        <button
-          class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
-          @click=${() => this._toggleActionsExpanded()}
-          aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-          title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-        >
-          <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
-        </button>
-      ` : nothing}
+      ${visibleActions.map(
+        action => html`
+          <button
+            class="action-button"
+            @click=${() => this._executeCustomAction(action)}
+            aria-label=${action.name}
+            title=${action.name}
+          >
+            <ha-icon icon=${action.icon}></ha-icon>
+          </button>
+        `
+      )}
+      ${hasMoreActions
+        ? html`
+            <button
+              class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
+              @click=${() => this._toggleActionsExpanded()}
+              aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+              title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+            >
+              <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
+            </button>
+          `
+        : nothing}
     `;
   }
 
@@ -1135,14 +1206,21 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   render() {
     const mower = this.mower;
     if (!mower) {
-      return html`
-        <ha-card>
-          <div class="warning">
-            ${this.config.entity
-          ? `${localize('error.entity_not_found', { hass: this.hass })}: ${this.config.entity}`
-          : localize('error.missing_entity', { hass: this.hass })}
+      return html` <ha-card>
+        <div class="card-content">
+          <div class="main-display-area error-view">
+            <div class="entity-error">
+              <ha-icon icon="mdi:robot-mower-outline"></ha-icon>
+              <span class="error-title"
+                >${this.config.entity
+                  ? localize('error.entity_not_found', { hass: this.hass })
+                  : localize('error.missing_entity', { hass: this.hass })}</span
+              >
+              ${this.config.entity ? html`<span class="error-entity">${this.config.entity}</span>` : nothing}
+            </div>
           </div>
-        </ha-card>`;
+        </div>
+      </ha-card>`;
     }
 
     const state = this.mowerState;
@@ -1152,41 +1230,43 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       <ha-card>
         <div class="card-content">
           <div class="main-display-area ${this._viewMode}-view">
-            <div class="mower-display">
-              ${this._renderMowerDisplay()}
-              ${this._renderSleepAnimation()}
-            </div>
-            
-            ${this.progressLevel !== '-' ? html`
-              <div class="progress-badges">
-                <div class="progress-badge">
-                  <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                  <span class="progress-text">${this.progressLevel}%</span>
-                </div>
-              </div>
-            ` : ''}
-            
+            <div class="mower-display">${this._renderMowerDisplay()} ${this._renderSleepAnimation()}</div>
+
+            ${this.progressLevel !== '-'
+              ? html`
+                  <div class="progress-badges">
+                    <div class="progress-badge">
+                      <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
+                      <span class="progress-text">${this.progressLevel}%</span>
+                    </div>
+                  </div>
+                `
+              : ''}
             ${this._renderViewToggles()}
-            
+
             <div class="status-badges">
-              <div class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
+              <div
+                class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(
+                  this._getDisplayStatus(this.mowerState)
+                )}"
+              >
                 <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                   <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                 </div>
                 <span class="status-text">${this._getTranslatedStatus(this._getDisplayStatus(this.mowerState))}</span>
               </div>
             </div>
-
           </div>
-          
-          ${this.config?.custom_actions && this.config.custom_actions.length > 0 ? html`
-            <div class="controls-area">
-              <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
-                ${this._renderActionButtons()}
-              </div>
-            </div>
-          ` : nothing}
 
+          ${this.config?.custom_actions && this.config.custom_actions.length > 0
+            ? html`
+                <div class="controls-area">
+                  <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
+                    ${this._renderActionButtons()}
+                  </div>
+                </div>
+              `
+            : nothing}
         </div>
       </ha-card>
     `;
@@ -1206,7 +1286,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       max_columns: 12,
     };
   }
-
 }
 
 declare global {
@@ -1220,8 +1299,8 @@ if (!(window as any).customCards) {
 }
 
 (window as any).customCards.push({
-  type: "compact-lawn-mower-card",
-  name: "Compact Lawn Mower Card",
+  type: 'compact-lawn-mower-card',
+  name: 'Compact Lawn Mower Card',
   preview: true,
-  description: "A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant"
+  description: 'A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant',
 });

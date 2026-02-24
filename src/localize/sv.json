@@ -57,6 +57,7 @@
       "mower_model": "Gräsklipparmodell",
       "badge_text_color": "Märkets textfärg",
       "badge_icon_color": "Märkets ikonfärg",
+      "toggle_active_color": "Färg för aktiv vyknapp",
       "mower_models": {
         "default": "Standard"
       },
@@ -104,6 +105,9 @@
       },
       "target_mode_none_helper": "Tjänsten kommer att anropas utan målenhet.",
       "target_none": "Ingen",
+      "type": "Åtgärdstyp",
+      "navigation_path": "Navigeringssökväg",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Tjänst",
         "navigate": "Navigering",
@@ -118,7 +122,8 @@
   "error": {
     "missing_entity": "Välj en gräsklipparenhet",
     "loading_components": "Fel vid laddning av komponenter",
-    "entity_not_found": "Enhet hittades inte."
+    "entity_not_found": "Enhet hittades inte.",
+    "action_failed": "Fel vid utförande av åtgärd"
   },
   "camera": {
     "camera_title": "Kamera",

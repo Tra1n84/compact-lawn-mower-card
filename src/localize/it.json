@@ -57,6 +57,7 @@
       "mower_model": "Modello tagliaerba",
       "badge_text_color": "Colore testo badge",
       "badge_icon_color": "Colore icona badge",
+      "toggle_active_color": "Colore pulsante vista attivo",
       "mower_models": {
         "default": "Predefinito"
       },
@@ -104,6 +105,9 @@
       },
       "target_mode_none_helper": "Il servizio verrà chiamato senza entità destinazione.",
       "target_none": "Nessuno",
+      "type": "Tipo di azione",
+      "navigation_path": "Percorso di navigazione",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Servizio",
         "navigate": "Navigazione",
@@ -118,7 +122,8 @@
   "error": {
     "missing_entity": "Seleziona un'entità tagliaerba",
     "loading_components": "Errore nel caricamento componenti",
-    "entity_not_found": "Entità non trovata."
+    "entity_not_found": "Entità non trovata.",
+    "action_failed": "Errore nell'esecuzione dell'azione"
   },
   "camera": {
     "camera_title": "Telecamera",

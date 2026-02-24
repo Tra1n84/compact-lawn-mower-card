@@ -57,6 +57,7 @@
       "mower_model": "Mähroboter Modell",
       "badge_text_color": "Textfarbe für Badges",
       "badge_icon_color": "Icon-Farbe für Badges",
+      "toggle_active_color": "Farbe für aktive Ansicht-Buttons",
       "mower_models": {
         "default": "Standard"
       },
@@ -104,6 +105,9 @@
       },
       "target_mode_none_helper": "Der Service wird ohne eine Ziel-Entität aufgerufen.",
       "target_none": "Ohne",
+      "type": "Aktionstyp",
+      "navigation_path": "Navigationspfad",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigation",
@@ -118,7 +122,8 @@
   "error": {
     "missing_entity": "Bitte wähle eine Mähroboter-Entität",
     "loading_components": "Fehler beim Laden der Komponenten",
-    "entity_not_found": "Entität wurde nicht gefunden."
+    "entity_not_found": "Entität wurde nicht gefunden.",
+    "action_failed": "Fehler beim Ausführen der Aktion"
   },
   "camera": {
     "camera_title": "Kamera",

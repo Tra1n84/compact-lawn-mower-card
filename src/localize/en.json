@@ -53,10 +53,11 @@
       "default_map_zoom": "Default Map Zoom Level",
       "map_options_title": "Map",
       "color_options_title": "Color",
-		"model_options_title": "Model",
+      "model_options_title": "Model",
       "mower_model": "Lawn Mower Model",
       "badge_text_color": "Badge Text Color",
       "badge_icon_color": "Badge Icon Color",
+      "toggle_active_color": "Active View Toggle Color",
       "mower_models": {
         "default": "Default"
       },
@@ -104,6 +105,9 @@
       },
       "target_mode_none_helper": "The service will be called without a target entity.",
       "target_none": "None",
+      "type": "Action Type",
+      "navigation_path": "Navigation Path",
+      "url_path": "URL",
       "action_type": {
         "call_service": "Service",
         "navigate": "Navigation",
@@ -118,7 +122,8 @@
   "error": {
     "missing_entity": "Please select a Lawn Mower entity",
     "loading_components": "Error loading components",
-    "entity_not_found": "Entity not found."
+    "entity_not_found": "Entity not found.",
+    "action_failed": "Error executing action"
   },
   "camera": {
     "camera_title": "Camera",
