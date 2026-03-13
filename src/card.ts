@@ -48,6 +48,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @property() public config!: CompactLawnMowerCardConfig;
 
   @state() private _animationClass = '';
+  @state() private _isNarrow = false;
   @state() private _forceCameraRefresh = false;
   @state() private _isCameraLoading = false;
   @state() private _isCameraReachable = true;
@@ -56,9 +57,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @state() private _areActionsExpanded = false;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
-  @query('.progress-badge') private _progressBadge?: HTMLElement;
-  @query('.status-ring') private _statusRing?: HTMLElement;
-
   @property({ attribute: false }) private _viewMode: 'mower' | 'camera' | 'map' = 'mower';
   @state() private _mapWidth = 0;
   @state() private _mapHeight = 0;
@@ -66,9 +64,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _mapUpdateInterval?: number;
   private _cameraUpdateInterval?: number;
   private _animationTimeout?: number;
+  private _mowerBodyAnimEndListener?: EventListener;
   private _mainResizeObserver?: ResizeObserver;
   private _mowerResizeObserver?: ResizeObserver;
-  private _badgeOverlapCheckTimeout?: number;
   private _hadValidMower = false;
   @state() private _mapCardElement?: HTMLElement;
 
@@ -92,9 +90,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       });
     }
 
-    this.updateComplete.then(() => {
-      this._checkBadgeOverlap();
-    });
   }
 
   protected firstUpdated(_changedProperties: PropertyValues): void {
@@ -108,7 +103,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         if (newWidth > 0 && newHeight > 0 && (this._mapWidth !== newWidth || this._mapHeight !== newHeight)) {
           this._mapWidth = newWidth;
           this._mapHeight = newHeight;
-          this._checkBadgeOverlap();
+        }
+
+        const isNarrow = newWidth > 0 && newWidth < 175;
+        if (this._isNarrow !== isNarrow) {
+          this._isNarrow = isNarrow;
         }
       }
       fireEvent(this, 'iron-resize' as any);
@@ -118,7 +117,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._mainResizeObserver.observe(this._mainDisplayArea);
     }
 
-    this._checkBadgeOverlap();
     this._applyStyles();
     this.requestUpdate();
   }
@@ -144,50 +142,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       clearTimeout(this._animationTimeout);
       this._animationTimeout = undefined;
     }
-    if (this._badgeOverlapCheckTimeout) {
-      clearTimeout(this._badgeOverlapCheckTimeout);
-      this._badgeOverlapCheckTimeout = undefined;
-    }
-  }
-
-  private _checkBadgeOverlap(): void {
-    const statusRing = this._statusRing;
-    if (!statusRing) return;
-
-    if (this._badgeOverlapCheckTimeout) {
-      window.cancelAnimationFrame(this._badgeOverlapCheckTimeout);
-    }
-
-    this._badgeOverlapCheckTimeout = window.requestAnimationFrame(() => {
-      const progressBadge = this._progressBadge;
-
-      if (!this.config.progress_entity || !progressBadge) {
-        statusRing.classList.remove('text-hidden');
-        return;
-      }
-
-      const progressRect = progressBadge.getBoundingClientRect();
-      const statusRect = statusRing.getBoundingClientRect();
-      const containerWidth = this._mainDisplayArea?.getBoundingClientRect().width || 0;
-
-      const isTextHidden = statusRing.classList.contains('text-hidden');
-      const statusTextElement = statusRing.querySelector('.status-text') as HTMLElement;
-      const textWidth = statusTextElement ? statusTextElement.getBoundingClientRect().width : 70;
-
-      if (isTextHidden) {
-        const requiredSpace = statusRect.width + textWidth + 20;
-        if (progressRect.right < containerWidth - requiredSpace) {
-          statusRing.classList.remove('text-hidden');
-        }
-      } else {
-        const hideThreshold = 10;
-        const positionOverlap = progressRect.right > statusRect.left - hideThreshold;
-        const widthOverlap = progressRect.width + statusRect.width > containerWidth - hideThreshold;
-        if (positionOverlap || widthOverlap) {
-          statusRing.classList.add('text-hidden');
-        }
-      }
-    });
   }
 
   private _setInitialAnimationState(currentState: string): void {
@@ -201,6 +155,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     } else {
       this._animationClass = '';
     }
+
   }
 
   _updateMowerPosition() {
@@ -267,17 +222,34 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     const mowerBody = this.shadowRoot?.querySelector('.mower-svg .mower-body') as HTMLElement | null;
 
+    if (this._mowerBodyAnimEndListener && mowerBody) {
+      mowerBody.removeEventListener('animationend', this._mowerBodyAnimEndListener);
+      this._mowerBodyAnimEndListener = undefined;
+    }
+
     const onAnimationEnd = () => {
+      this._mowerBodyAnimEndListener = undefined;
       if (mowerBody) {
         mowerBody.style.willChange = 'auto';
       }
       this._setInitialAnimationState(this.mowerState);
     };
 
+    const makeAnimationEndListener = (expectedAnimationName: string): EventListener => {
+      const listener: EventListener = (e: Event) => {
+        if (!(e as AnimationEvent).animationName.startsWith(expectedAnimationName)) return;
+        if (mowerBody) mowerBody.removeEventListener('animationend', listener);
+        onAnimationEnd();
+      };
+      return listener;
+    };
+
     if (wasDocked && !isDocked) {
       if (this._animationClass !== 'driving-from-dock') {
         if (mowerBody) {
-          mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+          const listener = makeAnimationEndListener('driveFromDock');
+          this._mowerBodyAnimEndListener = listener;
+          mowerBody.addEventListener('animationend', listener);
           mowerBody.style.willChange = 'transform';
           this._animationClass = 'driving-from-dock';
         } else {
@@ -291,7 +263,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (!wasDocked && isDocked) {
       if (this._animationClass !== 'driving-to-dock') {
         if (mowerBody) {
-          mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+          const listener = makeAnimationEndListener('driveToDock');
+          this._mowerBodyAnimEndListener = listener;
+          mowerBody.addEventListener('animationend', listener);
           mowerBody.style.willChange = 'transform';
           this._animationClass = 'driving-to-dock';
         } else {
@@ -299,6 +273,36 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
         }
       }
+      return;
+    }
+
+    const isGoingToPause = currentState === 'paused' && (previousState === 'mowing' || previousState === 'returning');
+    if (isGoingToPause && this._animationClass !== 'pausing') {
+      if (mowerBody) {
+        mowerBody.style.willChange = 'transform';
+      }
+      this._animationClass = 'pausing';
+      this._animationTimeout = window.setTimeout(() => {
+        if (mowerBody) {
+          mowerBody.style.willChange = 'auto';
+        }
+        this._setInitialAnimationState(this.mowerState);
+      }, 800);
+      return;
+    }
+
+    const isStartingFromPause = currentState === 'mowing' || currentState === 'returning';
+    if (previousState === 'paused' && isStartingFromPause && this._animationClass !== 'startup') {
+      if (mowerBody) {
+        mowerBody.style.willChange = 'transform';
+      }
+      this._animationClass = 'startup';
+      this._animationTimeout = window.setTimeout(() => {
+        if (mowerBody) {
+          mowerBody.style.willChange = 'auto';
+        }
+        this._setInitialAnimationState(this.mowerState);
+      }, 700);
       return;
     }
 
@@ -444,10 +448,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       });
     }
     this._hadValidMower = hasValidMower;
-
-    this.updateComplete.then(() => {
-      this._checkBadgeOverlap();
-    });
   }
 
   private _isCurrentlyDocked(state: string, isCharging: boolean): boolean {
@@ -648,6 +648,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     if (this._animationClass === 'driving-to-dock' || this._animationClass === 'driving-from-dock') {
       classes.push(this._animationClass, 'active');
+    } else if (this._animationClass === 'startup') {
+      classes.push('on-lawn-static', 'active', 'startup');
+      if (displayState === 'returning') {
+        classes.push('returning');
+      }
+    } else if (this._animationClass === 'pausing') {
+      classes.push('on-lawn-static', 'pausing');
     } else {
       if (displayState === 'charging') {
         classes.push('docked-static', 'charging', 'charging-animated');
@@ -1043,7 +1050,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       `);
     }
 
-    return html` <div class="view-toggle">${buttons}</div> `;
+    return html` <div class="view-toggle ${this._isNarrow ? 'narrow' : ''}">${buttons}</div> `;
   }
 
   private async _setViewMode(mode: 'mower' | 'camera' | 'map') {
@@ -1248,7 +1255,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
               <div
                 class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(
                   this._getDisplayStatus(this.mowerState)
-                )}"
+                )} ${this._isNarrow ? 'narrow' : ''}"
               >
                 <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                   <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>

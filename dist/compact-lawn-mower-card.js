@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.1.1';
+const CARD_VERSION = '1.1.2';
 // Map constants
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
@@ -1967,6 +1967,7 @@ const compactLawnMowerCardStyles = i$3 `
     overflow: hidden;
     min-height: 120px;
     container-type: inline-size;
+    container-name: mower-main;
   }
 
   .mower-display {
@@ -2217,10 +2218,6 @@ const compactLawnMowerCardStyles = i$3 `
     box-shadow: 0 0 8px 2px rgba(211, 47, 47, 0.6);
   }
 
-  .status-ring.text-hidden .status-text,
-  .status-ring.text-hidden .badge-separator {
-    display: none;
-  }
   /* =================== */
   /*     Mower SVG       */
   /* =================== */
@@ -2307,11 +2304,13 @@ const compactLawnMowerCardStyles = i$3 `
   .mower-svg.driving-to-dock .mower-body {
     animation: driveToDock 2s linear forwards;
     will-change: transform;
+    transition: none;
   }
 
   .mower-svg.driving-from-dock .mower-body {
     animation: driveFromDock 2s linear forwards;
     will-change: transform;
+    transition: none;
   }
 
   .mower-svg.docked-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
@@ -2324,12 +2323,64 @@ const compactLawnMowerCardStyles = i$3 `
 
   .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
     transform: translateX(30px);
+    transition: transform 0.5s ease-out;
+  }
+
+  .mower-svg.on-lawn-static.sleeping:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+    transform: translateX(30px);
+    transition: transform 0.5s ease-out;
   }
 
   .mower-svg.on-lawn-static.active .mower-body {
     transform: translateX(30px);
     animation: BounceOnLawn 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
     will-change: transform;
+    transition: none;
+  }
+
+  .mower-svg.on-lawn-static.active.startup .mower-body {
+    animation: startupOnLawn 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    will-change: transform;
+    transition: none;
+  }
+
+  .mower-svg.on-lawn-static.active.startup .wheel-back .wheel-rotation {
+    animation: rotateWheelAccel 0.7s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+    will-change: transform;
+  }
+  .mower-svg.on-lawn-static.active.startup .wheel-front .wheel-rotation {
+    animation: rotateWheelAccel 0.4s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+    will-change: transform;
+  }
+
+  .mower-svg.on-lawn-static.pausing .mower-body {
+    transform: translateX(30px);
+    animation: pauseOnLawn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    will-change: transform;
+    transition: none;
+  }
+
+  .mower-svg.on-lawn-static.pausing .wheel-back .wheel-rotation {
+    animation: rotateWheelDecel 0.8s cubic-bezier(0.4, 0, 1, 1) forwards;
+    will-change: transform;
+  }
+  .mower-svg.on-lawn-static.pausing .wheel-front .wheel-rotation {
+    animation: rotateWheelDecel 0.5s cubic-bezier(0.4, 0, 1, 1) forwards;
+    will-change: transform;
+  }
+
+  .mower-led-strip {
+    transition: fill 0.5s ease, opacity 0.6s ease;
+  }
+
+  .mower-svg.on-lawn-static.active.startup .mower-led-strip {
+    animation: ledFadeIn 0.7s ease-out forwards;
+    will-change: opacity;
+  }
+
+  .mower-svg.on-lawn-static.pausing .mower-led-strip {
+    animation: ledFadeOut 0.8s ease-in forwards;
+    will-change: opacity;
   }
 
   .sleep-animation {
@@ -2832,6 +2883,63 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
+  @keyframes startupOnLawn {
+    0% {
+      transform: translateX(30px) translateY(0px);
+    }
+    20% {
+      transform: translateX(30px) translateY(-0.5px);
+    }
+    45% {
+      transform: translateX(30px) translateY(-1.4px);
+    }
+    65% {
+      transform: translateX(30px) translateY(-0.6px);
+    }
+    85% {
+      transform: translateX(30px) translateY(-0.2px);
+    }
+    100% {
+      transform: translateX(30px) translateY(0px);
+    }
+  }
+
+  @keyframes pauseOnLawn {
+    0% {
+      transform: translateX(30px) translateY(-0.8px);
+    }
+    20% {
+      transform: translateX(30px) translateY(-1px);
+    }
+    50% {
+      transform: translateX(30px) translateY(-0.4px);
+    }
+    80% {
+      transform: translateX(30px) translateY(-0.1px);
+    }
+    100% {
+      transform: translateX(30px) translateY(0px);
+    }
+  }
+
+  @keyframes rotateWheelDecel {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(270deg);
+    }
+  }
+
+  @keyframes rotateWheelAccel {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   @keyframes BounceOnLawnMedium {
     0%,
     100% {
@@ -2848,6 +2956,45 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
+  @keyframes startupOnLawnMedium {
+    0% {
+      transform: translateX(20px) translateY(0px);
+    }
+    20% {
+      transform: translateX(20px) translateY(-0.5px);
+    }
+    45% {
+      transform: translateX(20px) translateY(-1.4px);
+    }
+    65% {
+      transform: translateX(20px) translateY(-0.6px);
+    }
+    85% {
+      transform: translateX(20px) translateY(-0.2px);
+    }
+    100% {
+      transform: translateX(20px) translateY(0px);
+    }
+  }
+
+  @keyframes pauseOnLawnMedium {
+    0% {
+      transform: translateX(20px) translateY(-0.8px);
+    }
+    20% {
+      transform: translateX(20px) translateY(-1px);
+    }
+    50% {
+      transform: translateX(20px) translateY(-0.4px);
+    }
+    80% {
+      transform: translateX(20px) translateY(-0.1px);
+    }
+    100% {
+      transform: translateX(20px) translateY(0px);
+    }
+  }
+
   @keyframes BounceOnLawnSmall {
     0%,
     100% {
@@ -2861,6 +3008,45 @@ const compactLawnMowerCardStyles = i$3 `
     }
     75% {
       transform: translateX(10px) translateY(-1.2px);
+    }
+  }
+
+  @keyframes startupOnLawnSmall {
+    0% {
+      transform: translateX(10px) translateY(0px);
+    }
+    20% {
+      transform: translateX(10px) translateY(-0.5px);
+    }
+    45% {
+      transform: translateX(10px) translateY(-1.4px);
+    }
+    65% {
+      transform: translateX(10px) translateY(-0.6px);
+    }
+    85% {
+      transform: translateX(10px) translateY(-0.2px);
+    }
+    100% {
+      transform: translateX(10px) translateY(0px);
+    }
+  }
+
+  @keyframes pauseOnLawnSmall {
+    0% {
+      transform: translateX(10px) translateY(-0.8px);
+    }
+    20% {
+      transform: translateX(10px) translateY(-1px);
+    }
+    50% {
+      transform: translateX(10px) translateY(-0.4px);
+    }
+    80% {
+      transform: translateX(10px) translateY(-0.1px);
+    }
+    100% {
+      transform: translateX(10px) translateY(0px);
     }
   }
 
@@ -3066,6 +3252,24 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
+  @keyframes ledFadeIn {
+    0% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes ledFadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+
   @keyframes spin {
     to {
       transform: rotate(360deg);
@@ -3075,14 +3279,26 @@ const compactLawnMowerCardStyles = i$3 `
   /* =================== */
   /*  Responsive Design  */
   /* =================== */
-  @container (max-width: 280px) {
+  @container mower-main (max-width: 280px) {
     .mower-svg.on-lawn-static:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+      transform: translateX(20px);
+    }
+
+    .mower-svg.on-lawn-static.sleeping:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
       transform: translateX(20px);
     }
 
     .mower-svg.on-lawn-static.active .mower-body {
       transform: translateX(20px);
       animation: BounceOnLawnMedium 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+
+    .mower-svg.on-lawn-static.active.startup .mower-body {
+      animation: startupOnLawnMedium 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .mower-svg.on-lawn-static.pausing .mower-body {
+      animation: pauseOnLawnMedium 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
     .mower-svg.driving-to-dock .mower-body {
@@ -3094,7 +3310,16 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
-  @container (max-width: 200px) {
+  .status-ring.narrow .status-text,
+  .status-ring.narrow .badge-separator {
+    display: none;
+  }
+
+  .status-ring.narrow {
+    min-width: unset;
+  }
+
+  @container mower-main (max-width: 200px) {
     .card-content {
       padding: 4px;
       gap: 4px;
@@ -3159,9 +3384,21 @@ const compactLawnMowerCardStyles = i$3 `
       transform: translateX(10px);
     }
 
+    .mower-svg.on-lawn-static.sleeping:not(.driving-from-dock):not(.driving-to-dock) .mower-body {
+      transform: translateX(10px);
+    }
+
     .mower-svg.on-lawn-static.active .mower-body {
       transform: translateX(10px);
       animation: BounceOnLawnSmall 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+
+    .mower-svg.on-lawn-static.active.startup .mower-body {
+      animation: startupOnLawnSmall 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .mower-svg.on-lawn-static.pausing .mower-body {
+      animation: pauseOnLawnSmall 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
     .mower-svg.driving-to-dock .mower-body {
@@ -3173,7 +3410,7 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
-  @container (min-width: 300px) and (max-width: 380px) {
+  @container mower-main (min-width: 300px) and (max-width: 380px) {
     .card-content {
       padding: 6px;
       gap: 6px;
@@ -3459,6 +3696,7 @@ const editorStyles = i$3 `
     max-height: none;
     overflow: visible;
     opacity: 1;
+    will-change: auto;
   }
 
   .section-content.collapsed {
@@ -3675,6 +3913,7 @@ const editorStyles = i$3 `
     background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.1);
     border-radius: 8px;
     --mdc-ripple-border-radius: 8px;
+    clip-path: inset(0 round 8px);
     will-change: background-color, color;
   }
 
@@ -5193,6 +5432,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     constructor() {
         super(...arguments);
         this._animationClass = '';
+        this._isNarrow = false;
         this._forceCameraRefresh = false;
         this._isCameraLoading = false;
         this._isCameraReachable = true;
@@ -5221,9 +5461,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 this._setupMowerResizeObserver();
             });
         }
-        this.updateComplete.then(() => {
-            this._checkBadgeOverlap();
-        });
     }
     firstUpdated(_changedProperties) {
         super.firstUpdated(_changedProperties);
@@ -5234,7 +5471,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 if (newWidth > 0 && newHeight > 0 && (this._mapWidth !== newWidth || this._mapHeight !== newHeight)) {
                     this._mapWidth = newWidth;
                     this._mapHeight = newHeight;
-                    this._checkBadgeOverlap();
+                }
+                const isNarrow = newWidth > 0 && newWidth < 175;
+                if (this._isNarrow !== isNarrow) {
+                    this._isNarrow = isNarrow;
                 }
             }
             fireEvent(this, 'iron-resize');
@@ -5242,7 +5482,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (this._mainDisplayArea) {
             this._mainResizeObserver.observe(this._mainDisplayArea);
         }
-        this._checkBadgeOverlap();
         this._applyStyles();
         this.requestUpdate();
     }
@@ -5266,45 +5505,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             clearTimeout(this._animationTimeout);
             this._animationTimeout = undefined;
         }
-        if (this._badgeOverlapCheckTimeout) {
-            clearTimeout(this._badgeOverlapCheckTimeout);
-            this._badgeOverlapCheckTimeout = undefined;
-        }
-    }
-    _checkBadgeOverlap() {
-        const statusRing = this._statusRing;
-        if (!statusRing)
-            return;
-        if (this._badgeOverlapCheckTimeout) {
-            window.cancelAnimationFrame(this._badgeOverlapCheckTimeout);
-        }
-        this._badgeOverlapCheckTimeout = window.requestAnimationFrame(() => {
-            const progressBadge = this._progressBadge;
-            if (!this.config.progress_entity || !progressBadge) {
-                statusRing.classList.remove('text-hidden');
-                return;
-            }
-            const progressRect = progressBadge.getBoundingClientRect();
-            const statusRect = statusRing.getBoundingClientRect();
-            const containerWidth = this._mainDisplayArea?.getBoundingClientRect().width || 0;
-            const isTextHidden = statusRing.classList.contains('text-hidden');
-            const statusTextElement = statusRing.querySelector('.status-text');
-            const textWidth = statusTextElement ? statusTextElement.getBoundingClientRect().width : 70;
-            if (isTextHidden) {
-                const requiredSpace = statusRect.width + textWidth + 20;
-                if (progressRect.right < containerWidth - requiredSpace) {
-                    statusRing.classList.remove('text-hidden');
-                }
-            }
-            else {
-                const hideThreshold = 10;
-                const positionOverlap = progressRect.right > statusRect.left - hideThreshold;
-                const widthOverlap = progressRect.width + statusRect.width > containerWidth - hideThreshold;
-                if (positionOverlap || widthOverlap) {
-                    statusRing.classList.add('text-hidden');
-                }
-            }
-        });
     }
     _setInitialAnimationState(currentState) {
         const onLawnStates = ['mowing', 'paused', 'returning', 'error'];
@@ -5370,16 +5570,33 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             this._animationTimeout = undefined;
         }
         const mowerBody = this.shadowRoot?.querySelector('.mower-svg .mower-body');
+        if (this._mowerBodyAnimEndListener && mowerBody) {
+            mowerBody.removeEventListener('animationend', this._mowerBodyAnimEndListener);
+            this._mowerBodyAnimEndListener = undefined;
+        }
         const onAnimationEnd = () => {
+            this._mowerBodyAnimEndListener = undefined;
             if (mowerBody) {
                 mowerBody.style.willChange = 'auto';
             }
             this._setInitialAnimationState(this.mowerState);
         };
+        const makeAnimationEndListener = (expectedAnimationName) => {
+            const listener = (e) => {
+                if (!e.animationName.startsWith(expectedAnimationName))
+                    return;
+                if (mowerBody)
+                    mowerBody.removeEventListener('animationend', listener);
+                onAnimationEnd();
+            };
+            return listener;
+        };
         if (wasDocked && !isDocked) {
             if (this._animationClass !== 'driving-from-dock') {
                 if (mowerBody) {
-                    mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+                    const listener = makeAnimationEndListener('driveFromDock');
+                    this._mowerBodyAnimEndListener = listener;
+                    mowerBody.addEventListener('animationend', listener);
                     mowerBody.style.willChange = 'transform';
                     this._animationClass = 'driving-from-dock';
                 }
@@ -5393,7 +5610,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (!wasDocked && isDocked) {
             if (this._animationClass !== 'driving-to-dock') {
                 if (mowerBody) {
-                    mowerBody.addEventListener('animationend', onAnimationEnd, { once: true });
+                    const listener = makeAnimationEndListener('driveToDock');
+                    this._mowerBodyAnimEndListener = listener;
+                    mowerBody.addEventListener('animationend', listener);
                     mowerBody.style.willChange = 'transform';
                     this._animationClass = 'driving-to-dock';
                 }
@@ -5402,6 +5621,34 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
                 }
             }
+            return;
+        }
+        const isGoingToPause = currentState === 'paused' && (previousState === 'mowing' || previousState === 'returning');
+        if (isGoingToPause && this._animationClass !== 'pausing') {
+            if (mowerBody) {
+                mowerBody.style.willChange = 'transform';
+            }
+            this._animationClass = 'pausing';
+            this._animationTimeout = window.setTimeout(() => {
+                if (mowerBody) {
+                    mowerBody.style.willChange = 'auto';
+                }
+                this._setInitialAnimationState(this.mowerState);
+            }, 800);
+            return;
+        }
+        const isStartingFromPause = currentState === 'mowing' || currentState === 'returning';
+        if (previousState === 'paused' && isStartingFromPause && this._animationClass !== 'startup') {
+            if (mowerBody) {
+                mowerBody.style.willChange = 'transform';
+            }
+            this._animationClass = 'startup';
+            this._animationTimeout = window.setTimeout(() => {
+                if (mowerBody) {
+                    mowerBody.style.willChange = 'auto';
+                }
+                this._setInitialAnimationState(this.mowerState);
+            }, 700);
             return;
         }
         this._setInitialAnimationState(currentState);
@@ -5526,9 +5773,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             });
         }
         this._hadValidMower = hasValidMower;
-        this.updateComplete.then(() => {
-            this._checkBadgeOverlap();
-        });
     }
     _isCurrentlyDocked(state, isCharging) {
         if (isCharging) {
@@ -5692,6 +5936,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const displayState = this._getDisplayStatus(state);
         if (this._animationClass === 'driving-to-dock' || this._animationClass === 'driving-from-dock') {
             classes.push(this._animationClass, 'active');
+        }
+        else if (this._animationClass === 'startup') {
+            classes.push('on-lawn-static', 'active', 'startup');
+            if (displayState === 'returning') {
+                classes.push('returning');
+            }
+        }
+        else if (this._animationClass === 'pausing') {
+            classes.push('on-lawn-static', 'pausing');
         }
         else {
             if (displayState === 'charging') {
@@ -6035,7 +6288,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </button>
       `);
         }
-        return x ` <div class="view-toggle">${buttons}</div> `;
+        return x ` <div class="view-toggle ${this._isNarrow ? 'narrow' : ''}">${buttons}</div> `;
     }
     async _setViewMode(mode) {
         if (this._cameraUpdateInterval) {
@@ -6220,7 +6473,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
 
             <div class="status-badges">
               <div
-                class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))}"
+                class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))} ${this._isNarrow ? 'narrow' : ''}"
               >
                 <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
                   <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
@@ -6269,6 +6522,9 @@ __decorate([
 ], CompactLawnMowerCard.prototype, "_animationClass", void 0);
 __decorate([
     r()
+], CompactLawnMowerCard.prototype, "_isNarrow", void 0);
+__decorate([
+    r()
 ], CompactLawnMowerCard.prototype, "_forceCameraRefresh", void 0);
 __decorate([
     r()
@@ -6288,12 +6544,6 @@ __decorate([
 __decorate([
     e('.main-display-area')
 ], CompactLawnMowerCard.prototype, "_mainDisplayArea", void 0);
-__decorate([
-    e('.progress-badge')
-], CompactLawnMowerCard.prototype, "_progressBadge", void 0);
-__decorate([
-    e('.status-ring')
-], CompactLawnMowerCard.prototype, "_statusRing", void 0);
 __decorate([
     n({ attribute: false })
 ], CompactLawnMowerCard.prototype, "_viewMode", void 0);
