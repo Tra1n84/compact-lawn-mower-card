@@ -267,6 +267,7 @@ export const compactLawnMowerCardStyles = css`
     min-height: 120px;
     container-type: inline-size;
     container-name: mower-main;
+    will-change: transform;
   }
 
   .mower-display {
@@ -280,6 +281,7 @@ export const compactLawnMowerCardStyles = css`
     overflow: hidden;
     padding: 0px;
     box-sizing: border-box;
+    clip-path: inset(0 round calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px));
     background: linear-gradient(
       to bottom,
       var(--sky-color-top, rgb(41, 128, 185)) 0%,
@@ -287,6 +289,11 @@ export const compactLawnMowerCardStyles = css`
       var(--grass-color-top, rgb(88, 140, 54)) var(--sky-percentage, 70%),
       var(--grass-color-bottom, rgb(133, 187, 88)) 100%
     );
+  }
+
+  .main-display-area.map-view .mower-display,
+  .main-display-area.camera-view .mower-display {
+    background: none;
   }
 
   /* =================== */
@@ -669,7 +676,9 @@ export const compactLawnMowerCardStyles = css`
   }
 
   .mower-led-strip {
-    transition: fill 0.5s ease, opacity 0.6s ease;
+    transition:
+      fill 0.5s ease,
+      opacity 0.6s ease;
   }
 
   .mower-svg.on-lawn-static.active.startup .mower-led-strip {
@@ -753,6 +762,7 @@ export const compactLawnMowerCardStyles = css`
     overflow: hidden;
     position: relative;
     background-color: #000;
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -841,11 +851,27 @@ export const compactLawnMowerCardStyles = css`
     border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
     overflow: hidden;
     transition: background-color 0.3s ease;
-    will-change: background-color;
+    user-select: none;
+    --ha-card-border-radius: 0px;
+    --ha-card-box-shadow: none;
+  }
+
+  .map-container.pannable {
+    cursor: grab;
+    background-color: #1a1a1a;
+  }
+
+  .map-container.pannable:active {
+    cursor: grabbing;
   }
 
   .map-container.is-loading {
     background-color: #000;
+  }
+
+  .map-container > hui-map-card {
+    display: block;
+    height: 100%;
   }
 
   .map-error {
@@ -871,6 +897,19 @@ export const compactLawnMowerCardStyles = css`
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  .map-image-entity {
+    object-fit: contain;
+    background-color: #1a1a1a;
+  }
+
+  .map-image-transform-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .mower-marker {
@@ -909,24 +948,74 @@ export const compactLawnMowerCardStyles = css`
     display: flex;
     flex-direction: column;
     gap: 4px;
+    align-items: flex-start;
   }
 
   .map-control-button {
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.9);
+    width: 26px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px) saturate(180%);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
+    color: var(--primary-text-color);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
-    will-change: background;
+    transition:
+      background 0.2s,
+      transform 0.1s;
+    box-shadow: var(--badge-box-shadow);
+    --mdc-icon-size: 16px;
   }
 
   .map-control-button:hover {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .map-control-button:active {
+    transform: scale(0.9);
+  }
+
+  .map-zoom-control {
+    display: flex;
+    flex-direction: column;
+    background: var(--card-background-color);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+  }
+
+  .map-zoom-button {
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+    --mdc-icon-size: 18px;
+  }
+
+  .map-zoom-button:hover {
+    background: var(--secondary-background-color);
+  }
+
+  .map-zoom-button:active {
+    background: var(--divider-color);
+  }
+
+  .map-zoom-button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .map-zoom-button--in {
+    border-bottom: 1px solid var(--divider-color);
   }
 
   /* =================== */
@@ -1634,6 +1723,11 @@ export const compactLawnMowerCardStyles = css`
       padding: 4px;
     }
 
+    .map-controls-wrapper {
+      bottom: 4px;
+      left: 4px;
+    }
+
     .progress-badge {
       padding: 6px 10px;
       height: 36px;
@@ -1723,6 +1817,11 @@ export const compactLawnMowerCardStyles = css`
     .status-badges,
     .view-toggle {
       padding: 6px;
+    }
+
+    .map-controls-wrapper {
+      bottom: 6px;
+      left: 6px;
     }
 
     .progress-badge {
@@ -1921,7 +2020,7 @@ export const editorStyles = css`
     background: var(--card-background-color, #fff);
     border-radius: 16px;
     border: 1px solid var(--divider-color, #e0e0e0);
-    overflow: visible;
+    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 

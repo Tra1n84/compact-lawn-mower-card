@@ -21,6 +21,7 @@
     "entity": "Kosiarka",
     "camera_entity": "Encja kamery (Opcjonalne)",
     "map_entity": "Encja mapy (Opcjonalne, Device Tracker)",
+    "map_image_entity": "Encja obrazu mapy (Opcjonalne, Obraz lub Kamera)",
     "camera_fit_mode": "Tryb dopasowania kamery",
     "camera_fit_mode_label": {
       "cover": "Wypełnij (wypełnia przestrzeń, może przycinać)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Klucz API Google Maps (Opcjonalne)",
       "use_google_maps": "Użyj Google Maps (z kluczem API)",
       "enable_map": "Włącz widok mapy",
+      "map_source": "Źródło mapy",
+      "map_source_label": {
+        "gps": "GPS / Mapa (Device Tracker)",
+        "image": "Obraz mapy (Encja Obrazu lub Kamery)"
+      },
       "map_type": "Typ mapy",
       "map_type_label": {
         "roadmap": "Mapa drogowa",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Mapa niedostępna",
-    "no_gps_coordinates": "Brak danych GPS"
+    "no_gps_coordinates": "Brak danych GPS",
+    "image_not_available": "Obraz mapy niedostępny",
+    "image_unavailable": "Obraz mapy niedostępny",
+    "image_load_error": "Nie udało się załadować obrazu mapy"
   },
   "view": {
     "mower": "Kosiarka",

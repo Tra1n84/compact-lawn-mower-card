@@ -110,9 +110,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       this._serviceTranslationsLoaded = true;
       this._cachedServices = undefined;
       this.requestUpdate();
-    } catch (e) {
-      // Translations not available, fall back to raw service IDs
-    }
+    } catch (e) {}
   }
 
   setConfig(config: CompactLawnMowerCardConfig): void {
@@ -141,18 +139,32 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       }
     }
 
-    if (!this.config.map_entity && newConfig.map_entity) {
+    const hadAnyMapSource = !!(this.config.map_entity || this.config.map_image_entity);
+    const hasAnyMapSourceNow = !!(newConfig.map_entity || newConfig.map_image_entity);
+
+    if (!hadAnyMapSource && hasAnyMapSourceNow) {
       newConfig.enable_map = true;
     }
 
-    if (this.config.map_entity && !newConfig.map_entity) {
+    if (hadAnyMapSource && !hasAnyMapSourceNow) {
       newConfig.enable_map = false;
       if (newConfig.default_view === 'map') {
         newConfig.default_view = 'mower';
       }
     }
 
+    if (this.config.map_entity && !newConfig.map_entity && newConfig.map_image_entity) {
+      newConfig.map_source = 'image';
+    }
+    if (this.config.map_image_entity && !newConfig.map_image_entity && newConfig.map_entity) {
+      newConfig.map_source = 'gps';
+    }
+
     if (newConfig.enable_map === false && newConfig.default_view === 'map') {
+      newConfig.default_view = 'mower';
+    }
+
+    if (!hasAnyMapSourceNow && newConfig.default_view === 'map') {
       newConfig.default_view = 'mower';
     }
 
@@ -906,6 +918,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
         disabled: !this.config.camera_entity,
       },
       { name: 'map_entity', selector: { entity: { domain: 'device_tracker' } }, required: false },
+      { name: 'map_image_entity', selector: { entity: { domain: ['image', 'camera'] } }, required: false },
     ];
   }
 
@@ -922,7 +935,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       defaultViewOptions.push({ value: 'camera', label: localize('view.camera', { hass: this.hass }) });
     }
 
-    if (this.config.map_entity) {
+    if (this.config.map_entity || this.config.map_image_entity) {
       defaultViewOptions.push({ value: 'map', label: localize('view.map', { hass: this.hass }) });
     }
 
@@ -941,25 +954,56 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
 
   private get _mapOptionsSchema() {
     const hasMapEntity = !!this.config.map_entity;
-    const mapIsEnabled = hasMapEntity && this.config.enable_map !== false;
+    const hasImageEntity = !!this.config.map_image_entity;
+    const hasAnyMapSource = hasMapEntity || hasImageEntity;
+    const hasBothSources = hasMapEntity && hasImageEntity;
+    const mapIsEnabled = hasAnyMapSource && this.config.enable_map !== false;
     const hasApiKey = !!this.config.google_maps_api_key;
     const useGoogleMaps = !!this.config.use_google_maps;
+
+    const effectiveSource = hasBothSources ? this.config.map_source || 'gps' : hasMapEntity ? 'gps' : 'image';
+    const gpsActive = mapIsEnabled && effectiveSource === 'gps';
+
+    const mapSourceOptions: { value: string; label: string }[] = [];
+    if (hasMapEntity) {
+      mapSourceOptions.push({
+        value: 'gps',
+        label: localize('editor.options.map_source_label.gps', { hass: this.hass }),
+      });
+    }
+    if (hasImageEntity) {
+      mapSourceOptions.push({
+        value: 'image',
+        label: localize('editor.options.map_source_label.image', { hass: this.hass }),
+      });
+    }
 
     const schema: any[] = [
       {
         name: 'enable_map',
         selector: { boolean: {} },
-        disabled: !hasMapEntity,
+        disabled: !hasAnyMapSource,
+      },
+      {
+        name: 'map_source',
+        selector: {
+          select: {
+            mode: 'dropdown',
+            options: mapSourceOptions,
+            custom_value: false,
+          },
+        },
+        disabled: !mapIsEnabled,
       },
       {
         name: 'google_maps_api_key',
         selector: { text: {} },
-        disabled: !mapIsEnabled,
+        disabled: !gpsActive,
       },
       {
         name: 'use_google_maps',
         selector: { boolean: {} },
-        disabled: !mapIsEnabled || !hasApiKey,
+        disabled: !gpsActive || !hasApiKey,
       },
       {
         name: 'map_type',
@@ -974,7 +1018,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             custom_value: false,
           },
         },
-        disabled: !mapIsEnabled || !hasApiKey || !useGoogleMaps,
+        disabled: !gpsActive || !hasApiKey || !useGoogleMaps,
       },
       {
         name: 'default_map_zoom',
@@ -986,7 +1030,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             step: 1,
           },
         },
-        disabled: !mapIsEnabled,
+        disabled: !gpsActive,
       },
     ];
 
@@ -1047,9 +1091,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
           return parsed;
         }
       }
-    } catch {
-      // Fallback if getComputedStyle fails
-    }
+    } catch {}
     return fallback;
   }
 
@@ -1059,6 +1101,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       camera_entity: this.config.camera_entity || '',
       camera_fit_mode: this.config.camera_fit_mode || 'cover',
       map_entity: this.config.map_entity || '',
+      map_image_entity: this.config.map_image_entity || '',
     };
   }
 
@@ -1074,6 +1117,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return {
       default_view: this.config.default_view || 'mower',
       enable_map: this.config.enable_map !== false,
+      map_source: this.config.map_source || (this.config.map_image_entity && !this.config.map_entity ? 'image' : 'gps'),
       google_maps_api_key: this.config.google_maps_api_key || '',
       map_type: this.config.map_type || 'hybrid',
       use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,

@@ -21,6 +21,7 @@
     "entity": "Grasmaaier",
     "camera_entity": "Camera-entiteit (Optioneel)",
     "map_entity": "Kaart-entiteit (Optioneel, Device Tracker)",
+    "map_image_entity": "Kaartafbeelding-entiteit (Optioneel, Afbeelding of Camera)",
     "camera_fit_mode": "Camera aanpasmodus",
     "camera_fit_mode_label": {
       "cover": "Bedekken (ruimte vullen, kan bijsnijden)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Google Maps API-sleutel (Optioneel)",
       "use_google_maps": "Google Maps gebruiken (met API-sleutel)",
       "enable_map": "Kaartweergave inschakelen",
+      "map_source": "Kaartbron",
+      "map_source_label": {
+        "gps": "GPS / Kaart (Device Tracker)",
+        "image": "Kaartafbeelding (Afbeelding- of Camera-entiteit)"
+      },
       "map_type": "Kaarttype",
       "map_type_label": {
         "roadmap": "Wegenkaart",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Kaart niet beschikbaar",
-    "no_gps_coordinates": "Geen GPS-gegevens"
+    "no_gps_coordinates": "Geen GPS-gegevens",
+    "image_not_available": "Kaartafbeelding niet beschikbaar",
+    "image_unavailable": "Kaartafbeelding niet beschikbaar",
+    "image_load_error": "Laden van kaartafbeelding mislukt"
   },
   "view": {
     "mower": "Grasmaaier",

@@ -21,6 +21,7 @@
     "entity": "Lawn Mower",
     "camera_entity": "Camera Entity (Optional)",
     "map_entity": "Map Entity (Optional, Device Tracker)",
+    "map_image_entity": "Map Image Entity (Optional, Image or Camera)",
     "camera_fit_mode": "Camera Fit Mode",
     "camera_fit_mode_label": {
       "cover": "Cover (fill space, may crop)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Google Maps API Key (Optional)",
       "use_google_maps": "Use Google Maps (with API Key)",
       "enable_map": "Enable Map View",
+      "map_source": "Map Source",
+      "map_source_label": {
+        "gps": "GPS / Map (Device Tracker)",
+        "image": "Map Image (Image or Camera Entity)"
+      },
       "map_type": "Map Type",
       "map_type_label": {
         "roadmap": "Roadmap",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Map not available",
-    "no_gps_coordinates": "No GPS data"
+    "no_gps_coordinates": "No GPS data",
+    "image_not_available": "Map image not available",
+    "image_unavailable": "Map image unavailable",
+    "image_load_error": "Failed to load map image"
   },
   "view": {
     "mower": "Lawn Mower",

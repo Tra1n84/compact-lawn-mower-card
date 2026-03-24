@@ -3,6 +3,11 @@
 A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant!
 
 <div align="center">
+  <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_Mowing.png" height="300" alt="Compact Lawn Mower Card – Mowing State"><br>
+  <sub>Mower View – Mowing State</sub>
+</div>
+
+<div align="center">
   <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_6Columns.png" height="300" alt="Compact Lawn Mower Card with 6 Columns"><br>
   <sub>Grid Layout with 6 columns</sub>
 </div>
@@ -11,13 +16,15 @@ A compact, modern and feature-rich custom card for your robotic lawn mower in Ho
 
 ## ✨ Features
 
-* **Dynamic Mower View:**   
-A graphical view of your robotic lawn mower with an Status LED indicating the current state, a graphical battery indicator and animations based on the current state - mowing, pausing, returning or charging
-* **Multiple Views:**   
-Switch between multiple views - the mower UI, a live video stream from your mower's camera or track your mower's location on map (Google Maps or HA Map)
+* **Mower View:**
+A graphical view of your robotic lawn mower with a status LED indicating the current state, a graphical battery indicator and animations based on the current state - mowing, pausing, returning or charging
+* **Camera View:**
+A live video stream from your mower's camera
+* **Map View:**
+Track your mower's location on a map - choose between a GPS device tracker with HA Map or Google Maps or a static image / camera entity as your mower map with full pinch-to-zoom and drag-to-pan support
 * **Custom Action Buttons:**
 Define up to 6 customizable action buttons - trigger services, toggle entities, navigate within HA, open URLs or show entity details
-* **Info Badges:**   
+* **Info Badges:**
 Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
 A user-friendly UI editor for all your card settings - no YAML required. Define additional entities, camera settings, map parameters, mower models or the individual colors
@@ -104,6 +111,8 @@ entity: lawn_mower.my_mower
 camera_entity: camera.my_mower_camera
 camera_fit_mode: contain
 map_entity: device_tracker.my_mower
+map_image_entity: image.my_mower_map
+map_source: gps
 progress_entity: sensor._my_mower_progress
 battery_entity: sensor.my_mower_battery
 charging_entity: binary_sensor.my_mower_charging
@@ -187,7 +196,9 @@ custom_actions:
 | `entity`             | string   | Yes          | The main entity of your lawn mower                                                           |
 | `camera_entity`      | string   | No           | Camera entity for the camera view                                                            |
 | `camera_fit_mode`    | string   | No           | How to fit the camera image: `cover` or `contain`                                            |
-| `map_entity`         | string   | No           | Device tracker entity for the map view                                                       |
+| `map_entity`         | string   | No           | Device tracker entity for the GPS map view                                                   |
+| `map_image_entity`   | string   | No           | Image or camera entity to display as a static map (supports zoom & pan)                      |
+| `map_source`         | string   | No           | Active map source when both `map_entity` and `map_image_entity` are set: `gps` or `image`    |
 | `battery_entity`     | string   | No           | Optional sensor for battery level                                                            |
 | `progress_entity`    | string   | No           | Optional sensor for mowing progress                                                          |
 | `charging_entity`    | string   | No           | Optional binary sensor or sensor for charging status                                         |

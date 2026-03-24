@@ -21,6 +21,7 @@
     "entity": "Gräsklippare",
     "camera_entity": "Kameraenhet (Valfritt)",
     "map_entity": "Kartenhet (Valfritt, Device Tracker)",
+    "map_image_entity": "Kartbildsenhet (Valfritt, Bild eller Kamera)",
     "camera_fit_mode": "Kameraanpassningsläge",
     "camera_fit_mode_label": {
       "cover": "Täck (fyller utrymme, kan beskära)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Google Maps API-nyckel (Valfritt)",
       "use_google_maps": "Använd Google Maps (med API-nyckel)",
       "enable_map": "Aktivera kartvy",
+      "map_source": "Kartkälla",
+      "map_source_label": {
+        "gps": "GPS / Karta (Device Tracker)",
+        "image": "Kartbild (Bild- eller Kameraenhet)"
+      },
       "map_type": "Karttyp",
       "map_type_label": {
         "roadmap": "Vägkarta",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Karta ej tillgänglig",
-    "no_gps_coordinates": "Ingen GPS-data"
+    "no_gps_coordinates": "Ingen GPS-data",
+    "image_not_available": "Kartbild ej tillgänglig",
+    "image_unavailable": "Kartbild ej tillgänglig",
+    "image_load_error": "Det gick inte att ladda kartbilden"
   },
   "view": {
     "mower": "Gräsklippare",

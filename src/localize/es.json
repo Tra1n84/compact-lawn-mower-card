@@ -21,6 +21,7 @@
     "entity": "Cortacésped",
     "camera_entity": "Entidad de cámara (Opcional)",
     "map_entity": "Entidad de mapa (Opcional, Device Tracker)",
+    "map_image_entity": "Entidad imagen del mapa (Opcional, Imagen o Cámara)",
     "camera_fit_mode": "Modo de ajuste de cámara",
     "camera_fit_mode_label": {
       "cover": "Cubrir (llenar espacio, puede recortar)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Clave API de Google Maps (Opcional)",
       "use_google_maps": "Usar Google Maps (con clave API)",
       "enable_map": "Habilitar vista de mapa",
+      "map_source": "Fuente del mapa",
+      "map_source_label": {
+        "gps": "GPS / Mapa (Device Tracker)",
+        "image": "Imagen del mapa (Entidad Imagen o Cámara)"
+      },
       "map_type": "Tipo de mapa",
       "map_type_label": {
         "roadmap": "Mapa de carreteras",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Mapa no disponible",
-    "no_gps_coordinates": "Sin datos GPS"
+    "no_gps_coordinates": "Sin datos GPS",
+    "image_not_available": "Imagen del mapa no disponible",
+    "image_unavailable": "Imagen del mapa no disponible",
+    "image_load_error": "Error al cargar la imagen del mapa"
   },
   "view": {
     "mower": "Cortacésped",

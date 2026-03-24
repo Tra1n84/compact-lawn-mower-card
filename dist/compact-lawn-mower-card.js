@@ -205,20 +205,21 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.1.2';
-// Map constants
+const CARD_VERSION = '1.2.0';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
 const MAX_STATIC_MAP_SIZE = 640;
-// Layout constants
 const MOWER_COLUMN_WIDTH = 120;
 const MIN_SKY_PERCENTAGE = 45;
 const MAX_SKY_PERCENTAGE = 70;
-// Timing constants (ms)
 const CAMERA_RETRY_INTERVAL = 5000;
 const MAP_UPDATE_INTERVAL = 10000;
 const CAMERA_LOADING_DELAY = 1000;
+const IMG_ZOOM_MIN = 0.5;
+const IMG_ZOOM_MAX = 8.0;
+const IMG_ZOOM_STEP_BUTTON = 0.25;
+const IMG_ZOOM_STEP_WHEEL = 0.15;
 
 var mower$7 = {
 	start: "Start",
@@ -242,6 +243,7 @@ var editor$7 = {
 	entity: "Lawn Mower",
 	camera_entity: "Camera Entity (Optional)",
 	map_entity: "Map Entity (Optional, Device Tracker)",
+	map_image_entity: "Map Image Entity (Optional, Image or Camera)",
 	camera_fit_mode: "Camera Fit Mode",
 	camera_fit_mode_label: {
 		cover: "Cover (fill space, may crop)",
@@ -265,6 +267,11 @@ var editor$7 = {
 		google_maps_api_key: "Google Maps API Key (Optional)",
 		use_google_maps: "Use Google Maps (with API Key)",
 		enable_map: "Enable Map View",
+		map_source: "Map Source",
+		map_source_label: {
+			gps: "GPS / Map (Device Tracker)",
+			image: "Map Image (Image or Camera Entity)"
+		},
 		map_type: "Map Type",
 		map_type_label: {
 			roadmap: "Roadmap",
@@ -353,7 +360,10 @@ var camera$7 = {
 };
 var map$7 = {
 	not_available: "Map not available",
-	no_gps_coordinates: "No GPS data"
+	no_gps_coordinates: "No GPS data",
+	image_not_available: "Map image not available",
+	image_unavailable: "Map image unavailable",
+	image_load_error: "Failed to load map image"
 };
 var view$7 = {
 	mower: "Lawn Mower",
@@ -398,6 +408,7 @@ var editor$6 = {
 	entity: "Mähroboter",
 	camera_entity: "Kameraentität (Optional)",
 	map_entity: "Kartenentität (Optional, Device Tracker)",
+	map_image_entity: "Kartenbild-Entität (Optional, Bild oder Kamera)",
 	camera_fit_mode: "Kamera-Anpassung",
 	camera_fit_mode_label: {
 		cover: "Füllen (Zuschneiden)",
@@ -421,6 +432,11 @@ var editor$6 = {
 		google_maps_api_key: "Google Maps API-Schlüssel (Optional)",
 		use_google_maps: "Google Maps verwenden (mit API-Schlüssel)",
 		enable_map: "Kartenansicht aktivieren",
+		map_source: "Kartenquelle",
+		map_source_label: {
+			gps: "GPS / Karte (Device Tracker)",
+			image: "Kartenbild (Bild- oder Kamera-Entität)"
+		},
 		map_type: "Kartentyp",
 		map_type_label: {
 			roadmap: "Straßenkarte",
@@ -509,7 +525,10 @@ var camera$6 = {
 };
 var map$6 = {
 	not_available: "Karte nicht verfügbar",
-	no_gps_coordinates: "Keine GPS-Daten"
+	no_gps_coordinates: "Keine GPS-Daten",
+	image_not_available: "Kartenbild nicht verfügbar",
+	image_unavailable: "Kartenbild nicht erreichbar",
+	image_load_error: "Kartenbild konnte nicht geladen werden"
 };
 var view$6 = {
 	mower: "Mähroboter",
@@ -554,6 +573,7 @@ var editor$5 = {
 	entity: "Tondeuse",
 	camera_entity: "Entité Caméra (Optionnel)",
 	map_entity: "Entité carte (Optional, Tracker)",
+	map_image_entity: "Entité image de carte (Optionnel, Image ou Caméra)",
 	camera_fit_mode: "Mode d'ajustement de la caméra",
 	camera_fit_mode_label: {
 		cover: "Couverture (remplir l'espace, peut recadrer)",
@@ -577,6 +597,11 @@ var editor$5 = {
 		google_maps_api_key: "Google Maps Clé API (Optionnel)",
 		use_google_maps: "Utiliser Google Maps (avec Clé API)",
 		enable_map: "Activer l'affichage de la carte",
+		map_source: "Source de la carte",
+		map_source_label: {
+			gps: "GPS / Carte (Device Tracker)",
+			image: "Image de carte (Entité Image ou Caméra)"
+		},
 		map_type: "Type de carte",
 		map_type_label: {
 			roadmap: "Feuille de route",
@@ -665,7 +690,10 @@ var camera$5 = {
 };
 var map$5 = {
 	not_available: "Carte non disponible",
-	no_gps_coordinates: "Pas de données GPS"
+	no_gps_coordinates: "Pas de données GPS",
+	image_not_available: "Image de carte non disponible",
+	image_unavailable: "Image de carte indisponible",
+	image_load_error: "Échec du chargement de l'image de carte"
 };
 var view$5 = {
 	mower: "Tondeuse",
@@ -710,6 +738,7 @@ var editor$4 = {
 	entity: "Cortacésped",
 	camera_entity: "Entidad de cámara (Opcional)",
 	map_entity: "Entidad de mapa (Opcional, Device Tracker)",
+	map_image_entity: "Entidad imagen del mapa (Opcional, Imagen o Cámara)",
 	camera_fit_mode: "Modo de ajuste de cámara",
 	camera_fit_mode_label: {
 		cover: "Cubrir (llenar espacio, puede recortar)",
@@ -733,6 +762,11 @@ var editor$4 = {
 		google_maps_api_key: "Clave API de Google Maps (Opcional)",
 		use_google_maps: "Usar Google Maps (con clave API)",
 		enable_map: "Habilitar vista de mapa",
+		map_source: "Fuente del mapa",
+		map_source_label: {
+			gps: "GPS / Mapa (Device Tracker)",
+			image: "Imagen del mapa (Entidad Imagen o Cámara)"
+		},
 		map_type: "Tipo de mapa",
 		map_type_label: {
 			roadmap: "Mapa de carreteras",
@@ -821,7 +855,10 @@ var camera$4 = {
 };
 var map$4 = {
 	not_available: "Mapa no disponible",
-	no_gps_coordinates: "Sin datos GPS"
+	no_gps_coordinates: "Sin datos GPS",
+	image_not_available: "Imagen del mapa no disponible",
+	image_unavailable: "Imagen del mapa no disponible",
+	image_load_error: "Error al cargar la imagen del mapa"
 };
 var view$4 = {
 	mower: "Cortacésped",
@@ -866,6 +903,7 @@ var editor$3 = {
 	entity: "Tagliaerba",
 	camera_entity: "Entità telecamera (Opzionale)",
 	map_entity: "Entità mappa (Opzionale, Device Tracker)",
+	map_image_entity: "Entità immagine mappa (Opzionale, Immagine o Telecamera)",
 	camera_fit_mode: "Modalità adattamento telecamera",
 	camera_fit_mode_label: {
 		cover: "Coprire (riempie lo spazio, può ritagliare)",
@@ -889,6 +927,11 @@ var editor$3 = {
 		google_maps_api_key: "Chiave API Google Maps (Opzionale)",
 		use_google_maps: "Usa Google Maps (con chiave API)",
 		enable_map: "Abilita vista mappa",
+		map_source: "Sorgente mappa",
+		map_source_label: {
+			gps: "GPS / Mappa (Device Tracker)",
+			image: "Immagine mappa (Entità Immagine o Telecamera)"
+		},
 		map_type: "Tipo di mappa",
 		map_type_label: {
 			roadmap: "Mappa stradale",
@@ -977,7 +1020,10 @@ var camera$3 = {
 };
 var map$3 = {
 	not_available: "Mappa non disponibile",
-	no_gps_coordinates: "Nessun dato GPS"
+	no_gps_coordinates: "Nessun dato GPS",
+	image_not_available: "Immagine mappa non disponibile",
+	image_unavailable: "Immagine mappa non disponibile",
+	image_load_error: "Impossibile caricare l'immagine della mappa"
 };
 var view$3 = {
 	mower: "Tagliaerba",
@@ -1022,6 +1068,7 @@ var editor$2 = {
 	entity: "Grasmaaier",
 	camera_entity: "Camera-entiteit (Optioneel)",
 	map_entity: "Kaart-entiteit (Optioneel, Device Tracker)",
+	map_image_entity: "Kaartafbeelding-entiteit (Optioneel, Afbeelding of Camera)",
 	camera_fit_mode: "Camera aanpasmodus",
 	camera_fit_mode_label: {
 		cover: "Bedekken (ruimte vullen, kan bijsnijden)",
@@ -1045,6 +1092,11 @@ var editor$2 = {
 		google_maps_api_key: "Google Maps API-sleutel (Optioneel)",
 		use_google_maps: "Google Maps gebruiken (met API-sleutel)",
 		enable_map: "Kaartweergave inschakelen",
+		map_source: "Kaartbron",
+		map_source_label: {
+			gps: "GPS / Kaart (Device Tracker)",
+			image: "Kaartafbeelding (Afbeelding- of Camera-entiteit)"
+		},
 		map_type: "Kaarttype",
 		map_type_label: {
 			roadmap: "Wegenkaart",
@@ -1133,7 +1185,10 @@ var camera$2 = {
 };
 var map$2 = {
 	not_available: "Kaart niet beschikbaar",
-	no_gps_coordinates: "Geen GPS-gegevens"
+	no_gps_coordinates: "Geen GPS-gegevens",
+	image_not_available: "Kaartafbeelding niet beschikbaar",
+	image_unavailable: "Kaartafbeelding niet beschikbaar",
+	image_load_error: "Laden van kaartafbeelding mislukt"
 };
 var view$2 = {
 	mower: "Grasmaaier",
@@ -1178,6 +1233,7 @@ var editor$1 = {
 	entity: "Kosiarka",
 	camera_entity: "Encja kamery (Opcjonalne)",
 	map_entity: "Encja mapy (Opcjonalne, Device Tracker)",
+	map_image_entity: "Encja obrazu mapy (Opcjonalne, Obraz lub Kamera)",
 	camera_fit_mode: "Tryb dopasowania kamery",
 	camera_fit_mode_label: {
 		cover: "Wypełnij (wypełnia przestrzeń, może przycinać)",
@@ -1201,6 +1257,11 @@ var editor$1 = {
 		google_maps_api_key: "Klucz API Google Maps (Opcjonalne)",
 		use_google_maps: "Użyj Google Maps (z kluczem API)",
 		enable_map: "Włącz widok mapy",
+		map_source: "Źródło mapy",
+		map_source_label: {
+			gps: "GPS / Mapa (Device Tracker)",
+			image: "Obraz mapy (Encja Obrazu lub Kamery)"
+		},
 		map_type: "Typ mapy",
 		map_type_label: {
 			roadmap: "Mapa drogowa",
@@ -1289,7 +1350,10 @@ var camera$1 = {
 };
 var map$1 = {
 	not_available: "Mapa niedostępna",
-	no_gps_coordinates: "Brak danych GPS"
+	no_gps_coordinates: "Brak danych GPS",
+	image_not_available: "Obraz mapy niedostępny",
+	image_unavailable: "Obraz mapy niedostępny",
+	image_load_error: "Nie udało się załadować obrazu mapy"
 };
 var view$1 = {
 	mower: "Kosiarka",
@@ -1334,6 +1398,7 @@ var editor = {
 	entity: "Gräsklippare",
 	camera_entity: "Kameraenhet (Valfritt)",
 	map_entity: "Kartenhet (Valfritt, Device Tracker)",
+	map_image_entity: "Kartbildsenhet (Valfritt, Bild eller Kamera)",
 	camera_fit_mode: "Kameraanpassningsläge",
 	camera_fit_mode_label: {
 		cover: "Täck (fyller utrymme, kan beskära)",
@@ -1357,6 +1422,11 @@ var editor = {
 		google_maps_api_key: "Google Maps API-nyckel (Valfritt)",
 		use_google_maps: "Använd Google Maps (med API-nyckel)",
 		enable_map: "Aktivera kartvy",
+		map_source: "Kartkälla",
+		map_source_label: {
+			gps: "GPS / Karta (Device Tracker)",
+			image: "Kartbild (Bild- eller Kameraenhet)"
+		},
 		map_type: "Karttyp",
 		map_type_label: {
 			roadmap: "Vägkarta",
@@ -1445,7 +1515,10 @@ var camera = {
 };
 var map = {
 	not_available: "Karta ej tillgänglig",
-	no_gps_coordinates: "Ingen GPS-data"
+	no_gps_coordinates: "Ingen GPS-data",
+	image_not_available: "Kartbild ej tillgänglig",
+	image_unavailable: "Kartbild ej tillgänglig",
+	image_load_error: "Det gick inte att ladda kartbilden"
 };
 var view = {
 	mower: "Gräsklippare",
@@ -1968,6 +2041,7 @@ const compactLawnMowerCardStyles = i$3 `
     min-height: 120px;
     container-type: inline-size;
     container-name: mower-main;
+    will-change: transform;
   }
 
   .mower-display {
@@ -1981,6 +2055,7 @@ const compactLawnMowerCardStyles = i$3 `
     overflow: hidden;
     padding: 0px;
     box-sizing: border-box;
+    clip-path: inset(0 round calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px));
     background: linear-gradient(
       to bottom,
       var(--sky-color-top, rgb(41, 128, 185)) 0%,
@@ -1988,6 +2063,11 @@ const compactLawnMowerCardStyles = i$3 `
       var(--grass-color-top, rgb(88, 140, 54)) var(--sky-percentage, 70%),
       var(--grass-color-bottom, rgb(133, 187, 88)) 100%
     );
+  }
+
+  .main-display-area.map-view .mower-display,
+  .main-display-area.camera-view .mower-display {
+    background: none;
   }
 
   /* =================== */
@@ -2370,7 +2450,9 @@ const compactLawnMowerCardStyles = i$3 `
   }
 
   .mower-led-strip {
-    transition: fill 0.5s ease, opacity 0.6s ease;
+    transition:
+      fill 0.5s ease,
+      opacity 0.6s ease;
   }
 
   .mower-svg.on-lawn-static.active.startup .mower-led-strip {
@@ -2454,6 +2536,7 @@ const compactLawnMowerCardStyles = i$3 `
     overflow: hidden;
     position: relative;
     background-color: #000;
+    border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2542,11 +2625,27 @@ const compactLawnMowerCardStyles = i$3 `
     border-radius: calc(var(--ha-card-border-radius, var(--ha-border-radius-lg)) - 8px);
     overflow: hidden;
     transition: background-color 0.3s ease;
-    will-change: background-color;
+    user-select: none;
+    --ha-card-border-radius: 0px;
+    --ha-card-box-shadow: none;
+  }
+
+  .map-container.pannable {
+    cursor: grab;
+    background-color: #1a1a1a;
+  }
+
+  .map-container.pannable:active {
+    cursor: grabbing;
   }
 
   .map-container.is-loading {
     background-color: #000;
+  }
+
+  .map-container > hui-map-card {
+    display: block;
+    height: 100%;
   }
 
   .map-error {
@@ -2572,6 +2671,19 @@ const compactLawnMowerCardStyles = i$3 `
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  .map-image-entity {
+    object-fit: contain;
+    background-color: #1a1a1a;
+  }
+
+  .map-image-transform-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 
   .mower-marker {
@@ -2610,24 +2722,74 @@ const compactLawnMowerCardStyles = i$3 `
     display: flex;
     flex-direction: column;
     gap: 4px;
+    align-items: flex-start;
   }
 
   .map-control-button {
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.9);
+    width: 26px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px) saturate(180%);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
+    color: var(--primary-text-color);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
-    will-change: background;
+    transition:
+      background 0.2s,
+      transform 0.1s;
+    box-shadow: var(--badge-box-shadow);
+    --mdc-icon-size: 16px;
   }
 
   .map-control-button:hover {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .map-control-button:active {
+    transform: scale(0.9);
+  }
+
+  .map-zoom-control {
+    display: flex;
+    flex-direction: column;
+    background: var(--card-background-color);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+  }
+
+  .map-zoom-button {
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s;
+    --mdc-icon-size: 18px;
+  }
+
+  .map-zoom-button:hover {
+    background: var(--secondary-background-color);
+  }
+
+  .map-zoom-button:active {
+    background: var(--divider-color);
+  }
+
+  .map-zoom-button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .map-zoom-button--in {
+    border-bottom: 1px solid var(--divider-color);
   }
 
   /* =================== */
@@ -3335,6 +3497,11 @@ const compactLawnMowerCardStyles = i$3 `
       padding: 4px;
     }
 
+    .map-controls-wrapper {
+      bottom: 4px;
+      left: 4px;
+    }
+
     .progress-badge {
       padding: 6px 10px;
       height: 36px;
@@ -3424,6 +3591,11 @@ const compactLawnMowerCardStyles = i$3 `
     .status-badges,
     .view-toggle {
       padding: 6px;
+    }
+
+    .map-controls-wrapper {
+      bottom: 6px;
+      left: 6px;
     }
 
     .progress-badge {
@@ -3621,7 +3793,7 @@ const editorStyles = i$3 `
     background: var(--card-background-color, #fff);
     border-radius: 16px;
     border: 1px solid var(--divider-color, #e0e0e0);
-    overflow: visible;
+    overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
@@ -4226,9 +4398,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             this._cachedServices = undefined;
             this.requestUpdate();
         }
-        catch (e) {
-            // Translations not available, fall back to raw service IDs
-        }
+        catch (e) { }
     }
     setConfig(config) {
         if (config.custom_actions === undefined) {
@@ -4252,16 +4422,27 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 newConfig[key] = value;
             }
         }
-        if (!this.config.map_entity && newConfig.map_entity) {
+        const hadAnyMapSource = !!(this.config.map_entity || this.config.map_image_entity);
+        const hasAnyMapSourceNow = !!(newConfig.map_entity || newConfig.map_image_entity);
+        if (!hadAnyMapSource && hasAnyMapSourceNow) {
             newConfig.enable_map = true;
         }
-        if (this.config.map_entity && !newConfig.map_entity) {
+        if (hadAnyMapSource && !hasAnyMapSourceNow) {
             newConfig.enable_map = false;
             if (newConfig.default_view === 'map') {
                 newConfig.default_view = 'mower';
             }
         }
+        if (this.config.map_entity && !newConfig.map_entity && newConfig.map_image_entity) {
+            newConfig.map_source = 'image';
+        }
+        if (this.config.map_image_entity && !newConfig.map_image_entity && newConfig.map_entity) {
+            newConfig.map_source = 'gps';
+        }
         if (newConfig.enable_map === false && newConfig.default_view === 'map') {
+            newConfig.default_view = 'mower';
+        }
+        if (!hasAnyMapSourceNow && newConfig.default_view === 'map') {
             newConfig.default_view = 'mower';
         }
         if (!newConfig.camera_entity && newConfig.default_view === 'camera') {
@@ -4953,6 +5134,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 disabled: !this.config.camera_entity,
             },
             { name: 'map_entity', selector: { entity: { domain: 'device_tracker' } }, required: false },
+            { name: 'map_image_entity', selector: { entity: { domain: ['image', 'camera'] } }, required: false },
         ];
     }
     get _viewOptionsSchema() {
@@ -4960,7 +5142,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (this.config.camera_entity) {
             defaultViewOptions.push({ value: 'camera', label: localize('view.camera', { hass: this.hass }) });
         }
-        if (this.config.map_entity) {
+        if (this.config.map_entity || this.config.map_image_entity) {
             defaultViewOptions.push({ value: 'map', label: localize('view.map', { hass: this.hass }) });
         }
         return [
@@ -4977,24 +5159,53 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     get _mapOptionsSchema() {
         const hasMapEntity = !!this.config.map_entity;
-        const mapIsEnabled = hasMapEntity && this.config.enable_map !== false;
+        const hasImageEntity = !!this.config.map_image_entity;
+        const hasAnyMapSource = hasMapEntity || hasImageEntity;
+        const hasBothSources = hasMapEntity && hasImageEntity;
+        const mapIsEnabled = hasAnyMapSource && this.config.enable_map !== false;
         const hasApiKey = !!this.config.google_maps_api_key;
         const useGoogleMaps = !!this.config.use_google_maps;
+        const effectiveSource = hasBothSources ? this.config.map_source || 'gps' : hasMapEntity ? 'gps' : 'image';
+        const gpsActive = mapIsEnabled && effectiveSource === 'gps';
+        const mapSourceOptions = [];
+        if (hasMapEntity) {
+            mapSourceOptions.push({
+                value: 'gps',
+                label: localize('editor.options.map_source_label.gps', { hass: this.hass }),
+            });
+        }
+        if (hasImageEntity) {
+            mapSourceOptions.push({
+                value: 'image',
+                label: localize('editor.options.map_source_label.image', { hass: this.hass }),
+            });
+        }
         const schema = [
             {
                 name: 'enable_map',
                 selector: { boolean: {} },
-                disabled: !hasMapEntity,
+                disabled: !hasAnyMapSource,
+            },
+            {
+                name: 'map_source',
+                selector: {
+                    select: {
+                        mode: 'dropdown',
+                        options: mapSourceOptions,
+                        custom_value: false,
+                    },
+                },
+                disabled: !mapIsEnabled,
             },
             {
                 name: 'google_maps_api_key',
                 selector: { text: {} },
-                disabled: !mapIsEnabled,
+                disabled: !gpsActive,
             },
             {
                 name: 'use_google_maps',
                 selector: { boolean: {} },
-                disabled: !mapIsEnabled || !hasApiKey,
+                disabled: !gpsActive || !hasApiKey,
             },
             {
                 name: 'map_type',
@@ -5009,7 +5220,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                         custom_value: false,
                     },
                 },
-                disabled: !mapIsEnabled || !hasApiKey || !useGoogleMaps,
+                disabled: !gpsActive || !hasApiKey || !useGoogleMaps,
             },
             {
                 name: 'default_map_zoom',
@@ -5021,7 +5232,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                         step: 1,
                     },
                 },
-                disabled: !mapIsEnabled,
+                disabled: !gpsActive,
             },
         ];
         return schema;
@@ -5077,9 +5288,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 }
             }
         }
-        catch {
-            // Fallback if getComputedStyle fails
-        }
+        catch { }
         return fallback;
     }
     get _mainData() {
@@ -5088,6 +5297,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             camera_entity: this.config.camera_entity || '',
             camera_fit_mode: this.config.camera_fit_mode || 'cover',
             map_entity: this.config.map_entity || '',
+            map_image_entity: this.config.map_image_entity || '',
         };
     }
     get _infoData() {
@@ -5101,6 +5311,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return {
             default_view: this.config.default_view || 'mower',
             enable_map: this.config.enable_map !== false,
+            map_source: this.config.map_source || (this.config.map_image_entity && !this.config.map_entity ? 'image' : 'gps'),
             google_maps_api_key: this.config.google_maps_api_key || '',
             map_type: this.config.map_type || 'hybrid',
             use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
@@ -5438,18 +5649,42 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._isCameraReachable = true;
         this._isPopupOpen = false;
         this._isMapLoading = false;
+        this._isMapImageLoading = false;
+        this._mapImageError = false;
+        this._imgScale = 1;
+        this._imgTranslateX = 0;
+        this._imgTranslateY = 0;
         this._areActionsExpanded = false;
         this._viewMode = 'mower';
         this._mapWidth = 0;
         this._mapHeight = 0;
         this._mapZoom = DEFAULT_MAP_ZOOM;
         this._hadValidMower = false;
+        this._imgIsDragging = false;
+        this._imgIsPinching = false;
+        this._imgDragStartX = 0;
+        this._imgDragStartY = 0;
+        this._imgDragStartTranslateX = 0;
+        this._imgDragStartTranslateY = 0;
+        this._imgPinchStartDistance = 0;
+        this._imgPinchStartScale = 1;
+        this._imgPinchMidX = 0;
+        this._imgPinchMidY = 0;
+        this._imgPinchStartTranslateX = 0;
+        this._imgPinchStartTranslateY = 0;
+        this._imgActivePointers = new Map();
     }
     connectedCallback() {
         super.connectedCallback();
         this._viewMode = this.config?.default_view ?? 'mower';
-        const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
-        if (this._viewMode === 'map' && useHaMap) {
+        this._restoreImgTransform();
+        const useImage = this.config.map_source === 'image' ||
+            (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
+        const useHaMap = !useImage && (!this.config.google_maps_api_key || this.config.use_google_maps === false);
+        if (this._viewMode === 'map' && useImage) {
+            this._isMapImageLoading = true;
+        }
+        else if (this._viewMode === 'map' && useHaMap) {
             this._loadMapElement();
         }
         if (this._viewMode === 'camera') {
@@ -5491,6 +5726,11 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._mainResizeObserver?.disconnect();
         this._mowerResizeObserver?.disconnect();
         this._closePopup();
+        this._haMapShadowObserver?.disconnect();
+        this._haMapShadowObserver = undefined;
+        this._imgActivePointers.clear();
+        this._imgIsDragging = false;
+        this._imgIsPinching = false;
     }
     _clearAllTimers() {
         if (this._mapUpdateInterval) {
@@ -5703,6 +5943,41 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 if (this.config.enable_map === false && oldConfig.enable_map !== false && this._viewMode === 'map') {
                     this._setViewMode(this.config.default_view || 'mower');
                 }
+                if (this._viewMode === 'map' &&
+                    !this.config.map_entity &&
+                    !this.config.map_image_entity &&
+                    (oldConfig.map_entity || oldConfig.map_image_entity)) {
+                    this._setViewMode(this.config.default_view || 'mower');
+                }
+                if (this.config.map_image_entity !== oldConfig.map_image_entity) {
+                    this._isMapImageLoading = true;
+                    this._mapImageError = false;
+                    this._imgScale = 1;
+                    this._imgTranslateX = 0;
+                    this._imgTranslateY = 0;
+                    this._restoreImgTransform();
+                }
+                if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
+                    const newUseImage = this.config.map_source === 'image' ||
+                        (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
+                        (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
+                    const wasUseImage = oldConfig.map_source === 'image' ||
+                        (!oldConfig.map_source && !oldConfig.map_entity && !!oldConfig.map_image_entity) ||
+                        (oldConfig.map_source === 'gps' && !oldConfig.map_entity && !!oldConfig.map_image_entity);
+                    if (newUseImage) {
+                        if (!wasUseImage) {
+                            this._isMapImageLoading = true;
+                            this._mapImageError = false;
+                        }
+                    }
+                    else if (!this.config.google_maps_api_key || this.config.use_google_maps === false) {
+                        this._mapCardElement = undefined;
+                        this.updateComplete.then(() => this._loadMapElement());
+                    }
+                    else {
+                        this._isMapLoading = true;
+                    }
+                }
                 const useHaMapNow = !this.config.google_maps_api_key || this.config.use_google_maps === false;
                 const useHaMapBefore = !oldConfig.google_maps_api_key || oldConfig.use_google_maps === false;
                 if (this._viewMode === 'map' && useHaMapNow && !useHaMapBefore) {
@@ -5745,6 +6020,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             this._isCameraReachable = true;
             return;
         }
+        if (this.cameraEntity.state === 'unavailable') {
+            this._isCameraReachable = false;
+            return;
+        }
         try {
             const imageUrl = this.cameraEntity.attributes.entity_picture;
             const cacheBuster = `&t=${Date.now()}`;
@@ -5773,6 +6052,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             });
         }
         this._hadValidMower = hasValidMower;
+        if (this._isMapImageLoading && this._viewMode === 'map') {
+            const img = this.shadowRoot?.querySelector('.map-image-entity');
+            if (img?.complete && img.naturalWidth > 0) {
+                this._isMapImageLoading = false;
+            }
+        }
     }
     _isCurrentlyDocked(state, isCharging) {
         if (isCharging) {
@@ -5852,6 +6137,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return undefined;
         }
         return this.hass.states[this.config.camera_entity];
+    }
+    get mapImageEntity() {
+        if (!this.config.map_image_entity || !this.hass) {
+            return undefined;
+        }
+        return this.hass.states[this.config.map_image_entity];
     }
     _executeCustomAction(customAction) {
         if (!customAction || !customAction.action || !this.hass) {
@@ -6021,7 +6312,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return '#d32f2f';
         return 'var(--disabled-text-color, #9e9e9e)';
     }
-    _getChargingStationColor(state) {
+    _getChargingStationColor(_state) {
         if (this.chargingStatus)
             return 'rgb(184, 79, 27)';
         return 'var(--disabled-text-color)';
@@ -6144,13 +6435,166 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     _handleMapError() {
         console.error('Compact Lawn Mower Card: Failed to load map image.');
     }
+    _getHaMapShadowRoot() {
+        const haMap = this._mapCardElement?.shadowRoot?.querySelector('ha-map');
+        return haMap?.shadowRoot ?? null;
+    }
+    _handleHaMapZoomIn(e) {
+        e.stopPropagation();
+        this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-in')?.click();
+    }
+    _handleHaMapZoomOut(e) {
+        e.stopPropagation();
+        this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-out')?.click();
+    }
     _handleZoom(e, direction) {
         e.stopPropagation();
         const delta = direction === 'in' ? 1 : -1;
         this._mapZoom = Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, this._mapZoom + delta));
-        if (this.config.google_maps_api_key && this.config.use_google_maps) {
-            this._isMapLoading = true;
+    }
+    _getDistance(p1, p2) {
+        const dx = p1.clientX - p2.clientX;
+        const dy = p1.clientY - p2.clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+    _constrainPan() {
+        const container = this.shadowRoot?.querySelector('.map-container');
+        if (!container)
+            return;
+        const cW = container.clientWidth;
+        const cH = container.clientHeight;
+        const minX = -(cW * this._imgScale - cW * 0.2);
+        const maxX = cW * 0.8;
+        const minY = -(cH * this._imgScale - cH * 0.2);
+        const maxY = cH * 0.8;
+        this._imgTranslateX = Math.max(minX, Math.min(maxX, this._imgTranslateX));
+        this._imgTranslateY = Math.max(minY, Math.min(maxY, this._imgTranslateY));
+    }
+    _applyZoom(factor, originX, originY) {
+        const rawScale = this._imgScale * factor;
+        const newScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, rawScale));
+        const actualFactor = newScale / this._imgScale;
+        this._imgTranslateX = originX - actualFactor * (originX - this._imgTranslateX);
+        this._imgTranslateY = originY - actualFactor * (originY - this._imgTranslateY);
+        this._imgScale = newScale;
+        this._constrainPan();
+    }
+    _handleImgWheel(e) {
+        if (!e.ctrlKey)
+            return;
+        e.preventDefault();
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        const factor = 1 + (e.deltaY < 0 ? 1 : -1) * IMG_ZOOM_STEP_WHEEL;
+        this._applyZoom(factor, e.clientX - rect.left, e.clientY - rect.top);
+        this._saveImgTransform();
+    }
+    _handleImgPointerDown(e) {
+        const container = e.currentTarget;
+        container.setPointerCapture(e.pointerId);
+        this._imgActivePointers.set(e.pointerId, e);
+        if (this._imgActivePointers.size === 1) {
+            this._imgIsDragging = true;
+            this._imgIsPinching = false;
+            this._imgDragStartX = e.clientX;
+            this._imgDragStartY = e.clientY;
+            this._imgDragStartTranslateX = this._imgTranslateX;
+            this._imgDragStartTranslateY = this._imgTranslateY;
         }
+        else if (this._imgActivePointers.size === 2) {
+            this._imgIsDragging = false;
+            this._imgIsPinching = true;
+            const [p1, p2] = [...this._imgActivePointers.values()];
+            this._imgPinchStartDistance = this._getDistance(p1, p2);
+            this._imgPinchStartScale = this._imgScale;
+            const rect = container.getBoundingClientRect();
+            this._imgPinchMidX = (p1.clientX + p2.clientX) / 2 - rect.left;
+            this._imgPinchMidY = (p1.clientY + p2.clientY) / 2 - rect.top;
+            this._imgPinchStartTranslateX = this._imgTranslateX;
+            this._imgPinchStartTranslateY = this._imgTranslateY;
+        }
+    }
+    _handleImgPointerMove(e) {
+        if (!this._imgActivePointers.has(e.pointerId))
+            return;
+        this._imgActivePointers.set(e.pointerId, e);
+        if (this._imgIsPinching && this._imgActivePointers.size === 2) {
+            const [p1, p2] = [...this._imgActivePointers.values()];
+            const dist = this._getDistance(p1, p2);
+            const rawScale = this._imgPinchStartScale * (dist / this._imgPinchStartDistance);
+            const newScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, rawScale));
+            const scaleDelta = newScale / this._imgPinchStartScale;
+            this._imgTranslateX = this._imgPinchMidX - scaleDelta * (this._imgPinchMidX - this._imgPinchStartTranslateX);
+            this._imgTranslateY = this._imgPinchMidY - scaleDelta * (this._imgPinchMidY - this._imgPinchStartTranslateY);
+            this._imgScale = newScale;
+            this._constrainPan();
+            return;
+        }
+        if (this._imgIsDragging) {
+            const dx = e.clientX - this._imgDragStartX;
+            const dy = e.clientY - this._imgDragStartY;
+            this._imgTranslateX = this._imgDragStartTranslateX + dx;
+            this._imgTranslateY = this._imgDragStartTranslateY + dy;
+            this._constrainPan();
+        }
+    }
+    _handleImgPointerUp(e) {
+        this._imgActivePointers.delete(e.pointerId);
+        if (this._imgActivePointers.size === 0) {
+            this._imgIsDragging = false;
+            this._imgIsPinching = false;
+            this._saveImgTransform();
+        }
+        else if (this._imgActivePointers.size === 1) {
+            this._imgIsPinching = false;
+        }
+    }
+    _handleImgZoomButton(e, direction) {
+        e.stopPropagation();
+        const container = this.shadowRoot?.querySelector('.map-container');
+        if (!container)
+            return;
+        this._applyZoom(direction === 'in' ? 1 + IMG_ZOOM_STEP_BUTTON : 1 - IMG_ZOOM_STEP_BUTTON, container.clientWidth / 2, container.clientHeight / 2);
+        this._saveImgTransform();
+    }
+    _handleImgReset(e) {
+        e.stopPropagation();
+        this._imgScale = 1;
+        this._imgTranslateX = 0;
+        this._imgTranslateY = 0;
+        this._saveImgTransform();
+    }
+    _handleImgDblClick(e) {
+        e.stopPropagation();
+        this._imgScale = 1;
+        this._imgTranslateX = 0;
+        this._imgTranslateY = 0;
+        this._saveImgTransform();
+    }
+    _saveImgTransform() {
+        if (!this.config?.map_image_entity)
+            return;
+        try {
+            localStorage.setItem(`clm_img_${this.config.map_image_entity}`, JSON.stringify({ scale: this._imgScale, x: this._imgTranslateX, y: this._imgTranslateY }));
+        }
+        catch { }
+    }
+    _restoreImgTransform() {
+        if (!this.config?.map_image_entity)
+            return;
+        try {
+            const stored = localStorage.getItem(`clm_img_${this.config.map_image_entity}`);
+            if (stored) {
+                const { scale, x, y } = JSON.parse(stored);
+                if (typeof scale === 'number')
+                    this._imgScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, scale));
+                if (typeof x === 'number')
+                    this._imgTranslateX = x;
+                if (typeof y === 'number')
+                    this._imgTranslateY = y;
+            }
+        }
+        catch { }
     }
     _renderMowerModel() {
         const state = this.mowerState;
@@ -6163,7 +6607,99 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const renderFunction = getGraphics(mowerModel);
         return renderFunction(state, this._getMowerSVGClass(state), this._getLEDColor(state), batteryColor, ringCircumference, ringStrokeOffset, this._getChargingStationColor(state));
     }
+    _renderMapImageView() {
+        const imageEntity = this.mapImageEntity;
+        if (!imageEntity) {
+            return this._renderErrorView('map-container', 'map-error', 'mdi:image-off-outline', localize('map.image_not_available', { hass: this.hass }));
+        }
+        if (imageEntity.state === 'unavailable') {
+            return this._renderErrorView('map-container', 'map-error', 'mdi:image-broken-variant', localize('map.image_unavailable', { hass: this.hass }));
+        }
+        if (this._mapImageError) {
+            return this._renderErrorView('map-container', 'map-error', 'mdi:image-broken-variant', localize('map.image_load_error', { hass: this.hass }));
+        }
+        const entityPicture = imageEntity.attributes.entity_picture;
+        const isCamera = this.config.map_image_entity?.split('.')[0] === 'camera';
+        const fallbackUrl = isCamera
+            ? `/api/camera_proxy/${this.config.map_image_entity}`
+            : `/api/image_proxy/${this.config.map_image_entity}`;
+        const imageUrl = entityPicture ? entityPicture : fallbackUrl;
+        const cacheBustedUrl = imageUrl.includes('?')
+            ? `${imageUrl}&_t=${imageEntity.last_updated}`
+            : `${imageUrl}?_t=${imageEntity.last_updated}`;
+        return x `
+      <div
+        class="map-container pannable ${this._isMapImageLoading ? 'is-loading' : ''}"
+        style="touch-action: none;"
+        @wheel=${this._handleImgWheel}
+        @pointerdown=${this._handleImgPointerDown}
+        @pointermove=${this._handleImgPointerMove}
+        @pointerup=${this._handleImgPointerUp}
+        @pointercancel=${this._handleImgPointerUp}
+        @dblclick=${this._handleImgDblClick}
+      >
+        ${this._isMapImageLoading ? x `<div class="loading-indicator"><div class="loader"></div></div>` : ''}
+        <div
+          class="map-image-transform-layer"
+          style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this
+            ._imgScale}); transform-origin: 0 0;"
+        >
+          <img
+            class="map-image map-image-entity"
+            src="${cacheBustedUrl}"
+            alt="Mowing Map"
+            draggable="false"
+            @load=${() => {
+            this._isMapImageLoading = false;
+            this._mapImageError = false;
+        }}
+            @error=${() => {
+            this._isMapImageLoading = false;
+            this._mapImageError = true;
+        }}
+            style="opacity: ${this._isMapImageLoading ? 0 : 1};"
+          />
+        </div>
+        ${!this._isMapImageLoading
+            ? x `<div class="map-controls-wrapper">
+              <div class="map-controls">
+                <button
+                  class="map-control-button"
+                  @pointerdown=${(e) => e.stopPropagation()}
+                  @dblclick=${(e) => e.stopPropagation()}
+                  @click=${(e) => this._handleImgZoomButton(e, 'in')}
+                >
+                  <ha-icon icon="mdi:plus"></ha-icon>
+                </button>
+                <button
+                  class="map-control-button"
+                  @pointerdown=${(e) => e.stopPropagation()}
+                  @dblclick=${(e) => e.stopPropagation()}
+                  @click=${(e) => this._handleImgZoomButton(e, 'out')}
+                >
+                  <ha-icon icon="mdi:minus"></ha-icon>
+                </button>
+                <button
+                  class="map-control-button"
+                  @pointerdown=${(e) => e.stopPropagation()}
+                  @dblclick=${(e) => e.stopPropagation()}
+                  @click=${(e) => this._handleImgReset(e)}
+                >
+                  <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
+                </button>
+              </div>
+            </div>`
+            : E}
+      </div>
+    `;
+    }
     _renderMapView() {
+        const useImage = this.config.map_source === 'image' ||
+            (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
+            (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
+        if (useImage) {
+            return this._renderMapImageView();
+        }
         const deviceTracker = this.config.map_entity ? this.hass.states[this.config.map_entity] : null;
         if (!deviceTracker) {
             return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-off-outline', localize('map.not_available', { hass: this.hass }));
@@ -6188,6 +6724,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             class="map-image"
             src="${mapUrl}"
             alt="Mower Location"
+            draggable="false"
             @load=${() => (this._isMapLoading = false)}
             @error=${() => {
                 this._isMapLoading = false;
@@ -6195,24 +6732,23 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             }}
             style="opacity: ${this._isMapLoading ? 0 : 1};"
           />
-
           <div class="mower-marker" style="opacity: ${this._isMapLoading ? 0 : 1};">
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
 
-          <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1};">
-            <div class="map-controls">
+          <div class="map-controls-wrapper">
+            <div class="map-zoom-control">
               <button
-                class="map-control-button"
+                class="map-zoom-button map-zoom-button--in"
                 @click=${(e) => this._handleZoom(e, 'in')}
-                .disabled=${this._isMapLoading}
+                .disabled=${this._mapZoom >= MAX_MAP_ZOOM}
               >
                 <ha-icon icon="mdi:plus"></ha-icon>
               </button>
               <button
-                class="map-control-button"
+                class="map-zoom-button map-zoom-button--out"
                 @click=${(e) => this._handleZoom(e, 'out')}
-                .disabled=${this._isMapLoading}
+                .disabled=${this._mapZoom <= MIN_MAP_ZOOM}
               >
                 <ha-icon icon="mdi:minus"></ha-icon>
               </button>
@@ -6228,7 +6764,21 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </div>
       `;
         }
-        return x `<div class="map-container">${this._mapCardElement}</div>`;
+        return x `
+      <div class="map-container">
+        ${this._mapCardElement}
+        <div class="map-controls-wrapper">
+          <div class="map-zoom-control">
+            <button class="map-zoom-button map-zoom-button--in" @click=${this._handleHaMapZoomIn}>
+              <ha-icon icon="mdi:plus"></ha-icon>
+            </button>
+            <button class="map-zoom-button map-zoom-button--out" @click=${this._handleHaMapZoomOut}>
+              <ha-icon icon="mdi:minus"></ha-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
     }
     _getMapUrl(lat, lon) {
         const apiKey = this.config.google_maps_api_key;
@@ -6277,14 +6827,16 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </button>
       `);
         }
-        if (this.config.map_entity && this.config.enable_map !== false) {
+        if ((this.config.map_entity || this.config.map_image_entity) && this.config.enable_map !== false) {
+            const useImage = this.config.map_source === 'image' ||
+                (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
             buttons.push(x `
         <button
           class="view-toggle-button ${this._viewMode === 'map' ? 'active' : ''}"
           @click=${() => this._setViewMode('map')}
           aria-label=${localize('view.map', { hass: this.hass })}
         >
-          <ha-icon icon="mdi:map-marker"></ha-icon>
+          <ha-icon icon="${useImage ? 'mdi:map' : 'mdi:map-marker'}"></ha-icon>
         </button>
       `);
         }
@@ -6305,12 +6857,21 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             this._updateCameraState(true);
         }
         else if (mode === 'map') {
-            const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
-            if (useHaMap) {
-                this._loadMapElement();
+            const useImage = this.config.map_source === 'image' ||
+                (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
+                (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
+            if (useImage) {
+                this._isMapImageLoading = true;
+                this._mapImageError = false;
             }
             else {
-                this._isMapLoading = true;
+                const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
+                if (useHaMap) {
+                    this._loadMapElement();
+                }
+                else {
+                    this._isMapLoading = true;
+                }
             }
             this._updateMapPosition();
         }
@@ -6347,7 +6908,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
     }
     _updateMapPosition() {
-        if (!this.config.map_entity)
+        if (!this.config.map_entity && !this.config.map_image_entity)
             return;
         if (this._viewMode === 'map') {
             this._mapUpdateInterval = window.setInterval(() => {
@@ -6375,9 +6936,72 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 element.hass = this.hass;
             }
             this._mapCardElement = element;
+            this.updateComplete.then(() => this._injectHaMapControlStyles());
         }
         catch (e) {
             console.error('Compact Lawn Mower Card: Error loading map card element', e);
+        }
+    }
+    _injectHaMapControlStyles(retries = 20) {
+        const el = this._mapCardElement;
+        if (!el)
+            return;
+        if (el.shadowRoot && !el.shadowRoot.querySelector('#clm-card-style')) {
+            const cardStyle = document.createElement('style');
+            cardStyle.id = 'clm-card-style';
+            cardStyle.textContent = `ha-card { height: 100%; } ha-map { flex: 1; min-height: 0; }`;
+            el.shadowRoot.appendChild(cardStyle);
+        }
+        const haMap = el.shadowRoot?.querySelector('ha-map');
+        if (!haMap?.shadowRoot) {
+            if (retries > 0) {
+                setTimeout(() => this._injectHaMapControlStyles(retries - 1), 150);
+            }
+            return;
+        }
+        this._applyHaMapStyles(haMap.shadowRoot);
+        if (!this._haMapShadowObserver) {
+            this._haMapShadowObserver = new MutationObserver(() => {
+                const sr = haMap.shadowRoot;
+                if (!sr)
+                    return;
+                if (!sr.querySelector('#clm-leaflet-style')) {
+                    this._applyHaMapStyles(sr);
+                    return;
+                }
+                const zc = sr.querySelector('.leaflet-control-zoom');
+                if (zc && zc.style.display !== 'none') {
+                    zc.style.setProperty('display', 'none', 'important');
+                }
+            });
+            this._haMapShadowObserver.observe(haMap.shadowRoot, { childList: true, subtree: true });
+        }
+    }
+    _applyHaMapStyles(shadowRoot) {
+        shadowRoot.querySelector('#clm-leaflet-style')?.remove();
+        const style = document.createElement('style');
+        style.id = 'clm-leaflet-style';
+        style.textContent =
+            `.leaflet-control-zoom { display: none !important; }` +
+                `#buttons { position: absolute !important; bottom: 8px !important; left: 42px !important; top: auto !important; right: auto !important; }` +
+                `#buttons ha-icon-button { --mdc-icon-button-size: 26px !important; --mdc-icon-size: 18px !important; }`;
+        shadowRoot.appendChild(style);
+        const zoomControl = shadowRoot.querySelector('.leaflet-control-zoom');
+        if (zoomControl) {
+            zoomControl.style.setProperty('display', 'none', 'important');
+        }
+        const buttonsEl = shadowRoot.querySelector('#buttons');
+        if (buttonsEl) {
+            buttonsEl.style.position = 'absolute';
+            buttonsEl.style.bottom = '8px';
+            buttonsEl.style.left = '42px';
+            buttonsEl.style.top = 'auto';
+            buttonsEl.style.right = 'auto';
+            const iconBtn = buttonsEl.querySelector('ha-icon-button');
+            if (iconBtn) {
+                iconBtn.style.setProperty('--mdc-icon-button-size', '26px');
+                iconBtn.style.setProperty('--mdc-icon-size', '18px');
+            }
         }
     }
     static _getChargingStatus(hass, mowerState, chargingEntityId) {
@@ -6451,7 +7075,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </div>
       </ha-card>`;
         }
-        this.mowerState;
         const isCharging = this.chargingStatus;
         return x `
       <ha-card>
@@ -6538,6 +7161,21 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_isMapLoading", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_isMapImageLoading", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_mapImageError", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_imgScale", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_imgTranslateX", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_imgTranslateY", void 0);
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_areActionsExpanded", void 0);

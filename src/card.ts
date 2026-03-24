@@ -18,6 +18,10 @@ import {
   CAMERA_RETRY_INTERVAL,
   MAP_UPDATE_INTERVAL,
   CAMERA_LOADING_DELAY,
+  IMG_ZOOM_MIN,
+  IMG_ZOOM_MAX,
+  IMG_ZOOM_STEP_BUTTON,
+  IMG_ZOOM_STEP_WHEEL,
 } from './constants';
 import { getGraphics } from './graphics';
 import { localize } from './localize';
@@ -54,6 +58,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @state() private _isCameraReachable = true;
   @state() private _isPopupOpen = false;
   @state() private _isMapLoading = false;
+  @state() private _isMapImageLoading = false;
+  @state() private _mapImageError = false;
+  @state() private _imgScale = 1;
+  @state() private _imgTranslateX = 0;
+  @state() private _imgTranslateY = 0;
   @state() private _areActionsExpanded = false;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
@@ -69,13 +78,33 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _mowerResizeObserver?: ResizeObserver;
   private _hadValidMower = false;
   @state() private _mapCardElement?: HTMLElement;
+  private _imgIsDragging = false;
+  private _imgIsPinching = false;
+  private _imgDragStartX = 0;
+  private _imgDragStartY = 0;
+  private _imgDragStartTranslateX = 0;
+  private _imgDragStartTranslateY = 0;
+  private _imgPinchStartDistance = 0;
+  private _imgPinchStartScale = 1;
+  private _imgPinchMidX = 0;
+  private _imgPinchMidY = 0;
+  private _imgPinchStartTranslateX = 0;
+  private _imgPinchStartTranslateY = 0;
+  private _imgActivePointers: Map<number, PointerEvent> = new Map();
+  private _haMapShadowObserver?: MutationObserver;
 
   connectedCallback() {
     super.connectedCallback();
     this._viewMode = this.config?.default_view ?? 'mower';
-    const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
+    this._restoreImgTransform();
+    const useImage =
+      this.config.map_source === 'image' ||
+      (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
+    const useHaMap = !useImage && (!this.config.google_maps_api_key || this.config.use_google_maps === false);
 
-    if (this._viewMode === 'map' && useHaMap) {
+    if (this._viewMode === 'map' && useImage) {
+      this._isMapImageLoading = true;
+    } else if (this._viewMode === 'map' && useHaMap) {
       this._loadMapElement();
     }
 
@@ -89,7 +118,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         this._setupMowerResizeObserver();
       });
     }
-
   }
 
   protected firstUpdated(_changedProperties: PropertyValues): void {
@@ -127,6 +155,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._mainResizeObserver?.disconnect();
     this._mowerResizeObserver?.disconnect();
     this._closePopup();
+    this._haMapShadowObserver?.disconnect();
+    this._haMapShadowObserver = undefined;
+    this._imgActivePointers.clear();
+    this._imgIsDragging = false;
+    this._imgIsPinching = false;
   }
 
   private _clearAllTimers(): void {
@@ -155,7 +188,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     } else {
       this._animationClass = '';
     }
-
   }
 
   _updateMowerPosition() {
@@ -366,6 +398,46 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._setViewMode(this.config.default_view || 'mower');
         }
 
+        if (
+          this._viewMode === 'map' &&
+          !this.config.map_entity &&
+          !this.config.map_image_entity &&
+          (oldConfig.map_entity || oldConfig.map_image_entity)
+        ) {
+          this._setViewMode(this.config.default_view || 'mower');
+        }
+
+        if (this.config.map_image_entity !== oldConfig.map_image_entity) {
+          this._isMapImageLoading = true;
+          this._mapImageError = false;
+          this._imgScale = 1;
+          this._imgTranslateX = 0;
+          this._imgTranslateY = 0;
+          this._restoreImgTransform();
+        }
+
+        if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
+          const newUseImage =
+            this.config.map_source === 'image' ||
+            (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
+            (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
+          const wasUseImage =
+            oldConfig.map_source === 'image' ||
+            (!oldConfig.map_source && !oldConfig.map_entity && !!oldConfig.map_image_entity) ||
+            (oldConfig.map_source === 'gps' && !oldConfig.map_entity && !!oldConfig.map_image_entity);
+          if (newUseImage) {
+            if (!wasUseImage) {
+              this._isMapImageLoading = true;
+              this._mapImageError = false;
+            }
+          } else if (!this.config.google_maps_api_key || this.config.use_google_maps === false) {
+            this._mapCardElement = undefined;
+            this.updateComplete.then(() => this._loadMapElement());
+          } else {
+            this._isMapLoading = true;
+          }
+        }
+
         const useHaMapNow = !this.config.google_maps_api_key || this.config.use_google_maps === false;
         const useHaMapBefore = !oldConfig.google_maps_api_key || oldConfig.use_google_maps === false;
 
@@ -418,6 +490,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._isCameraReachable = true;
       return;
     }
+    if (this.cameraEntity.state === 'unavailable') {
+      this._isCameraReachable = false;
+      return;
+    }
     try {
       const imageUrl = this.cameraEntity.attributes.entity_picture;
       const cacheBuster = `&t=${Date.now()}`;
@@ -448,6 +524,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       });
     }
     this._hadValidMower = hasValidMower;
+
+    if (this._isMapImageLoading && this._viewMode === 'map') {
+      const img = this.shadowRoot?.querySelector('.map-image-entity') as HTMLImageElement | null;
+      if (img?.complete && img.naturalWidth > 0) {
+        this._isMapImageLoading = false;
+      }
+    }
   }
 
   private _isCurrentlyDocked(state: string, isCharging: boolean): boolean {
@@ -549,6 +632,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return undefined;
     }
     return this.hass.states[this.config.camera_entity];
+  }
+
+  get mapImageEntity() {
+    if (!this.config.map_image_entity || !this.hass) {
+      return undefined;
+    }
+    return this.hass.states[this.config.map_image_entity];
   }
 
   private _executeCustomAction(customAction: CustomAction): void {
@@ -716,7 +806,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     return 'var(--disabled-text-color, #9e9e9e)';
   }
 
-  private _getChargingStationColor(state: string): string {
+  private _getChargingStationColor(_state: string): string {
     if (this.chargingStatus) return 'rgb(184, 79, 27)';
     return 'var(--disabled-text-color)';
   }
@@ -865,13 +955,178 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     console.error('Compact Lawn Mower Card: Failed to load map image.');
   }
 
+  private _getHaMapShadowRoot(): ShadowRoot | null {
+    const haMap = (this._mapCardElement as any)?.shadowRoot?.querySelector('ha-map');
+    return (haMap as any)?.shadowRoot ?? null;
+  }
+
+  private _handleHaMapZoomIn(e: Event): void {
+    e.stopPropagation();
+    (this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-in') as HTMLElement)?.click();
+  }
+
+  private _handleHaMapZoomOut(e: Event): void {
+    e.stopPropagation();
+    (this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-out') as HTMLElement)?.click();
+  }
+
   private _handleZoom(e: Event, direction: 'in' | 'out'): void {
     e.stopPropagation();
     const delta = direction === 'in' ? 1 : -1;
     this._mapZoom = Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, this._mapZoom + delta));
-    if (this.config.google_maps_api_key && this.config.use_google_maps) {
-      this._isMapLoading = true;
+  }
+
+  private _getDistance(p1: PointerEvent, p2: PointerEvent): number {
+    const dx = p1.clientX - p2.clientX;
+    const dy = p1.clientY - p2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  private _constrainPan(): void {
+    const container = this.shadowRoot?.querySelector('.map-container') as HTMLElement | null;
+    if (!container) return;
+    const cW = container.clientWidth;
+    const cH = container.clientHeight;
+    const minX = -(cW * this._imgScale - cW * 0.2);
+    const maxX = cW * 0.8;
+    const minY = -(cH * this._imgScale - cH * 0.2);
+    const maxY = cH * 0.8;
+    this._imgTranslateX = Math.max(minX, Math.min(maxX, this._imgTranslateX));
+    this._imgTranslateY = Math.max(minY, Math.min(maxY, this._imgTranslateY));
+  }
+
+  private _applyZoom(factor: number, originX: number, originY: number): void {
+    const rawScale = this._imgScale * factor;
+    const newScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, rawScale));
+    const actualFactor = newScale / this._imgScale;
+    this._imgTranslateX = originX - actualFactor * (originX - this._imgTranslateX);
+    this._imgTranslateY = originY - actualFactor * (originY - this._imgTranslateY);
+    this._imgScale = newScale;
+    this._constrainPan();
+  }
+
+  private _handleImgWheel(e: WheelEvent): void {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const factor = 1 + (e.deltaY < 0 ? 1 : -1) * IMG_ZOOM_STEP_WHEEL;
+    this._applyZoom(factor, e.clientX - rect.left, e.clientY - rect.top);
+    this._saveImgTransform();
+  }
+
+  private _handleImgPointerDown(e: PointerEvent): void {
+    const container = e.currentTarget as HTMLElement;
+    container.setPointerCapture(e.pointerId);
+    this._imgActivePointers.set(e.pointerId, e);
+
+    if (this._imgActivePointers.size === 1) {
+      this._imgIsDragging = true;
+      this._imgIsPinching = false;
+      this._imgDragStartX = e.clientX;
+      this._imgDragStartY = e.clientY;
+      this._imgDragStartTranslateX = this._imgTranslateX;
+      this._imgDragStartTranslateY = this._imgTranslateY;
+    } else if (this._imgActivePointers.size === 2) {
+      this._imgIsDragging = false;
+      this._imgIsPinching = true;
+      const [p1, p2] = [...this._imgActivePointers.values()];
+      this._imgPinchStartDistance = this._getDistance(p1, p2);
+      this._imgPinchStartScale = this._imgScale;
+      const rect = container.getBoundingClientRect();
+      this._imgPinchMidX = (p1.clientX + p2.clientX) / 2 - rect.left;
+      this._imgPinchMidY = (p1.clientY + p2.clientY) / 2 - rect.top;
+      this._imgPinchStartTranslateX = this._imgTranslateX;
+      this._imgPinchStartTranslateY = this._imgTranslateY;
     }
+  }
+
+  private _handleImgPointerMove(e: PointerEvent): void {
+    if (!this._imgActivePointers.has(e.pointerId)) return;
+    this._imgActivePointers.set(e.pointerId, e);
+
+    if (this._imgIsPinching && this._imgActivePointers.size === 2) {
+      const [p1, p2] = [...this._imgActivePointers.values()];
+      const dist = this._getDistance(p1, p2);
+      const rawScale = this._imgPinchStartScale * (dist / this._imgPinchStartDistance);
+      const newScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, rawScale));
+      const scaleDelta = newScale / this._imgPinchStartScale;
+      this._imgTranslateX = this._imgPinchMidX - scaleDelta * (this._imgPinchMidX - this._imgPinchStartTranslateX);
+      this._imgTranslateY = this._imgPinchMidY - scaleDelta * (this._imgPinchMidY - this._imgPinchStartTranslateY);
+      this._imgScale = newScale;
+      this._constrainPan();
+      return;
+    }
+
+    if (this._imgIsDragging) {
+      const dx = e.clientX - this._imgDragStartX;
+      const dy = e.clientY - this._imgDragStartY;
+      this._imgTranslateX = this._imgDragStartTranslateX + dx;
+      this._imgTranslateY = this._imgDragStartTranslateY + dy;
+      this._constrainPan();
+    }
+  }
+
+  private _handleImgPointerUp(e: PointerEvent): void {
+    this._imgActivePointers.delete(e.pointerId);
+    if (this._imgActivePointers.size === 0) {
+      this._imgIsDragging = false;
+      this._imgIsPinching = false;
+      this._saveImgTransform();
+    } else if (this._imgActivePointers.size === 1) {
+      this._imgIsPinching = false;
+    }
+  }
+
+  private _handleImgZoomButton(e: Event, direction: 'in' | 'out'): void {
+    e.stopPropagation();
+    const container = this.shadowRoot?.querySelector('.map-container') as HTMLElement | null;
+    if (!container) return;
+    this._applyZoom(
+      direction === 'in' ? 1 + IMG_ZOOM_STEP_BUTTON : 1 - IMG_ZOOM_STEP_BUTTON,
+      container.clientWidth / 2,
+      container.clientHeight / 2
+    );
+    this._saveImgTransform();
+  }
+
+  private _handleImgReset(e: Event): void {
+    e.stopPropagation();
+    this._imgScale = 1;
+    this._imgTranslateX = 0;
+    this._imgTranslateY = 0;
+    this._saveImgTransform();
+  }
+
+  private _handleImgDblClick(e: MouseEvent): void {
+    e.stopPropagation();
+    this._imgScale = 1;
+    this._imgTranslateX = 0;
+    this._imgTranslateY = 0;
+    this._saveImgTransform();
+  }
+
+  private _saveImgTransform(): void {
+    if (!this.config?.map_image_entity) return;
+    try {
+      localStorage.setItem(
+        `clm_img_${this.config.map_image_entity}`,
+        JSON.stringify({ scale: this._imgScale, x: this._imgTranslateX, y: this._imgTranslateY })
+      );
+    } catch {}
+  }
+
+  private _restoreImgTransform(): void {
+    if (!this.config?.map_image_entity) return;
+    try {
+      const stored = localStorage.getItem(`clm_img_${this.config.map_image_entity}`);
+      if (stored) {
+        const { scale, x, y } = JSON.parse(stored);
+        if (typeof scale === 'number') this._imgScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, scale));
+        if (typeof x === 'number') this._imgTranslateX = x;
+        if (typeof y === 'number') this._imgTranslateY = y;
+      }
+    } catch {}
   }
 
   private _renderMowerModel() {
@@ -897,7 +1152,123 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     );
   }
 
+  private _renderMapImageView() {
+    const imageEntity = this.mapImageEntity;
+
+    if (!imageEntity) {
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:image-off-outline',
+        localize('map.image_not_available', { hass: this.hass })
+      );
+    }
+
+    if (imageEntity.state === 'unavailable') {
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:image-broken-variant',
+        localize('map.image_unavailable', { hass: this.hass })
+      );
+    }
+
+    if (this._mapImageError) {
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:image-broken-variant',
+        localize('map.image_load_error', { hass: this.hass })
+      );
+    }
+
+    const entityPicture = imageEntity.attributes.entity_picture;
+    const isCamera = this.config.map_image_entity?.split('.')[0] === 'camera';
+    const fallbackUrl = isCamera
+      ? `/api/camera_proxy/${this.config.map_image_entity}`
+      : `/api/image_proxy/${this.config.map_image_entity}`;
+    const imageUrl = entityPicture ? entityPicture : fallbackUrl;
+
+    const cacheBustedUrl = imageUrl.includes('?')
+      ? `${imageUrl}&_t=${imageEntity.last_updated}`
+      : `${imageUrl}?_t=${imageEntity.last_updated}`;
+
+    return html`
+      <div
+        class="map-container pannable ${this._isMapImageLoading ? 'is-loading' : ''}"
+        style="touch-action: none;"
+        @wheel=${this._handleImgWheel}
+        @pointerdown=${this._handleImgPointerDown}
+        @pointermove=${this._handleImgPointerMove}
+        @pointerup=${this._handleImgPointerUp}
+        @pointercancel=${this._handleImgPointerUp}
+        @dblclick=${this._handleImgDblClick}
+      >
+        ${this._isMapImageLoading ? html`<div class="loading-indicator"><div class="loader"></div></div>` : ''}
+        <div
+          class="map-image-transform-layer"
+          style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this
+            ._imgScale}); transform-origin: 0 0;"
+        >
+          <img
+            class="map-image map-image-entity"
+            src="${cacheBustedUrl}"
+            alt="Mowing Map"
+            draggable="false"
+            @load=${() => {
+              this._isMapImageLoading = false;
+              this._mapImageError = false;
+            }}
+            @error=${() => {
+              this._isMapImageLoading = false;
+              this._mapImageError = true;
+            }}
+            style="opacity: ${this._isMapImageLoading ? 0 : 1};"
+          />
+        </div>
+        ${!this._isMapImageLoading
+          ? html`<div class="map-controls-wrapper">
+              <div class="map-controls">
+                <button
+                  class="map-control-button"
+                  @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                  @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                  @click=${(e: Event) => this._handleImgZoomButton(e, 'in')}
+                >
+                  <ha-icon icon="mdi:plus"></ha-icon>
+                </button>
+                <button
+                  class="map-control-button"
+                  @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                  @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                  @click=${(e: Event) => this._handleImgZoomButton(e, 'out')}
+                >
+                  <ha-icon icon="mdi:minus"></ha-icon>
+                </button>
+                <button
+                  class="map-control-button"
+                  @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                  @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                  @click=${(e: Event) => this._handleImgReset(e)}
+                >
+                  <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
+                </button>
+              </div>
+            </div>`
+          : nothing}
+      </div>
+    `;
+  }
+
   private _renderMapView() {
+    const useImage =
+      this.config.map_source === 'image' ||
+      (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
+      (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
+    if (useImage) {
+      return this._renderMapImageView();
+    }
+
     const deviceTracker = this.config.map_entity ? this.hass.states[this.config.map_entity] : null;
 
     if (!deviceTracker) {
@@ -937,6 +1308,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             class="map-image"
             src="${mapUrl}"
             alt="Mower Location"
+            draggable="false"
             @load=${() => (this._isMapLoading = false)}
             @error=${() => {
               this._isMapLoading = false;
@@ -944,24 +1316,23 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             }}
             style="opacity: ${this._isMapLoading ? 0 : 1};"
           />
-
           <div class="mower-marker" style="opacity: ${this._isMapLoading ? 0 : 1};">
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
 
-          <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1};">
-            <div class="map-controls">
+          <div class="map-controls-wrapper">
+            <div class="map-zoom-control">
               <button
-                class="map-control-button"
+                class="map-zoom-button map-zoom-button--in"
                 @click=${(e: Event) => this._handleZoom(e, 'in')}
-                .disabled=${this._isMapLoading}
+                .disabled=${this._mapZoom >= MAX_MAP_ZOOM}
               >
                 <ha-icon icon="mdi:plus"></ha-icon>
               </button>
               <button
-                class="map-control-button"
+                class="map-zoom-button map-zoom-button--out"
                 @click=${(e: Event) => this._handleZoom(e, 'out')}
-                .disabled=${this._isMapLoading}
+                .disabled=${this._mapZoom <= MIN_MAP_ZOOM}
               >
                 <ha-icon icon="mdi:minus"></ha-icon>
               </button>
@@ -978,7 +1349,21 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         </div>
       `;
     }
-    return html`<div class="map-container">${this._mapCardElement}</div>`;
+    return html`
+      <div class="map-container">
+        ${this._mapCardElement}
+        <div class="map-controls-wrapper">
+          <div class="map-zoom-control">
+            <button class="map-zoom-button map-zoom-button--in" @click=${this._handleHaMapZoomIn}>
+              <ha-icon icon="mdi:plus"></ha-icon>
+            </button>
+            <button class="map-zoom-button map-zoom-button--out" @click=${this._handleHaMapZoomOut}>
+              <ha-icon icon="mdi:minus"></ha-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   private _getMapUrl(lat: number, lon: number): string {
@@ -1038,14 +1423,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       `);
     }
 
-    if (this.config.map_entity && this.config.enable_map !== false) {
+    if ((this.config.map_entity || this.config.map_image_entity) && this.config.enable_map !== false) {
+      const useImage =
+        this.config.map_source === 'image' ||
+        (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
       buttons.push(html`
         <button
           class="view-toggle-button ${this._viewMode === 'map' ? 'active' : ''}"
           @click=${() => this._setViewMode('map')}
           aria-label=${localize('view.map', { hass: this.hass })}
         >
-          <ha-icon icon="mdi:map-marker"></ha-icon>
+          <ha-icon icon="${useImage ? 'mdi:map' : 'mdi:map-marker'}"></ha-icon>
         </button>
       `);
     }
@@ -1069,11 +1457,20 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._isPopupOpen = false;
       this._updateCameraState(true);
     } else if (mode === 'map') {
-      const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
-      if (useHaMap) {
-        this._loadMapElement();
+      const useImage =
+        this.config.map_source === 'image' ||
+        (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
+        (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
+      if (useImage) {
+        this._isMapImageLoading = true;
+        this._mapImageError = false;
       } else {
-        this._isMapLoading = true;
+        const useHaMap = !this.config.google_maps_api_key || this.config.use_google_maps === false;
+        if (useHaMap) {
+          this._loadMapElement();
+        } else {
+          this._isMapLoading = true;
+        }
       }
       this._updateMapPosition();
     }
@@ -1113,7 +1510,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _updateMapPosition() {
-    if (!this.config.map_entity) return;
+    if (!this.config.map_entity && !this.config.map_image_entity) return;
 
     if (this._viewMode === 'map') {
       this._mapUpdateInterval = window.setInterval(() => {
@@ -1145,8 +1542,77 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       }
 
       this._mapCardElement = element;
+      this.updateComplete.then(() => this._injectHaMapControlStyles());
     } catch (e) {
       console.error('Compact Lawn Mower Card: Error loading map card element', e);
+    }
+  }
+
+  private _injectHaMapControlStyles(retries = 20): void {
+    const el = this._mapCardElement;
+    if (!el) return;
+
+    if (el.shadowRoot && !el.shadowRoot.querySelector('#clm-card-style')) {
+      const cardStyle = document.createElement('style');
+      cardStyle.id = 'clm-card-style';
+      cardStyle.textContent = `ha-card { height: 100%; } ha-map { flex: 1; min-height: 0; }`;
+      el.shadowRoot.appendChild(cardStyle);
+    }
+
+    const haMap = el.shadowRoot?.querySelector('ha-map') as HTMLElement | null;
+    if (!haMap?.shadowRoot) {
+      if (retries > 0) {
+        setTimeout(() => this._injectHaMapControlStyles(retries - 1), 150);
+      }
+      return;
+    }
+
+    this._applyHaMapStyles(haMap.shadowRoot);
+
+    if (!this._haMapShadowObserver) {
+      this._haMapShadowObserver = new MutationObserver(() => {
+        const sr = haMap.shadowRoot;
+        if (!sr) return;
+        if (!sr.querySelector('#clm-leaflet-style')) {
+          this._applyHaMapStyles(sr);
+          return;
+        }
+        const zc = sr.querySelector('.leaflet-control-zoom') as HTMLElement | null;
+        if (zc && zc.style.display !== 'none') {
+          zc.style.setProperty('display', 'none', 'important');
+        }
+      });
+      this._haMapShadowObserver.observe(haMap.shadowRoot, { childList: true, subtree: true });
+    }
+  }
+
+  private _applyHaMapStyles(shadowRoot: ShadowRoot): void {
+    shadowRoot.querySelector('#clm-leaflet-style')?.remove();
+    const style = document.createElement('style');
+    style.id = 'clm-leaflet-style';
+    style.textContent =
+      `.leaflet-control-zoom { display: none !important; }` +
+      `#buttons { position: absolute !important; bottom: 8px !important; left: 42px !important; top: auto !important; right: auto !important; }` +
+      `#buttons ha-icon-button { --mdc-icon-button-size: 26px !important; --mdc-icon-size: 18px !important; }`;
+    shadowRoot.appendChild(style);
+
+    const zoomControl = shadowRoot.querySelector('.leaflet-control-zoom') as HTMLElement | null;
+    if (zoomControl) {
+      zoomControl.style.setProperty('display', 'none', 'important');
+    }
+
+    const buttonsEl = shadowRoot.querySelector('#buttons') as HTMLElement | null;
+    if (buttonsEl) {
+      buttonsEl.style.position = 'absolute';
+      buttonsEl.style.bottom = '8px';
+      buttonsEl.style.left = '42px';
+      buttonsEl.style.top = 'auto';
+      buttonsEl.style.right = 'auto';
+      const iconBtn = buttonsEl.querySelector('ha-icon-button') as HTMLElement | null;
+      if (iconBtn) {
+        iconBtn.style.setProperty('--mdc-icon-button-size', '26px');
+        iconBtn.style.setProperty('--mdc-icon-size', '18px');
+      }
     }
   }
 
@@ -1230,7 +1696,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       </ha-card>`;
     }
 
-    const state = this.mowerState;
     const isCharging = this.chargingStatus;
 
     return html`

@@ -21,6 +21,7 @@
     "entity": "Tondeuse",
     "camera_entity": "Entité Caméra (Optionnel)",
     "map_entity": "Entité carte (Optional, Tracker)",
+    "map_image_entity": "Entité image de carte (Optionnel, Image ou Caméra)",
     "camera_fit_mode": "Mode d'ajustement de la caméra",
     "camera_fit_mode_label": {
       "cover": "Couverture (remplir l'espace, peut recadrer)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Google Maps Clé API (Optionnel)",
       "use_google_maps": "Utiliser Google Maps (avec Clé API)",
       "enable_map": "Activer l'affichage de la carte",
+      "map_source": "Source de la carte",
+      "map_source_label": {
+        "gps": "GPS / Carte (Device Tracker)",
+        "image": "Image de carte (Entité Image ou Caméra)"
+      },
       "map_type": "Type de carte",
       "map_type_label": {
         "roadmap": "Feuille de route",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Carte non disponible",
-    "no_gps_coordinates": "Pas de données GPS"
+    "no_gps_coordinates": "Pas de données GPS",
+    "image_not_available": "Image de carte non disponible",
+    "image_unavailable": "Image de carte indisponible",
+    "image_load_error": "Échec du chargement de l'image de carte"
   },
   "view": {
     "mower": "Tondeuse",

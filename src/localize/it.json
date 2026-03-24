@@ -21,6 +21,7 @@
     "entity": "Tagliaerba",
     "camera_entity": "Entità telecamera (Opzionale)",
     "map_entity": "Entità mappa (Opzionale, Device Tracker)",
+    "map_image_entity": "Entità immagine mappa (Opzionale, Immagine o Telecamera)",
     "camera_fit_mode": "Modalità adattamento telecamera",
     "camera_fit_mode_label": {
       "cover": "Coprire (riempie lo spazio, può ritagliare)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Chiave API Google Maps (Opzionale)",
       "use_google_maps": "Usa Google Maps (con chiave API)",
       "enable_map": "Abilita vista mappa",
+      "map_source": "Sorgente mappa",
+      "map_source_label": {
+        "gps": "GPS / Mappa (Device Tracker)",
+        "image": "Immagine mappa (Entità Immagine o Telecamera)"
+      },
       "map_type": "Tipo di mappa",
       "map_type_label": {
         "roadmap": "Mappa stradale",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Mappa non disponibile",
-    "no_gps_coordinates": "Nessun dato GPS"
+    "no_gps_coordinates": "Nessun dato GPS",
+    "image_not_available": "Immagine mappa non disponibile",
+    "image_unavailable": "Immagine mappa non disponibile",
+    "image_load_error": "Impossibile caricare l'immagine della mappa"
   },
   "view": {
     "mower": "Tagliaerba",

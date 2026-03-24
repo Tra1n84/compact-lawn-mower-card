@@ -21,6 +21,7 @@
     "entity": "Mähroboter",
     "camera_entity": "Kameraentität (Optional)",
     "map_entity": "Kartenentität (Optional, Device Tracker)",
+    "map_image_entity": "Kartenbild-Entität (Optional, Bild oder Kamera)",
     "camera_fit_mode": "Kamera-Anpassung",
     "camera_fit_mode_label": {
       "cover": "Füllen (Zuschneiden)",
@@ -44,6 +45,11 @@
       "google_maps_api_key": "Google Maps API-Schlüssel (Optional)",
       "use_google_maps": "Google Maps verwenden (mit API-Schlüssel)",
       "enable_map": "Kartenansicht aktivieren",
+      "map_source": "Kartenquelle",
+      "map_source_label": {
+        "gps": "GPS / Karte (Device Tracker)",
+        "image": "Kartenbild (Bild- oder Kamera-Entität)"
+      },
       "map_type": "Kartentyp",
       "map_type_label": {
         "roadmap": "Straßenkarte",
@@ -132,7 +138,10 @@
   },
   "map": {
     "not_available": "Karte nicht verfügbar",
-    "no_gps_coordinates": "Keine GPS-Daten"
+    "no_gps_coordinates": "Keine GPS-Daten",
+    "image_not_available": "Kartenbild nicht verfügbar",
+    "image_unavailable": "Kartenbild nicht erreichbar",
+    "image_load_error": "Kartenbild konnte nicht geladen werden"
   },
   "view": {
     "mower": "Mähroboter",
