@@ -7,11 +7,6 @@ A compact, modern and feature-rich custom card for your robotic lawn mower in Ho
   <sub>Mower View – Mowing State</sub>
 </div>
 
-<div align="center">
-  <img src="https://github.com/Tra1n84/compact-lawn-mower-card/blob/main/img/Compact_Lawn_Mower_Card_6Columns.png" height="300" alt="Compact Lawn Mower Card with 6 Columns"><br>
-  <sub>Grid Layout with 6 columns</sub>
-</div>
-
 ---
 
 ## ✨ Features
