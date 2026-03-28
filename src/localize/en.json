@@ -6,6 +6,8 @@
   },
   "status": {
     "mowing": "Mowing",
+    "edgecut": "Cut to edge",
+    "rain_delay": "Rain delay",
     "docked": "Docked",
     "charging": "Charging",
     "paused": "Paused",
