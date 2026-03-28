@@ -6,6 +6,8 @@
   },
   "status": {
     "mowing": "Tonte",
+    "rain_delay": "Retard de pluie",
+    "edgecut": "Coupe des bordures",
     "docked": "Stationnée",
     "charging": "En charge",
     "paused": "Pause",
