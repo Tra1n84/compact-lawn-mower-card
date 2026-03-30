@@ -132,4 +132,5 @@ export interface CompactLawnMowerCardConfig extends LovelaceCardConfig {
   badge_text_color?: string | number[];
   badge_icon_color?: string | number[];
   toggle_active_color?: string | number[];
+  state_map?: Record<string, string>;
 }

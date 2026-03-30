@@ -123,6 +123,23 @@
         "none": "Ingen åtgärd",
         "not_configured": "Inte konfigurerad"
       }
+    },
+    "state_map": {
+      "title": "Statusmappning",
+      "description": "Mappa anpassade tillstånd (t.ex. edgecut, rain_delayed) till ett standardvisuellt beteende",
+      "add": "Lägg till statusmappning",
+      "custom_state": "Anpassat tillstånd (t.ex. edgecut)",
+      "behavior": "Beteende",
+      "no_mappings": "Inga anpassade statusmappningar konfigurerade.",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "behaviors": {
+        "mowing": "Klipper",
+        "paused": "Pausad",
+        "returning": "Återvänder till docka",
+        "error": "Fel",
+        "docked": "Dockad"
+      }
     }
   },
   "error": {

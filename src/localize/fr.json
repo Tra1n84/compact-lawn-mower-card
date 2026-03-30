@@ -123,6 +123,23 @@
         "none": "Pas d'action",
         "not_configured": "Non Configurée"
       }
+    },
+    "state_map": {
+      "title": "Mappage d'états",
+      "description": "Associer des états personnalisés (ex. edgecut, rain_delayed) à un comportement visuel standard",
+      "add": "Ajouter un mappage",
+      "custom_state": "État personnalisé (ex. edgecut)",
+      "behavior": "Comportement",
+      "no_mappings": "Aucun mappage d'état personnalisé configuré.",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "behaviors": {
+        "mowing": "Tonte",
+        "paused": "Pause",
+        "returning": "Retour à la station",
+        "error": "Erreur",
+        "docked": "Stationnée"
+      }
     }
   },
   "error": {

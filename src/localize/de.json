@@ -123,6 +123,23 @@
         "none": "Keine Aktion",
         "not_configured": "Nicht konfiguriert"
       }
+    },
+    "state_map": {
+      "title": "Status-Mapping",
+      "description": "Benutzerdefinierte Status (z.B. edgecut, rain_delayed) auf ein Standardverhalten abbilden",
+      "add": "Mapping hinzufügen",
+      "custom_state": "Benutzerdefinierter Status (z.B. edgecut)",
+      "behavior": "Verhalten",
+      "no_mappings": "Keine benutzerdefinierten Status-Mappings konfiguriert.",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "behaviors": {
+        "mowing": "Mäht",
+        "paused": "Pausiert",
+        "returning": "Rückkehr zum Dock",
+        "error": "Fehler",
+        "docked": "Angedockt"
+      }
     }
   },
   "error": {

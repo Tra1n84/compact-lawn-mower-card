@@ -123,6 +123,23 @@
         "none": "Brak akcji",
         "not_configured": "Nie skonfigurowano"
       }
+    },
+    "state_map": {
+      "title": "Mapowanie stanów",
+      "description": "Mapuj niestandardowe stany (np. edgecut, rain_delayed) na standardowe zachowanie wizualne",
+      "add": "Dodaj mapowanie stanu",
+      "custom_state": "Stan niestandardowy (np. edgecut)",
+      "behavior": "Zachowanie",
+      "no_mappings": "Brak skonfigurowanych niestandardowych mapowań stanów.",
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "behaviors": {
+        "mowing": "Koszenie",
+        "paused": "Wstrzymano",
+        "returning": "Powrót do stacji",
+        "error": "Błąd",
+        "docked": "W stacji"
+      }
     }
   },
   "error": {

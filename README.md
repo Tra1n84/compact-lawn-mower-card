@@ -19,6 +19,8 @@ A live video stream from your mower's camera
 Track your mower's location on a map - choose between a GPS device tracker with HA Map or Google Maps or a static image / camera entity as your mower map with full pinch-to-zoom and drag-to-pan support
 * **Custom Action Buttons:**
 Define up to 6 customizable action buttons - trigger services, toggle entities, navigate within HA, open URLs or show entity details
+* **Custom State Mapping:**
+Map custom integration states (e.g. `edgecut`, `rain_delayed`) to a standard visual behavior so the card displays the correct animation and status badge for any mower integration
 * **Info Badges:**
 Info badges with the current status and the mowing progress
 * **Powerful UI Editor:**   
@@ -141,6 +143,9 @@ grass_color_bottom:
   - 133
   - 187
   - 88
+state_map:
+  edgecut: mowing
+  rain_delayed: paused
 custom_actions:
   # Action type: call-service (call any HA service)
   - name: Start Mowing
@@ -210,6 +215,7 @@ custom_actions:
 | `grass_color_top`    | list     | No           | RGB value for the top grass color                                                            |
 | `grass_color_bottom` | list     | No           | RGB value for the bottom grass color                                                         |
 | `custom_actions`     | list     | No           | Define up to 6 custom action buttons (see action types below)                                |
+| `state_map`          | map      | No           | Map custom integration states to a standard visual behavior (see state mapping below)        |
 
 #### Custom Action Structure
 
@@ -233,6 +239,21 @@ Each entry in `custom_actions` has the following structure:
 | `none`          | —                                                | No action (placeholder)                        |
 
 > **Note:** For `call-service`, `toggle` and `more-info`, the target defaults to the configured mower entity if no custom target is specified.
+
+#### State Mapping (`state_map`)
+
+Some mower integrations report states beyond the standard HA lawn mower states (e.g. `edgecut`, `rain_delayed`, `leaves`). Use `state_map` to map these custom states to one of the supported visual behaviors so the card displays the correct animation and badge.
+
+**Supported behaviors:** `mowing`, `paused`, `returning`, `docked`, `error`
+
+```yaml
+state_map:
+  edgecut: mowing
+  rain_delayed: paused
+  leaves: error
+```
+
+The key is the exact state string reported by your integration, the value is the behavior the card should use.
 
 ---
 

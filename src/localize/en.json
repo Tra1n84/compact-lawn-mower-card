@@ -123,6 +123,23 @@
         "none": "No Action",
         "not_configured": "Not Configured"
       }
+    },
+    "state_map": {
+      "title": "State Mapping",
+      "description": "Map custom integration states (e.g. edgecut, rain_delayed) to a standard visual behavior",
+      "add": "Add State Mapping",
+      "custom_state": "Custom State (e.g. edgecut)",
+      "behavior": "Behavior",
+      "no_mappings": "No custom state mappings configured.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "behaviors": {
+        "mowing": "Mowing",
+        "paused": "Paused",
+        "returning": "Returning to Dock",
+        "error": "Error",
+        "docked": "Docked"
+      }
     }
   },
   "error": {

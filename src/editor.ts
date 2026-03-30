@@ -29,7 +29,12 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     power: false,
     ui: false,
     actions: false,
+    state_map: false,
   };
+  @state() private _showStateMappingForm = false;
+  @state() private _editingStateMappingKey: string | null = null;
+  @state() private _newStateMappingCustomState = '';
+  @state() private _newStateMappingBehavior = 'mowing';
   @state() private _showActionForm = false;
   @state() private _newActionName = '';
   @state() private _newActionIcon = 'mdi:play';
@@ -53,6 +58,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   private _boundComputePowerLabel = this._computePowerLabel.bind(this);
   private _boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
   private _boundComputeActionsLabel = this._computeActionsLabel.bind(this);
+  private _boundComputeStateMappingLabel = this._computeStateMappingLabel.bind(this);
 
   private readonly MAX_ACTIONS = 6;
 
@@ -212,7 +218,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     );
   }
 
-  private _toggleSection(section: 'main' | 'power' | 'ui' | 'actions') {
+  private _toggleSection(section: 'main' | 'power' | 'ui' | 'actions' | 'state_map') {
     this._sectionsExpanded = {
       ...this._sectionsExpanded,
       [section]: !this._sectionsExpanded[section],
@@ -740,6 +746,149 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       action_url_path: localize('editor.actions.url_path', { hass: this.hass }),
     };
     return labelMap[schema.name] || schema.name;
+  }
+
+  private _computeStateMappingLabel(schema: { name: string }): string {
+    const labelMap: Record<string, string> = {
+      custom_state: localize('editor.state_map.custom_state', { hass: this.hass }),
+      behavior: localize('editor.state_map.behavior', { hass: this.hass }),
+    };
+    return labelMap[schema.name] || schema.name;
+  }
+
+  private _addStateMapping(): void {
+    this._newStateMappingCustomState = '';
+    this._newStateMappingBehavior = 'mowing';
+    this._editingStateMappingKey = null;
+    this._showStateMappingForm = true;
+  }
+
+  private _editStateMapping(key: string): void {
+    this._editingStateMappingKey = key;
+    this._newStateMappingCustomState = key;
+    this._newStateMappingBehavior = this.config.state_map?.[key] ?? 'mowing';
+    this._showStateMappingForm = true;
+  }
+
+  private _removeStateMapping(key: string): void {
+    const updated = { ...(this.config.state_map ?? {}) };
+    delete updated[key];
+    this._fireConfigChanged({ ...this.config, state_map: Object.keys(updated).length ? updated : undefined });
+  }
+
+  private _saveStateMapping(): void {
+    const customState = this._newStateMappingCustomState.trim();
+    if (!customState) return;
+    const updated = { ...(this.config.state_map ?? {}) };
+    if (this._editingStateMappingKey && this._editingStateMappingKey !== customState) {
+      delete updated[this._editingStateMappingKey];
+    }
+    updated[customState] = this._newStateMappingBehavior;
+    this._showStateMappingForm = false;
+    this._editingStateMappingKey = null;
+    this._fireConfigChanged({ ...this.config, state_map: updated });
+  }
+
+  private _cancelStateMapping(): void {
+    this._showStateMappingForm = false;
+    this._editingStateMappingKey = null;
+  }
+
+  private _renderStateMappingSection() {
+    const expanded = this._sectionsExpanded.state_map;
+    const stateMap = this.config?.state_map ?? {};
+    const entries = Object.entries(stateMap);
+    const canonicalStates = ['mowing', 'paused', 'returning', 'error', 'docked'];
+
+    const behaviorLabel = (b: string): string => {
+      const key = `editor.state_map.behaviors.${b}`;
+      const t = localize(key, { hass: this.hass });
+      return t !== key ? t : b;
+    };
+
+    return html`
+      <div class="config-section">
+        <div class="section-header" @click=${() => this._toggleSection('state_map')}>
+          <div class="section-title">
+            <ha-icon icon="mdi:state-machine"></ha-icon>
+            ${localize('editor.state_map.title', { hass: this.hass })}
+          </div>
+          <ha-icon class="collapse-icon ${expanded ? 'expanded' : ''}" icon="mdi:chevron-down"></ha-icon>
+        </div>
+
+        <div class="section-content ${expanded ? 'expanded' : 'collapsed'}">
+          <div class="section-description">${localize('editor.state_map.description', { hass: this.hass })}</div>
+
+          ${entries.length === 0 && !this._showStateMappingForm
+            ? html`<div class="no-actions-text">${localize('editor.state_map.no_mappings', { hass: this.hass })}</div>`
+            : ''}
+
+          ${entries.map(
+            ([key, behavior]) => html`
+              <div class="action-item">
+                <div class="action-info">
+                  <div class="action-name">${key}</div>
+                  <div class="action-meta">→ ${behaviorLabel(behavior)}</div>
+                </div>
+                <div class="action-buttons">
+                  <ha-icon-button @click=${() => this._editStateMapping(key)}>
+                    <ha-icon icon="mdi:pencil"></ha-icon>
+                  </ha-icon-button>
+                  <ha-icon-button @click=${() => this._removeStateMapping(key)}>
+                    <ha-icon icon="mdi:close"></ha-icon>
+                  </ha-icon-button>
+                </div>
+              </div>
+            `,
+          )}
+
+          <div class="add-action-form ${this._showStateMappingForm ? '' : 'hidden'}">
+            <ha-form
+              .hass=${this.hass}
+              .data=${{ custom_state: this._newStateMappingCustomState, behavior: this._newStateMappingBehavior }}
+              .schema=${[
+                { name: 'custom_state', selector: { text: {} }, required: true },
+                {
+                  name: 'behavior',
+                  selector: {
+                    select: {
+                      mode: 'dropdown',
+                      options: canonicalStates.map(b => ({ value: b, label: behaviorLabel(b) })),
+                      custom_value: false,
+                    },
+                  },
+                  required: true,
+                },
+              ]}
+              .computeLabel=${this._boundComputeStateMappingLabel}
+              @value-changed=${(ev: CustomEvent) => {
+                ev.stopPropagation();
+                const { custom_state, behavior } = ev.detail.value;
+                if (custom_state !== undefined) this._newStateMappingCustomState = custom_state;
+                if (behavior !== undefined) this._newStateMappingBehavior = behavior;
+              }}
+            ></ha-form>
+            <div class="form-buttons">
+              <ha-button @click=${this._saveStateMapping}>
+                ${localize('editor.state_map.save', { hass: this.hass })}
+              </ha-button>
+              <ha-button @click=${this._cancelStateMapping}>
+                ${localize('editor.state_map.cancel', { hass: this.hass })}
+              </ha-button>
+            </div>
+          </div>
+          ${!this._showStateMappingForm
+            ? html`
+                <div class="actions-header">
+                  <ha-button @click=${this._addStateMapping}>
+                    ${localize('editor.state_map.add', { hass: this.hass })}
+                  </ha-button>
+                </div>
+              `
+            : ''}
+        </div>
+      </div>
+    `;
   }
 
   private _renderActionsSection() {
@@ -1272,6 +1421,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
           </div>
 
           ${this._renderActionsSection()}
+          ${this._renderStateMappingSection()}
         </div>
       </div>
     `;

@@ -123,6 +123,23 @@
         "none": "Geen actie",
         "not_configured": "Niet geconfigureerd"
       }
+    },
+    "state_map": {
+      "title": "Statusmapping",
+      "description": "Aangepaste statussen (bijv. edgecut, rain_delayed) koppelen aan standaard visueel gedrag",
+      "add": "Statusmapping toevoegen",
+      "custom_state": "Aangepaste status (bijv. edgecut)",
+      "behavior": "Gedrag",
+      "no_mappings": "Geen aangepaste statusmappings geconfigureerd.",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "behaviors": {
+        "mowing": "Maaien",
+        "paused": "Gepauzeerd",
+        "returning": "Terugkeren naar dock",
+        "error": "Fout",
+        "docked": "Gedockt"
+      }
     }
   },
   "error": {

@@ -180,10 +180,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _setInitialAnimationState(currentState: string): void {
     const onLawnStates = ['mowing', 'paused', 'returning', 'error'];
     const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
+    const resolved = this._resolveStateBehavior(currentState);
 
     if (isDocked) {
       this._animationClass = 'docked';
-    } else if (onLawnStates.includes(currentState)) {
+    } else if (onLawnStates.includes(resolved)) {
       this._animationClass = 'on-lawn';
     } else {
       this._animationClass = '';
@@ -308,7 +309,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return;
     }
 
-    const isGoingToPause = currentState === 'paused' && (previousState === 'mowing' || previousState === 'returning');
+    const resolvedCurrent = this._resolveStateBehavior(currentState);
+    const resolvedPrevious = this._resolveStateBehavior(previousState);
+
+    const isGoingToPause = resolvedCurrent === 'paused' && (resolvedPrevious === 'mowing' || resolvedPrevious === 'returning');
     if (isGoingToPause && this._animationClass !== 'pausing') {
       if (mowerBody) {
         mowerBody.style.willChange = 'transform';
@@ -323,8 +327,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       return;
     }
 
-    const isStartingFromPause = currentState === 'mowing' || currentState === 'returning';
-    if (previousState === 'paused' && isStartingFromPause && this._animationClass !== 'startup') {
+    const isStartingFromPause = resolvedCurrent === 'mowing' || resolvedCurrent === 'returning';
+    if (resolvedPrevious === 'paused' && isStartingFromPause && this._animationClass !== 'startup') {
       if (mowerBody) {
         mowerBody.style.willChange = 'transform';
       }
@@ -537,7 +541,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (isCharging) {
       return true;
     }
-    return state === 'docked';
+    return this._resolveStateBehavior(state) === 'docked';
+  }
+
+  private _resolveStateBehavior(state: string): string {
+    const userMap = this.config?.state_map ?? {};
+    return userMap[state] ?? state;
   }
 
   setConfig(config: CompactLawnMowerCardConfig): void {
@@ -735,28 +744,29 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _getMowerSVGClass(state: string): string {
     const classes: string[] = [];
     const displayState = this._getDisplayStatus(state);
+    const behaviorState = displayState === 'charging' ? 'charging' : this._resolveStateBehavior(displayState);
 
     if (this._animationClass === 'driving-to-dock' || this._animationClass === 'driving-from-dock') {
       classes.push(this._animationClass, 'active');
     } else if (this._animationClass === 'startup') {
       classes.push('on-lawn-static', 'active', 'startup');
-      if (displayState === 'returning') {
+      if (behaviorState === 'returning') {
         classes.push('returning');
       }
     } else if (this._animationClass === 'pausing') {
       classes.push('on-lawn-static', 'pausing');
     } else {
-      if (displayState === 'charging') {
+      if (behaviorState === 'charging') {
         classes.push('docked-static', 'charging', 'charging-animated');
-      } else if (displayState === 'docked') {
+      } else if (behaviorState === 'docked') {
         classes.push('docked-static');
-      } else if (displayState === 'mowing') {
+      } else if (behaviorState === 'mowing') {
         classes.push('on-lawn-static', 'active');
-      } else if (displayState === 'paused') {
+      } else if (behaviorState === 'paused') {
         classes.push('on-lawn-static', 'sleeping');
-      } else if (displayState === 'returning') {
+      } else if (behaviorState === 'returning') {
         classes.push('on-lawn-static', 'returning', 'active');
-      } else if (displayState === 'error') {
+      } else if (behaviorState === 'error') {
         classes.push('on-lawn-static', 'error');
       }
     }
@@ -765,12 +775,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _statusClass(state: string): string {
-    if (state === 'charging') return 'charging';
-    if (state === 'mowing') return 'mowing';
-    if (state === 'paused') return 'paused';
-    if (state === 'error') return 'error';
-    if (state === 'returning') return 'returning';
-    if (state === 'docked') return 'docked';
+    const resolved = this._resolveStateBehavior(state);
+    if (resolved === 'charging') return 'charging';
+    if (resolved === 'mowing') return 'mowing';
+    if (resolved === 'paused') return 'paused';
+    if (resolved === 'error') return 'error';
+    if (resolved === 'returning') return 'returning';
+    if (resolved === 'docked') return 'docked';
     return '';
   }
 
@@ -785,24 +796,27 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _getTranslatedStatus(state: string): string {
     const statusKey = `status.${state.toLowerCase()}`;
     const translated = localize(statusKey, { hass: this.hass });
-    return translated !== statusKey ? translated : state;
+    if (translated !== statusKey) return translated;
+    return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
   }
 
   private _getStatusIcon(state: string): string {
     if (this.chargingStatus) return 'mdi:lightning-bolt';
-    if (state === 'mowing') return 'mdi:robot-mower';
-    if (state === 'returning') return 'mdi:home-import-outline';
-    if (state === 'error') return 'mdi:alert-circle';
-    if (state === 'paused') return 'mdi:pause-circle';
-    if (state === 'docked') return 'mdi:home-circle';
+    const resolved = this._resolveStateBehavior(state);
+    if (resolved === 'mowing') return 'mdi:robot-mower';
+    if (resolved === 'returning') return 'mdi:home-import-outline';
+    if (resolved === 'error') return 'mdi:alert-circle';
+    if (resolved === 'paused') return 'mdi:pause-circle';
+    if (resolved === 'docked') return 'mdi:home-circle';
     return 'mdi:robot';
   }
 
   private _getLEDColor(state: string): string {
     if (this.chargingStatus) return 'rgb(184, 79, 27)';
-    if (state === 'mowing') return '#e8930f';
-    if (state === 'returning') return '#1e88e5';
-    if (state === 'error') return '#d32f2f';
+    const resolved = this._resolveStateBehavior(state);
+    if (resolved === 'mowing') return '#e8930f';
+    if (resolved === 'returning') return '#1e88e5';
+    if (resolved === 'error') return '#d32f2f';
     return 'var(--disabled-text-color, #9e9e9e)';
   }
 
@@ -819,7 +833,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   private _renderSleepAnimation(): TemplateResult | typeof nothing {
     const state = this.mowerState;
-    const shouldShowSleep = state === 'paused' && !this.chargingStatus && this._viewMode === 'mower';
+    const resolvedState = this._resolveStateBehavior(state);
+    const shouldShowSleep = resolvedState === 'paused' && !this.chargingStatus && this._viewMode === 'mower';
 
     if (!shouldShowSleep) return nothing;
 
@@ -1320,7 +1335,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
 
-          <div class="map-controls-wrapper">
+          <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1}; pointer-events: ${this._isMapLoading ? 'none' : 'auto'};">
             <div class="map-zoom-control">
               <button
                 class="map-zoom-button map-zoom-button--in"

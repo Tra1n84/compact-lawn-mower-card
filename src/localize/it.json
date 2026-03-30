@@ -123,6 +123,23 @@
         "none": "Nessuna azione",
         "not_configured": "Non configurato"
       }
+    },
+    "state_map": {
+      "title": "Mappatura stati",
+      "description": "Mappa gli stati personalizzati (es. edgecut, rain_delayed) a un comportamento visivo standard",
+      "add": "Aggiungi mappatura stato",
+      "custom_state": "Stato personalizzato (es. edgecut)",
+      "behavior": "Comportamento",
+      "no_mappings": "Nessuna mappatura stato personalizzata configurata.",
+      "save": "Salva",
+      "cancel": "Annulla",
+      "behaviors": {
+        "mowing": "In taglio",
+        "paused": "In pausa",
+        "returning": "Ritorno alla base",
+        "error": "Errore",
+        "docked": "In base"
+      }
     }
   },
   "error": {

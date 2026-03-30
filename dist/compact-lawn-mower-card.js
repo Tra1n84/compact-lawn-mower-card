@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.2.0';
+const CARD_VERSION = '1.3.0';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -344,6 +344,23 @@ var editor$7 = {
 			more_info: "More Info",
 			none: "No Action",
 			not_configured: "Not Configured"
+		}
+	},
+	state_map: {
+		title: "State Mapping",
+		description: "Map custom integration states (e.g. edgecut, rain_delayed) to a standard visual behavior",
+		add: "Add State Mapping",
+		custom_state: "Custom State (e.g. edgecut)",
+		behavior: "Behavior",
+		no_mappings: "No custom state mappings configured.",
+		save: "Save",
+		cancel: "Cancel",
+		behaviors: {
+			mowing: "Mowing",
+			paused: "Paused",
+			returning: "Returning to Dock",
+			error: "Error",
+			docked: "Docked"
 		}
 	}
 };
@@ -510,6 +527,23 @@ var editor$6 = {
 			none: "Keine Aktion",
 			not_configured: "Nicht konfiguriert"
 		}
+	},
+	state_map: {
+		title: "Status-Mapping",
+		description: "Benutzerdefinierte Status (z.B. edgecut, rain_delayed) auf ein Standardverhalten abbilden",
+		add: "Mapping hinzufügen",
+		custom_state: "Benutzerdefinierter Status (z.B. edgecut)",
+		behavior: "Verhalten",
+		no_mappings: "Keine benutzerdefinierten Status-Mappings konfiguriert.",
+		save: "Speichern",
+		cancel: "Abbrechen",
+		behaviors: {
+			mowing: "Mäht",
+			paused: "Pausiert",
+			returning: "Rückkehr zum Dock",
+			error: "Fehler",
+			docked: "Angedockt"
+		}
 	}
 };
 var error$6 = {
@@ -674,6 +708,23 @@ var editor$5 = {
 			more_info: "Plus d'infos",
 			none: "Pas d'action",
 			not_configured: "Non Configurée"
+		}
+	},
+	state_map: {
+		title: "Mappage d'états",
+		description: "Associer des états personnalisés (ex. edgecut, rain_delayed) à un comportement visuel standard",
+		add: "Ajouter un mappage",
+		custom_state: "État personnalisé (ex. edgecut)",
+		behavior: "Comportement",
+		no_mappings: "Aucun mappage d'état personnalisé configuré.",
+		save: "Enregistrer",
+		cancel: "Annuler",
+		behaviors: {
+			mowing: "Tonte",
+			paused: "Pause",
+			returning: "Retour à la station",
+			error: "Erreur",
+			docked: "Stationnée"
 		}
 	}
 };
@@ -840,6 +891,23 @@ var editor$4 = {
 			none: "Sin acción",
 			not_configured: "No configurado"
 		}
+	},
+	state_map: {
+		title: "Mapeo de estados",
+		description: "Asignar estados personalizados (p.ej. edgecut, rain_delayed) a un comportamiento visual estándar",
+		add: "Añadir mapeo de estado",
+		custom_state: "Estado personalizado (p.ej. edgecut)",
+		behavior: "Comportamiento",
+		no_mappings: "No hay mapeos de estado personalizados configurados.",
+		save: "Guardar",
+		cancel: "Cancelar",
+		behaviors: {
+			mowing: "Cortando",
+			paused: "Pausado",
+			returning: "Volviendo a base",
+			error: "Error",
+			docked: "En base"
+		}
 	}
 };
 var error$4 = {
@@ -1004,6 +1072,23 @@ var editor$3 = {
 			more_info: "Più informazioni",
 			none: "Nessuna azione",
 			not_configured: "Non configurato"
+		}
+	},
+	state_map: {
+		title: "Mappatura stati",
+		description: "Mappa gli stati personalizzati (es. edgecut, rain_delayed) a un comportamento visivo standard",
+		add: "Aggiungi mappatura stato",
+		custom_state: "Stato personalizzato (es. edgecut)",
+		behavior: "Comportamento",
+		no_mappings: "Nessuna mappatura stato personalizzata configurata.",
+		save: "Salva",
+		cancel: "Annulla",
+		behaviors: {
+			mowing: "In taglio",
+			paused: "In pausa",
+			returning: "Ritorno alla base",
+			error: "Errore",
+			docked: "In base"
 		}
 	}
 };
@@ -1170,6 +1255,23 @@ var editor$2 = {
 			none: "Geen actie",
 			not_configured: "Niet geconfigureerd"
 		}
+	},
+	state_map: {
+		title: "Statusmapping",
+		description: "Aangepaste statussen (bijv. edgecut, rain_delayed) koppelen aan standaard visueel gedrag",
+		add: "Statusmapping toevoegen",
+		custom_state: "Aangepaste status (bijv. edgecut)",
+		behavior: "Gedrag",
+		no_mappings: "Geen aangepaste statusmappings geconfigureerd.",
+		save: "Opslaan",
+		cancel: "Annuleren",
+		behaviors: {
+			mowing: "Maaien",
+			paused: "Gepauzeerd",
+			returning: "Terugkeren naar dock",
+			error: "Fout",
+			docked: "Gedockt"
+		}
 	}
 };
 var error$2 = {
@@ -1335,6 +1437,23 @@ var editor$1 = {
 			none: "Brak akcji",
 			not_configured: "Nie skonfigurowano"
 		}
+	},
+	state_map: {
+		title: "Mapowanie stanów",
+		description: "Mapuj niestandardowe stany (np. edgecut, rain_delayed) na standardowe zachowanie wizualne",
+		add: "Dodaj mapowanie stanu",
+		custom_state: "Stan niestandardowy (np. edgecut)",
+		behavior: "Zachowanie",
+		no_mappings: "Brak skonfigurowanych niestandardowych mapowań stanów.",
+		save: "Zapisz",
+		cancel: "Anuluj",
+		behaviors: {
+			mowing: "Koszenie",
+			paused: "Wstrzymano",
+			returning: "Powrót do stacji",
+			error: "Błąd",
+			docked: "W stacji"
+		}
 	}
 };
 var error$1 = {
@@ -1499,6 +1618,23 @@ var editor = {
 			more_info: "Mer info",
 			none: "Ingen åtgärd",
 			not_configured: "Inte konfigurerad"
+		}
+	},
+	state_map: {
+		title: "Statusmappning",
+		description: "Mappa anpassade tillstånd (t.ex. edgecut, rain_delayed) till ett standardvisuellt beteende",
+		add: "Lägg till statusmappning",
+		custom_state: "Anpassat tillstånd (t.ex. edgecut)",
+		behavior: "Beteende",
+		no_mappings: "Inga anpassade statusmappningar konfigurerade.",
+		save: "Spara",
+		cancel: "Avbryt",
+		behaviors: {
+			mowing: "Klipper",
+			paused: "Pausad",
+			returning: "Återvänder till docka",
+			error: "Fel",
+			docked: "Dockad"
 		}
 	}
 };
@@ -4323,7 +4459,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             power: false,
             ui: false,
             actions: false,
+            state_map: false,
         };
+        this._showStateMappingForm = false;
+        this._editingStateMappingKey = null;
+        this._newStateMappingCustomState = '';
+        this._newStateMappingBehavior = 'mowing';
         this._showActionForm = false;
         this._newActionName = '';
         this._newActionIcon = 'mdi:play';
@@ -4341,6 +4482,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
         this._boundComputeOptionsLabel = this._computeOptionsLabel.bind(this);
         this._boundComputeActionsLabel = this._computeActionsLabel.bind(this);
+        this._boundComputeStateMappingLabel = this._computeStateMappingLabel.bind(this);
         this.MAX_ACTIONS = 6;
         this.MOWER_ICONS = [
             'mdi:play',
@@ -4961,6 +5103,141 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         };
         return labelMap[schema.name] || schema.name;
     }
+    _computeStateMappingLabel(schema) {
+        const labelMap = {
+            custom_state: localize('editor.state_map.custom_state', { hass: this.hass }),
+            behavior: localize('editor.state_map.behavior', { hass: this.hass }),
+        };
+        return labelMap[schema.name] || schema.name;
+    }
+    _addStateMapping() {
+        this._newStateMappingCustomState = '';
+        this._newStateMappingBehavior = 'mowing';
+        this._editingStateMappingKey = null;
+        this._showStateMappingForm = true;
+    }
+    _editStateMapping(key) {
+        this._editingStateMappingKey = key;
+        this._newStateMappingCustomState = key;
+        this._newStateMappingBehavior = this.config.state_map?.[key] ?? 'mowing';
+        this._showStateMappingForm = true;
+    }
+    _removeStateMapping(key) {
+        const updated = { ...(this.config.state_map ?? {}) };
+        delete updated[key];
+        this._fireConfigChanged({ ...this.config, state_map: Object.keys(updated).length ? updated : undefined });
+    }
+    _saveStateMapping() {
+        const customState = this._newStateMappingCustomState.trim();
+        if (!customState)
+            return;
+        const updated = { ...(this.config.state_map ?? {}) };
+        if (this._editingStateMappingKey && this._editingStateMappingKey !== customState) {
+            delete updated[this._editingStateMappingKey];
+        }
+        updated[customState] = this._newStateMappingBehavior;
+        this._showStateMappingForm = false;
+        this._editingStateMappingKey = null;
+        this._fireConfigChanged({ ...this.config, state_map: updated });
+    }
+    _cancelStateMapping() {
+        this._showStateMappingForm = false;
+        this._editingStateMappingKey = null;
+    }
+    _renderStateMappingSection() {
+        const expanded = this._sectionsExpanded.state_map;
+        const stateMap = this.config?.state_map ?? {};
+        const entries = Object.entries(stateMap);
+        const canonicalStates = ['mowing', 'paused', 'returning', 'error', 'docked'];
+        const behaviorLabel = (b) => {
+            const key = `editor.state_map.behaviors.${b}`;
+            const t = localize(key, { hass: this.hass });
+            return t !== key ? t : b;
+        };
+        return x `
+      <div class="config-section">
+        <div class="section-header" @click=${() => this._toggleSection('state_map')}>
+          <div class="section-title">
+            <ha-icon icon="mdi:state-machine"></ha-icon>
+            ${localize('editor.state_map.title', { hass: this.hass })}
+          </div>
+          <ha-icon class="collapse-icon ${expanded ? 'expanded' : ''}" icon="mdi:chevron-down"></ha-icon>
+        </div>
+
+        <div class="section-content ${expanded ? 'expanded' : 'collapsed'}">
+          <div class="section-description">${localize('editor.state_map.description', { hass: this.hass })}</div>
+
+          ${entries.length === 0 && !this._showStateMappingForm
+            ? x `<div class="no-actions-text">${localize('editor.state_map.no_mappings', { hass: this.hass })}</div>`
+            : ''}
+
+          ${entries.map(([key, behavior]) => x `
+              <div class="action-item">
+                <div class="action-info">
+                  <div class="action-name">${key}</div>
+                  <div class="action-meta">→ ${behaviorLabel(behavior)}</div>
+                </div>
+                <div class="action-buttons">
+                  <ha-icon-button @click=${() => this._editStateMapping(key)}>
+                    <ha-icon icon="mdi:pencil"></ha-icon>
+                  </ha-icon-button>
+                  <ha-icon-button @click=${() => this._removeStateMapping(key)}>
+                    <ha-icon icon="mdi:close"></ha-icon>
+                  </ha-icon-button>
+                </div>
+              </div>
+            `)}
+
+          <div class="add-action-form ${this._showStateMappingForm ? '' : 'hidden'}">
+            <ha-form
+              .hass=${this.hass}
+              .data=${{ custom_state: this._newStateMappingCustomState, behavior: this._newStateMappingBehavior }}
+              .schema=${[
+            { name: 'custom_state', selector: { text: {} }, required: true },
+            {
+                name: 'behavior',
+                selector: {
+                    select: {
+                        mode: 'dropdown',
+                        options: canonicalStates.map(b => ({ value: b, label: behaviorLabel(b) })),
+                        custom_value: false,
+                    },
+                },
+                required: true,
+            },
+        ]}
+              .computeLabel=${this._boundComputeStateMappingLabel}
+              @value-changed=${(ev) => {
+            ev.stopPropagation();
+            const { custom_state, behavior } = ev.detail.value;
+            if (custom_state !== undefined)
+                this._newStateMappingCustomState = custom_state;
+            if (behavior !== undefined)
+                this._newStateMappingBehavior = behavior;
+        }}
+            ></ha-form>
+            <div class="form-buttons">
+              <ha-button @click=${this._saveStateMapping}>
+                ${localize('editor.state_map.save', { hass: this.hass })}
+              </ha-button>
+              <ha-button @click=${this._cancelStateMapping}>
+                ${localize('editor.state_map.cancel', { hass: this.hass })}
+              </ha-button>
+            </div>
+          </div>
+          ${!this._showStateMappingForm
+            ? x `
+                <div class="actions-header">
+                  <ha-button @click=${this._addStateMapping}>
+                    ${localize('editor.state_map.add', { hass: this.hass })}
+                  </ha-button>
+                </div>
+              `
+            : ''}
+        </div>
+      </div>
+    `;
+    }
     _renderActionsSection() {
         const currentActionCount = this.config?.custom_actions?.length || 0;
         const canAddAction = currentActionCount < this.MAX_ACTIONS;
@@ -5463,6 +5740,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           </div>
 
           ${this._renderActionsSection()}
+          ${this._renderStateMappingSection()}
         </div>
       </div>
     `;
@@ -5481,6 +5759,18 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCardEditor.prototype, "_sectionsExpanded", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCardEditor.prototype, "_showStateMappingForm", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCardEditor.prototype, "_editingStateMappingKey", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCardEditor.prototype, "_newStateMappingCustomState", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCardEditor.prototype, "_newStateMappingBehavior", void 0);
 __decorate([
     r()
 ], CompactLawnMowerCardEditor.prototype, "_showActionForm", void 0);
@@ -5749,10 +6039,11 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     _setInitialAnimationState(currentState) {
         const onLawnStates = ['mowing', 'paused', 'returning', 'error'];
         const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
+        const resolved = this._resolveStateBehavior(currentState);
         if (isDocked) {
             this._animationClass = 'docked';
         }
-        else if (onLawnStates.includes(currentState)) {
+        else if (onLawnStates.includes(resolved)) {
             this._animationClass = 'on-lawn';
         }
         else {
@@ -5863,7 +6154,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             }
             return;
         }
-        const isGoingToPause = currentState === 'paused' && (previousState === 'mowing' || previousState === 'returning');
+        const resolvedCurrent = this._resolveStateBehavior(currentState);
+        const resolvedPrevious = this._resolveStateBehavior(previousState);
+        const isGoingToPause = resolvedCurrent === 'paused' && (resolvedPrevious === 'mowing' || resolvedPrevious === 'returning');
         if (isGoingToPause && this._animationClass !== 'pausing') {
             if (mowerBody) {
                 mowerBody.style.willChange = 'transform';
@@ -5877,8 +6170,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             }, 800);
             return;
         }
-        const isStartingFromPause = currentState === 'mowing' || currentState === 'returning';
-        if (previousState === 'paused' && isStartingFromPause && this._animationClass !== 'startup') {
+        const isStartingFromPause = resolvedCurrent === 'mowing' || resolvedCurrent === 'returning';
+        if (resolvedPrevious === 'paused' && isStartingFromPause && this._animationClass !== 'startup') {
             if (mowerBody) {
                 mowerBody.style.willChange = 'transform';
             }
@@ -6063,7 +6356,11 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (isCharging) {
             return true;
         }
-        return state === 'docked';
+        return this._resolveStateBehavior(state) === 'docked';
+    }
+    _resolveStateBehavior(state) {
+        const userMap = this.config?.state_map ?? {};
+        return userMap[state] ?? state;
     }
     setConfig(config) {
         if (!config) {
@@ -6225,12 +6522,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     _getMowerSVGClass(state) {
         const classes = [];
         const displayState = this._getDisplayStatus(state);
+        const behaviorState = displayState === 'charging' ? 'charging' : this._resolveStateBehavior(displayState);
         if (this._animationClass === 'driving-to-dock' || this._animationClass === 'driving-from-dock') {
             classes.push(this._animationClass, 'active');
         }
         else if (this._animationClass === 'startup') {
             classes.push('on-lawn-static', 'active', 'startup');
-            if (displayState === 'returning') {
+            if (behaviorState === 'returning') {
                 classes.push('returning');
             }
         }
@@ -6238,39 +6536,40 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             classes.push('on-lawn-static', 'pausing');
         }
         else {
-            if (displayState === 'charging') {
+            if (behaviorState === 'charging') {
                 classes.push('docked-static', 'charging', 'charging-animated');
             }
-            else if (displayState === 'docked') {
+            else if (behaviorState === 'docked') {
                 classes.push('docked-static');
             }
-            else if (displayState === 'mowing') {
+            else if (behaviorState === 'mowing') {
                 classes.push('on-lawn-static', 'active');
             }
-            else if (displayState === 'paused') {
+            else if (behaviorState === 'paused') {
                 classes.push('on-lawn-static', 'sleeping');
             }
-            else if (displayState === 'returning') {
+            else if (behaviorState === 'returning') {
                 classes.push('on-lawn-static', 'returning', 'active');
             }
-            else if (displayState === 'error') {
+            else if (behaviorState === 'error') {
                 classes.push('on-lawn-static', 'error');
             }
         }
         return classes.join(' ');
     }
     _statusClass(state) {
-        if (state === 'charging')
+        const resolved = this._resolveStateBehavior(state);
+        if (resolved === 'charging')
             return 'charging';
-        if (state === 'mowing')
+        if (resolved === 'mowing')
             return 'mowing';
-        if (state === 'paused')
+        if (resolved === 'paused')
             return 'paused';
-        if (state === 'error')
+        if (resolved === 'error')
             return 'error';
-        if (state === 'returning')
+        if (resolved === 'returning')
             return 'returning';
-        if (state === 'docked')
+        if (resolved === 'docked')
             return 'docked';
         return '';
     }
@@ -6284,31 +6583,35 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     _getTranslatedStatus(state) {
         const statusKey = `status.${state.toLowerCase()}`;
         const translated = localize(statusKey, { hass: this.hass });
-        return translated !== statusKey ? translated : state;
+        if (translated !== statusKey)
+            return translated;
+        return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
     }
     _getStatusIcon(state) {
         if (this.chargingStatus)
             return 'mdi:lightning-bolt';
-        if (state === 'mowing')
+        const resolved = this._resolveStateBehavior(state);
+        if (resolved === 'mowing')
             return 'mdi:robot-mower';
-        if (state === 'returning')
+        if (resolved === 'returning')
             return 'mdi:home-import-outline';
-        if (state === 'error')
+        if (resolved === 'error')
             return 'mdi:alert-circle';
-        if (state === 'paused')
+        if (resolved === 'paused')
             return 'mdi:pause-circle';
-        if (state === 'docked')
+        if (resolved === 'docked')
             return 'mdi:home-circle';
         return 'mdi:robot';
     }
     _getLEDColor(state) {
         if (this.chargingStatus)
             return 'rgb(184, 79, 27)';
-        if (state === 'mowing')
+        const resolved = this._resolveStateBehavior(state);
+        if (resolved === 'mowing')
             return '#e8930f';
-        if (state === 'returning')
+        if (resolved === 'returning')
             return '#1e88e5';
-        if (state === 'error')
+        if (resolved === 'error')
             return '#d32f2f';
         return 'var(--disabled-text-color, #9e9e9e)';
     }
@@ -6326,7 +6629,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _renderSleepAnimation() {
         const state = this.mowerState;
-        const shouldShowSleep = state === 'paused' && !this.chargingStatus && this._viewMode === 'mower';
+        const resolvedState = this._resolveStateBehavior(state);
+        const shouldShowSleep = resolvedState === 'paused' && !this.chargingStatus && this._viewMode === 'mower';
         if (!shouldShowSleep)
             return E;
         return x `
@@ -6736,7 +7040,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
 
-          <div class="map-controls-wrapper">
+          <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1}; pointer-events: ${this._isMapLoading ? 'none' : 'auto'};">
             <div class="map-zoom-control">
               <button
                 class="map-zoom-button map-zoom-button--in"
