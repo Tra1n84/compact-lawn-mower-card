@@ -1,5 +1,5 @@
 export const CARD_NAME = 'Compact Lawn Mower Card';
-export const CARD_VERSION = '1.3.0';
+export const CARD_VERSION = '1.3.1';
 
 export const DEFAULT_MAP_ZOOM = 18;
 export const MIN_MAP_ZOOM = 1;
@@ -13,6 +13,17 @@ export const MAX_SKY_PERCENTAGE = 70;
 export const CAMERA_RETRY_INTERVAL = 5000;
 export const MAP_UPDATE_INTERVAL = 10000;
 export const CAMERA_LOADING_DELAY = 1000;
+
+export const CARD_TRANSLATED_STATES = new Set([
+  'mowing',
+  'docked',
+  'charging',
+  'paused',
+  'returning',
+  'error',
+  'unavailable',
+  'unknown',
+]);
 
 export const IMG_ZOOM_MIN = 0.5;
 export const IMG_ZOOM_MAX = 8.0;

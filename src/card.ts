@@ -22,6 +22,7 @@ import {
   IMG_ZOOM_MAX,
   IMG_ZOOM_STEP_BUTTON,
   IMG_ZOOM_STEP_WHEEL,
+  CARD_TRANSLATED_STATES,
 } from './constants';
 import { getGraphics } from './graphics';
 import { localize } from './localize';
@@ -37,6 +38,10 @@ import {
   MoreInfoActionConfig,
 } from './types';
 import { compactLawnMowerCardStyles } from './styles';
+
+interface HassWithEntities extends HomeAssistant {
+  entities: Record<string, { platform?: string; translation_key?: string }>;
+}
 
 console.groupCollapsed(
   `%c ${CARD_NAME} %c Version ${CARD_VERSION}`,
@@ -312,7 +317,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const resolvedCurrent = this._resolveStateBehavior(currentState);
     const resolvedPrevious = this._resolveStateBehavior(previousState);
 
-    const isGoingToPause = resolvedCurrent === 'paused' && (resolvedPrevious === 'mowing' || resolvedPrevious === 'returning');
+    const isGoingToPause =
+      resolvedCurrent === 'paused' && (resolvedPrevious === 'mowing' || resolvedPrevious === 'returning');
     if (isGoingToPause && this._animationClass !== 'pausing') {
       if (mowerBody) {
         mowerBody.style.willChange = 'transform';
@@ -794,9 +800,31 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _getTranslatedStatus(state: string): string {
-    const statusKey = `status.${state.toLowerCase()}`;
-    const translated = localize(statusKey, { hass: this.hass });
-    if (translated !== statusKey) return translated;
+    const stateLower = state.toLowerCase();
+
+    if (CARD_TRANSLATED_STATES.has(stateLower)) {
+      const translated = localize(`status.${stateLower}`, { hass: this.hass });
+      if (translated !== `status.${stateLower}`) return translated;
+    }
+
+    if (this.hass && this.config?.entity) {
+      const entityEntry = (this.hass as HassWithEntities).entities?.[this.config.entity];
+      if (entityEntry) {
+        const platform = entityEntry.platform;
+        const translationKey = entityEntry.translation_key ?? 'mower';
+        const hassTranslated = this.hass.localize(
+          `component.${platform}.entity.lawn_mower.${translationKey}.state.${stateLower}`
+        );
+        if (hassTranslated) return hassTranslated;
+      }
+    }
+
+    const mappedState = this.config?.state_map?.[stateLower];
+    if (mappedState && CARD_TRANSLATED_STATES.has(mappedState)) {
+      const translated = localize(`status.${mappedState}`, { hass: this.hass });
+      if (translated !== `status.${mappedState}`) return translated;
+    }
+
     return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
   }
 
@@ -1335,7 +1363,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
 
-          <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1}; pointer-events: ${this._isMapLoading ? 'none' : 'auto'};">
+          <div
+            class="map-controls-wrapper"
+            style="opacity: ${this._isMapLoading ? 0 : 1}; pointer-events: ${this._isMapLoading ? 'none' : 'auto'};"
+          >
             <div class="map-zoom-control">
               <button
                 class="map-zoom-button map-zoom-button--in"

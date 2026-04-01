@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.3.0';
+const CARD_VERSION = '1.3.1';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -216,6 +216,16 @@ const MAX_SKY_PERCENTAGE = 70;
 const CAMERA_RETRY_INTERVAL = 5000;
 const MAP_UPDATE_INTERVAL = 10000;
 const CAMERA_LOADING_DELAY = 1000;
+const CARD_TRANSLATED_STATES = new Set([
+    'mowing',
+    'docked',
+    'charging',
+    'paused',
+    'returning',
+    'error',
+    'unavailable',
+    'unknown',
+]);
 const IMG_ZOOM_MIN = 0.5;
 const IMG_ZOOM_MAX = 8.0;
 const IMG_ZOOM_STEP_BUTTON = 0.25;
@@ -5170,7 +5180,6 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           ${entries.length === 0 && !this._showStateMappingForm
             ? x `<div class="no-actions-text">${localize('editor.state_map.no_mappings', { hass: this.hass })}</div>`
             : ''}
-
           ${entries.map(([key, behavior]) => x `
               <div class="action-item">
                 <div class="action-info">
@@ -5739,8 +5748,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             </div>
           </div>
 
-          ${this._renderActionsSection()}
-          ${this._renderStateMappingSection()}
+          ${this._renderActionsSection()} ${this._renderStateMappingSection()}
         </div>
       </div>
     `;
@@ -6581,10 +6589,28 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         return state;
     }
     _getTranslatedStatus(state) {
-        const statusKey = `status.${state.toLowerCase()}`;
-        const translated = localize(statusKey, { hass: this.hass });
-        if (translated !== statusKey)
-            return translated;
+        const stateLower = state.toLowerCase();
+        if (CARD_TRANSLATED_STATES.has(stateLower)) {
+            const translated = localize(`status.${stateLower}`, { hass: this.hass });
+            if (translated !== `status.${stateLower}`)
+                return translated;
+        }
+        if (this.hass && this.config?.entity) {
+            const entityEntry = this.hass.entities?.[this.config.entity];
+            if (entityEntry) {
+                const platform = entityEntry.platform;
+                const translationKey = entityEntry.translation_key ?? 'mower';
+                const hassTranslated = this.hass.localize(`component.${platform}.entity.lawn_mower.${translationKey}.state.${stateLower}`);
+                if (hassTranslated)
+                    return hassTranslated;
+            }
+        }
+        const mappedState = this.config?.state_map?.[stateLower];
+        if (mappedState && CARD_TRANSLATED_STATES.has(mappedState)) {
+            const translated = localize(`status.${mappedState}`, { hass: this.hass });
+            if (translated !== `status.${mappedState}`)
+                return translated;
+        }
         return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
     }
     _getStatusIcon(state) {
@@ -7040,7 +7066,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             <ha-icon icon="mdi:robot-mower"></ha-icon>
           </div>
 
-          <div class="map-controls-wrapper" style="opacity: ${this._isMapLoading ? 0 : 1}; pointer-events: ${this._isMapLoading ? 'none' : 'auto'};">
+          <div
+            class="map-controls-wrapper"
+            style="opacity: ${this._isMapLoading ? 0 : 1}; pointer-events: ${this._isMapLoading ? 'none' : 'auto'};"
+          >
             <div class="map-zoom-control">
               <button
                 class="map-zoom-button map-zoom-button--in"

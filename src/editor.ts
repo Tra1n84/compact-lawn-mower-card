@@ -822,7 +822,6 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
           ${entries.length === 0 && !this._showStateMappingForm
             ? html`<div class="no-actions-text">${localize('editor.state_map.no_mappings', { hass: this.hass })}</div>`
             : ''}
-
           ${entries.map(
             ([key, behavior]) => html`
               <div class="action-item">
@@ -839,7 +838,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
                   </ha-icon-button>
                 </div>
               </div>
-            `,
+            `
           )}
 
           <div class="add-action-form ${this._showStateMappingForm ? '' : 'hidden'}">
@@ -1420,8 +1419,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             </div>
           </div>
 
-          ${this._renderActionsSection()}
-          ${this._renderStateMappingSection()}
+          ${this._renderActionsSection()} ${this._renderStateMappingSection()}
         </div>
       </div>
     `;
