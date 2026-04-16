@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
 import { CARD_NAME, CARD_VERSION, MIN_MAP_ZOOM, MAX_MAP_ZOOM, DEFAULT_MAP_ZOOM } from './constants';
@@ -46,13 +46,13 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   @state() private _targetMode: 'default' | 'custom' | 'none' = 'default';
   @state() private _newActionNavigationPath = '';
   @state() private _newActionUrlPath = '';
-  @state() private _newActionEntity = '';
   private _resizeObserver?: ResizeObserver;
   private _serviceTranslationsLoaded = false;
   private _cachedServices?: {
     services: Array<{ value: string; label: string }>;
     hassServices: HomeAssistant['services'];
   };
+  private _primaryColorRgbCache?: number[];
 
   private _boundComputeLabel = this._computeLabel.bind(this);
   private _boundComputePowerLabel = this._computePowerLabel.bind(this);
@@ -397,7 +397,6 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     this._targetMode = 'default';
     this._newActionNavigationPath = '';
     this._newActionUrlPath = '';
-    this._newActionEntity = '';
   }
 
   private _showAddActionForm(): void {
@@ -430,6 +429,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   }
 
   private get _actionFormSchema() {
+    if (!this._showActionForm) return [];
+
     const schema: any[] = [
       {
         name: 'action_name',
@@ -693,12 +694,12 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
           )}
         </div>
 
-        <ha-textfield
+        <ha-input
           .label=${localize('editor.actions.icon_custom', { hass: this.hass })}
           .value=${this._newActionIcon}
           @input=${(e: any) => (this._newActionIcon = e.target.value)}
           .helper=${localize('editor.actions.icon_custom_helper', { hass: this.hass })}
-        ></ha-textfield>
+        ></ha-input>
       </div>
     `;
   }
@@ -735,25 +736,37 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   }
 
   private _computeActionsLabel(schema: { name: string }): string {
-    const labelMap: Record<string, string> = {
-      action_name: localize('editor.actions.name', { hass: this.hass }),
-      action_type: localize('editor.actions.type', { hass: this.hass }),
-      action_service: localize('editor.actions.service', { hass: this.hass }),
-      action_target: localize('editor.actions.target_entity', { hass: this.hass }),
-      action_service_data: localize('editor.actions.service_data', { hass: this.hass }),
-      target_mode: localize('editor.actions.target_mode', { hass: this.hass }),
-      action_navigation_path: localize('editor.actions.navigation_path', { hass: this.hass }),
-      action_url_path: localize('editor.actions.url_path', { hass: this.hass }),
-    };
-    return labelMap[schema.name] || schema.name;
+    switch (schema.name) {
+      case 'action_name':
+        return localize('editor.actions.name', { hass: this.hass });
+      case 'action_type':
+        return localize('editor.actions.type', { hass: this.hass });
+      case 'action_service':
+        return localize('editor.actions.service', { hass: this.hass });
+      case 'action_target':
+        return localize('editor.actions.target_entity', { hass: this.hass });
+      case 'action_service_data':
+        return localize('editor.actions.service_data', { hass: this.hass });
+      case 'target_mode':
+        return localize('editor.actions.target_mode', { hass: this.hass });
+      case 'action_navigation_path':
+        return localize('editor.actions.navigation_path', { hass: this.hass });
+      case 'action_url_path':
+        return localize('editor.actions.url_path', { hass: this.hass });
+      default:
+        return schema.name;
+    }
   }
 
   private _computeStateMappingLabel(schema: { name: string }): string {
-    const labelMap: Record<string, string> = {
-      custom_state: localize('editor.state_map.custom_state', { hass: this.hass }),
-      behavior: localize('editor.state_map.behavior', { hass: this.hass }),
-    };
-    return labelMap[schema.name] || schema.name;
+    switch (schema.name) {
+      case 'custom_state':
+        return localize('editor.state_map.custom_state', { hass: this.hass });
+      case 'behavior':
+        return localize('editor.state_map.behavior', { hass: this.hass });
+      default:
+        return schema.name;
+    }
   }
 
   private _addStateMapping(): void {
@@ -1185,22 +1198,18 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return schema;
   }
 
-  private get _colorOptionsSchema() {
-    return [
-      { name: 'sky_color_top', selector: { color_rgb: {} } },
-      { name: 'sky_color_bottom', selector: { color_rgb: {} } },
-      { name: 'grass_color_top', selector: { color_rgb: {} } },
-      { name: 'grass_color_bottom', selector: { color_rgb: {} } },
-    ];
-  }
+  private readonly _colorOptionsSchema = [
+    { name: 'sky_color_top', selector: { color_rgb: {} } },
+    { name: 'sky_color_bottom', selector: { color_rgb: {} } },
+    { name: 'grass_color_top', selector: { color_rgb: {} } },
+    { name: 'grass_color_bottom', selector: { color_rgb: {} } },
+  ];
 
-  private get _badgeColorOptionsSchema() {
-    return [
-      { name: 'badge_text_color', selector: { color_rgb: {} } },
-      { name: 'badge_icon_color', selector: { color_rgb: {} } },
-      { name: 'toggle_active_color', selector: { color_rgb: {} } },
-    ];
-  }
+  private readonly _badgeColorOptionsSchema = [
+    { name: 'badge_text_color', selector: { color_rgb: {} } },
+    { name: 'badge_icon_color', selector: { color_rgb: {} } },
+    { name: 'toggle_active_color', selector: { color_rgb: {} } },
+  ];
 
   private get _appearanceOptionsSchema() {
     return [
@@ -1230,16 +1239,19 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   }
 
   private _getPrimaryColorRgb(): number[] {
+    if (this._primaryColorRgbCache) return this._primaryColorRgbCache;
     const fallback: number[] = [3, 169, 244];
     try {
       const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
       if (primaryColor) {
         const parsed = this._parseColor(primaryColor);
         if (parsed) {
+          this._primaryColorRgbCache = parsed;
           return parsed;
         }
       }
     } catch {}
+    this._primaryColorRgbCache = fallback;
     return fallback;
   }
 

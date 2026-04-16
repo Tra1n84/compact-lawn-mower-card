@@ -1,5 +1,5 @@
 export const CARD_NAME = 'Compact Lawn Mower Card';
-export const CARD_VERSION = '1.3.1';
+export const CARD_VERSION = '1.3.2';
 
 export const DEFAULT_MAP_ZOOM = 18;
 export const MIN_MAP_ZOOM = 1;

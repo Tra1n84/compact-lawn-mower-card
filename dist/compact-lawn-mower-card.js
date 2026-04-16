@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.3.1';
+const CARD_VERSION = '1.3.2';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -4486,7 +4486,6 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._targetMode = 'default';
         this._newActionNavigationPath = '';
         this._newActionUrlPath = '';
-        this._newActionEntity = '';
         this._serviceTranslationsLoaded = false;
         this._boundComputeLabel = this._computeLabel.bind(this);
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
@@ -4514,6 +4513,17 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             { name: 'progress_entity', selector: { entity: { domain: 'sensor' } }, required: false },
             { name: 'battery_entity', selector: { entity: { domain: 'sensor', device_class: 'battery' } }, required: false },
             { name: 'charging_entity', selector: { entity: { domain: ['binary_sensor', 'sensor'] } }, required: false },
+        ];
+        this._colorOptionsSchema = [
+            { name: 'sky_color_top', selector: { color_rgb: {} } },
+            { name: 'sky_color_bottom', selector: { color_rgb: {} } },
+            { name: 'grass_color_top', selector: { color_rgb: {} } },
+            { name: 'grass_color_bottom', selector: { color_rgb: {} } },
+        ];
+        this._badgeColorOptionsSchema = [
+            { name: 'badge_text_color', selector: { color_rgb: {} } },
+            { name: 'badge_icon_color', selector: { color_rgb: {} } },
+            { name: 'toggle_active_color', selector: { color_rgb: {} } },
         ];
     }
     connectedCallback() {
@@ -4794,7 +4804,6 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._targetMode = 'default';
         this._newActionNavigationPath = '';
         this._newActionUrlPath = '';
-        this._newActionEntity = '';
     }
     _showAddActionForm() {
         this._resetActionForm();
@@ -4824,6 +4833,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         }
     }
     get _actionFormSchema() {
+        if (!this._showActionForm)
+            return [];
         const schema = [
             {
                 name: 'action_name',
@@ -5064,12 +5075,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             `)}
         </div>
 
-        <ha-textfield
+        <ha-input
           .label=${localize('editor.actions.icon_custom', { hass: this.hass })}
           .value=${this._newActionIcon}
           @input=${(e) => (this._newActionIcon = e.target.value)}
           .helper=${localize('editor.actions.icon_custom_helper', { hass: this.hass })}
-        ></ha-textfield>
+        ></ha-input>
       </div>
     `;
     }
@@ -5101,24 +5112,36 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return this._getLocalizedLabel(`editor.options.${schema.name}`, schema.name);
     }
     _computeActionsLabel(schema) {
-        const labelMap = {
-            action_name: localize('editor.actions.name', { hass: this.hass }),
-            action_type: localize('editor.actions.type', { hass: this.hass }),
-            action_service: localize('editor.actions.service', { hass: this.hass }),
-            action_target: localize('editor.actions.target_entity', { hass: this.hass }),
-            action_service_data: localize('editor.actions.service_data', { hass: this.hass }),
-            target_mode: localize('editor.actions.target_mode', { hass: this.hass }),
-            action_navigation_path: localize('editor.actions.navigation_path', { hass: this.hass }),
-            action_url_path: localize('editor.actions.url_path', { hass: this.hass }),
-        };
-        return labelMap[schema.name] || schema.name;
+        switch (schema.name) {
+            case 'action_name':
+                return localize('editor.actions.name', { hass: this.hass });
+            case 'action_type':
+                return localize('editor.actions.type', { hass: this.hass });
+            case 'action_service':
+                return localize('editor.actions.service', { hass: this.hass });
+            case 'action_target':
+                return localize('editor.actions.target_entity', { hass: this.hass });
+            case 'action_service_data':
+                return localize('editor.actions.service_data', { hass: this.hass });
+            case 'target_mode':
+                return localize('editor.actions.target_mode', { hass: this.hass });
+            case 'action_navigation_path':
+                return localize('editor.actions.navigation_path', { hass: this.hass });
+            case 'action_url_path':
+                return localize('editor.actions.url_path', { hass: this.hass });
+            default:
+                return schema.name;
+        }
     }
     _computeStateMappingLabel(schema) {
-        const labelMap = {
-            custom_state: localize('editor.state_map.custom_state', { hass: this.hass }),
-            behavior: localize('editor.state_map.behavior', { hass: this.hass }),
-        };
-        return labelMap[schema.name] || schema.name;
+        switch (schema.name) {
+            case 'custom_state':
+                return localize('editor.state_map.custom_state', { hass: this.hass });
+            case 'behavior':
+                return localize('editor.state_map.behavior', { hass: this.hass });
+            default:
+                return schema.name;
+        }
     }
     _addStateMapping() {
         this._newStateMappingCustomState = '';
@@ -5523,21 +5546,6 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         ];
         return schema;
     }
-    get _colorOptionsSchema() {
-        return [
-            { name: 'sky_color_top', selector: { color_rgb: {} } },
-            { name: 'sky_color_bottom', selector: { color_rgb: {} } },
-            { name: 'grass_color_top', selector: { color_rgb: {} } },
-            { name: 'grass_color_bottom', selector: { color_rgb: {} } },
-        ];
-    }
-    get _badgeColorOptionsSchema() {
-        return [
-            { name: 'badge_text_color', selector: { color_rgb: {} } },
-            { name: 'badge_icon_color', selector: { color_rgb: {} } },
-            { name: 'toggle_active_color', selector: { color_rgb: {} } },
-        ];
-    }
     get _appearanceOptionsSchema() {
         return [
             {
@@ -5564,17 +5572,21 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         return undefined;
     }
     _getPrimaryColorRgb() {
+        if (this._primaryColorRgbCache)
+            return this._primaryColorRgbCache;
         const fallback = [3, 169, 244];
         try {
             const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
             if (primaryColor) {
                 const parsed = this._parseColor(primaryColor);
                 if (parsed) {
+                    this._primaryColorRgbCache = parsed;
                     return parsed;
                 }
             }
         }
         catch { }
+        this._primaryColorRgbCache = fallback;
         return fallback;
     }
     get _mainData() {
@@ -5812,9 +5824,6 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCardEditor.prototype, "_newActionUrlPath", void 0);
-__decorate([
-    r()
-], CompactLawnMowerCardEditor.prototype, "_newActionEntity", void 0);
 CompactLawnMowerCardEditor = __decorate([
     t('compact-lawn-mower-card-editor')
 ], CompactLawnMowerCardEditor);
@@ -6787,8 +6796,14 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const dy = p1.clientY - p2.clientY;
         return Math.sqrt(dx * dx + dy * dy);
     }
+    _applyImgTransformDirect() {
+        const layer = this.shadowRoot?.querySelector('.map-image-transform-layer');
+        if (layer) {
+            layer.style.transform = `translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this._imgScale})`;
+        }
+    }
     _constrainPan() {
-        const container = this.shadowRoot?.querySelector('.map-container');
+        const container = this._imgContainer ?? this.shadowRoot?.querySelector('.map-container');
         if (!container)
             return;
         const cW = container.clientWidth;
@@ -6814,13 +6829,16 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         e.preventDefault();
         e.stopPropagation();
-        const rect = e.currentTarget.getBoundingClientRect();
+        this._imgContainer = e.currentTarget;
+        const rect = this._imgContainer.getBoundingClientRect();
         const factor = 1 + (e.deltaY < 0 ? 1 : -1) * IMG_ZOOM_STEP_WHEEL;
         this._applyZoom(factor, e.clientX - rect.left, e.clientY - rect.top);
+        this._applyImgTransformDirect();
         this._saveImgTransform();
     }
     _handleImgPointerDown(e) {
         const container = e.currentTarget;
+        this._imgContainer = container;
         container.setPointerCapture(e.pointerId);
         this._imgActivePointers.set(e.pointerId, e);
         if (this._imgActivePointers.size === 1) {
@@ -6858,6 +6876,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             this._imgTranslateY = this._imgPinchMidY - scaleDelta * (this._imgPinchMidY - this._imgPinchStartTranslateY);
             this._imgScale = newScale;
             this._constrainPan();
+            this._applyImgTransformDirect();
             return;
         }
         if (this._imgIsDragging) {
@@ -6866,6 +6885,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             this._imgTranslateX = this._imgDragStartTranslateX + dx;
             this._imgTranslateY = this._imgDragStartTranslateY + dy;
             this._constrainPan();
+            this._applyImgTransformDirect();
         }
     }
     _handleImgPointerUp(e) {
@@ -6884,7 +6904,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const container = this.shadowRoot?.querySelector('.map-container');
         if (!container)
             return;
+        this._imgContainer = container;
         this._applyZoom(direction === 'in' ? 1 + IMG_ZOOM_STEP_BUTTON : 1 - IMG_ZOOM_STEP_BUTTON, container.clientWidth / 2, container.clientHeight / 2);
+        this._applyImgTransformDirect();
         this._saveImgTransform();
     }
     _handleImgReset(e) {
@@ -6892,6 +6914,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._imgScale = 1;
         this._imgTranslateX = 0;
         this._imgTranslateY = 0;
+        this._applyImgTransformDirect();
         this._saveImgTransform();
     }
     _handleImgDblClick(e) {
@@ -6899,6 +6922,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._imgScale = 1;
         this._imgTranslateX = 0;
         this._imgTranslateY = 0;
+        this._applyImgTransformDirect();
         this._saveImgTransform();
     }
     _saveImgTransform() {
@@ -7247,8 +7271,18 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             this._mapUpdateInterval = window.setInterval(() => {
                 if (this._mapCardElement) {
                     this._mapCardElement.hass = this.hass;
+                    return;
                 }
-                this.requestUpdate();
+                if (!this.config.google_maps_api_key || !this.config.use_google_maps || !this.config.map_entity)
+                    return;
+                const tracker = this.hass?.states[this.config.map_entity];
+                const lat = tracker?.attributes?.latitude;
+                const lon = tracker?.attributes?.longitude;
+                if (lat !== this._lastMapLat || lon !== this._lastMapLon) {
+                    this._lastMapLat = lat;
+                    this._lastMapLon = lon;
+                    this.requestUpdate();
+                }
             }, MAP_UPDATE_INTERVAL);
         }
     }
@@ -7428,14 +7462,18 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             ${this._renderViewToggles()}
 
             <div class="status-badges">
-              <div
-                class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(this._getDisplayStatus(this.mowerState))} ${this._isNarrow ? 'narrow' : ''}"
-              >
-                <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
-                  <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
-                </div>
-                <span class="status-text">${this._getTranslatedStatus(this._getDisplayStatus(this.mowerState))}</span>
-              </div>
+              ${(() => {
+            const displayStatus = this._getDisplayStatus(this.mowerState);
+            const statusClass = this._statusClass(displayStatus);
+            return x `<div
+                  class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${this._isNarrow ? 'narrow' : ''}"
+                >
+                  <div class="badge-icon status-icon ${statusClass}">
+                    <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
+                  </div>
+                  <span class="status-text">${this._getTranslatedStatus(displayStatus)}</span>
+                </div>`;
+        })()}
             </div>
           </div>
 
@@ -7500,15 +7538,6 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_mapImageError", void 0);
-__decorate([
-    r()
-], CompactLawnMowerCard.prototype, "_imgScale", void 0);
-__decorate([
-    r()
-], CompactLawnMowerCard.prototype, "_imgTranslateX", void 0);
-__decorate([
-    r()
-], CompactLawnMowerCard.prototype, "_imgTranslateY", void 0);
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_areActionsExpanded", void 0);

@@ -65,9 +65,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @state() private _isMapLoading = false;
   @state() private _isMapImageLoading = false;
   @state() private _mapImageError = false;
-  @state() private _imgScale = 1;
-  @state() private _imgTranslateX = 0;
-  @state() private _imgTranslateY = 0;
+  private _imgScale = 1;
+  private _imgTranslateX = 0;
+  private _imgTranslateY = 0;
+  private _imgContainer?: HTMLElement;
+  private _lastMapLat?: number;
+  private _lastMapLon?: number;
   @state() private _areActionsExpanded = false;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
@@ -1025,8 +1028,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     return Math.sqrt(dx * dx + dy * dy);
   }
 
+  private _applyImgTransformDirect(): void {
+    const layer = this.shadowRoot?.querySelector('.map-image-transform-layer') as HTMLElement | null;
+    if (layer) {
+      layer.style.transform = `translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this._imgScale})`;
+    }
+  }
+
   private _constrainPan(): void {
-    const container = this.shadowRoot?.querySelector('.map-container') as HTMLElement | null;
+    const container = this._imgContainer ?? (this.shadowRoot?.querySelector('.map-container') as HTMLElement | null);
     if (!container) return;
     const cW = container.clientWidth;
     const cH = container.clientHeight;
@@ -1052,14 +1062,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (!e.ctrlKey) return;
     e.preventDefault();
     e.stopPropagation();
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    this._imgContainer = e.currentTarget as HTMLElement;
+    const rect = this._imgContainer.getBoundingClientRect();
     const factor = 1 + (e.deltaY < 0 ? 1 : -1) * IMG_ZOOM_STEP_WHEEL;
     this._applyZoom(factor, e.clientX - rect.left, e.clientY - rect.top);
+    this._applyImgTransformDirect();
     this._saveImgTransform();
   }
 
   private _handleImgPointerDown(e: PointerEvent): void {
     const container = e.currentTarget as HTMLElement;
+    this._imgContainer = container;
     container.setPointerCapture(e.pointerId);
     this._imgActivePointers.set(e.pointerId, e);
 
@@ -1098,6 +1111,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._imgTranslateY = this._imgPinchMidY - scaleDelta * (this._imgPinchMidY - this._imgPinchStartTranslateY);
       this._imgScale = newScale;
       this._constrainPan();
+      this._applyImgTransformDirect();
       return;
     }
 
@@ -1107,6 +1121,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._imgTranslateX = this._imgDragStartTranslateX + dx;
       this._imgTranslateY = this._imgDragStartTranslateY + dy;
       this._constrainPan();
+      this._applyImgTransformDirect();
     }
   }
 
@@ -1125,11 +1140,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     e.stopPropagation();
     const container = this.shadowRoot?.querySelector('.map-container') as HTMLElement | null;
     if (!container) return;
+    this._imgContainer = container;
     this._applyZoom(
       direction === 'in' ? 1 + IMG_ZOOM_STEP_BUTTON : 1 - IMG_ZOOM_STEP_BUTTON,
       container.clientWidth / 2,
       container.clientHeight / 2
     );
+    this._applyImgTransformDirect();
     this._saveImgTransform();
   }
 
@@ -1138,6 +1155,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._imgScale = 1;
     this._imgTranslateX = 0;
     this._imgTranslateY = 0;
+    this._applyImgTransformDirect();
     this._saveImgTransform();
   }
 
@@ -1146,6 +1164,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._imgScale = 1;
     this._imgTranslateX = 0;
     this._imgTranslateY = 0;
+    this._applyImgTransformDirect();
     this._saveImgTransform();
   }
 
@@ -1562,8 +1581,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._mapUpdateInterval = window.setInterval(() => {
         if (this._mapCardElement) {
           (this._mapCardElement as any).hass = this.hass;
+          return;
         }
-        this.requestUpdate();
+        if (!this.config.google_maps_api_key || !this.config.use_google_maps || !this.config.map_entity) return;
+        const tracker = this.hass?.states[this.config.map_entity];
+        const lat = tracker?.attributes?.latitude;
+        const lon = tracker?.attributes?.longitude;
+        if (lat !== this._lastMapLat || lon !== this._lastMapLon) {
+          this._lastMapLat = lat;
+          this._lastMapLon = lon;
+          this.requestUpdate();
+        }
       }, MAP_UPDATE_INTERVAL);
     }
   }
@@ -1763,16 +1791,18 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             ${this._renderViewToggles()}
 
             <div class="status-badges">
-              <div
-                class="status-ring ${isCharging ? 'charging' : ''} ${this._statusClass(
-                  this._getDisplayStatus(this.mowerState)
-                )} ${this._isNarrow ? 'narrow' : ''}"
-              >
-                <div class="badge-icon status-icon ${this._statusClass(this._getDisplayStatus(this.mowerState))}">
-                  <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
-                </div>
-                <span class="status-text">${this._getTranslatedStatus(this._getDisplayStatus(this.mowerState))}</span>
-              </div>
+              ${(() => {
+                const displayStatus = this._getDisplayStatus(this.mowerState);
+                const statusClass = this._statusClass(displayStatus);
+                return html`<div
+                  class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${this._isNarrow ? 'narrow' : ''}"
+                >
+                  <div class="badge-icon status-icon ${statusClass}">
+                    <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
+                  </div>
+                  <span class="status-text">${this._getTranslatedStatus(displayStatus)}</span>
+                </div>`;
+              })()}
             </div>
           </div>
 
