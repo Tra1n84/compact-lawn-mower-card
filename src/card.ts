@@ -72,6 +72,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _lastMapLat?: number;
   private _lastMapLon?: number;
   @state() private _areActionsExpanded = false;
+  @state() private _pendingActionName: string | null = null;
+  @state() private _actionFeedback: { name: string; status: 'success' | 'error' } | null = null;
+  private _feedbackTimeout: ReturnType<typeof setTimeout> | null = null;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
   @property({ attribute: false }) private _viewMode: 'mower' | 'camera' | 'map' = 'mower';
@@ -659,7 +662,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     return this.hass.states[this.config.map_image_entity];
   }
 
-  private _executeCustomAction(customAction: CustomAction): void {
+  private async _executeCustomAction(customAction: CustomAction): Promise<void> {
     if (!customAction || !customAction.action || !this.hass) {
       return;
     }
@@ -667,19 +670,42 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     forwardHaptic('light');
     const action = customAction.action;
 
+    if (action.action === 'call-service' || action.action === 'toggle') {
+      if (this._feedbackTimeout) clearTimeout(this._feedbackTimeout);
+      this._pendingActionName = customAction.name;
+      this._actionFeedback = null;
+
+      let feedbackStatus: 'success' | 'error' = 'success';
+      try {
+        if (action.action === 'call-service') {
+          await this._executeServiceCall(action as ServiceCallActionConfig);
+        } else {
+          await toggleEntity(this.hass, (action as ToggleActionConfig).entity || this.config.entity);
+        }
+      } catch (error) {
+        console.error('Error executing custom action:', error);
+        this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
+        feedbackStatus = 'error';
+      }
+
+      this._pendingActionName = null;
+      this._actionFeedback = { name: customAction.name, status: feedbackStatus };
+      this._feedbackTimeout = setTimeout(
+        () => {
+          this._actionFeedback = null;
+        },
+        feedbackStatus === 'error' ? 2500 : 1500
+      );
+      return;
+    }
+
     try {
       switch (action.action) {
-        case 'call-service':
-          this._executeServiceCall(action as ServiceCallActionConfig);
-          break;
         case 'navigate':
           navigate(this, (action as NavigateActionConfig).navigation_path);
           break;
         case 'url':
           window.open((action as UrlActionConfig).url_path, '_blank');
-          break;
-        case 'toggle':
-          toggleEntity(this.hass, (action as ToggleActionConfig).entity || this.config.entity);
           break;
         case 'more-info':
           fireEvent(this, 'hass-more-info' as any, {
@@ -698,25 +724,20 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
   }
 
-  private _executeServiceCall(action: ServiceCallActionConfig): void {
+  private _executeServiceCall(action: ServiceCallActionConfig): Promise<void> {
     if (!action.service) {
-      console.error('No service specified for action');
-      return;
+      return Promise.reject(new Error('No service specified for action'));
     }
 
     const [domain, service] = action.service.split('.');
     if (!domain || !service) {
-      console.error('Invalid service format:', action.service);
-      return;
+      return Promise.reject(new Error(`Invalid service format: ${action.service}`));
     }
 
     const serviceData = this._processTemplates(action.data || action.service_data || {});
     const target = this._processTemplates(action.target);
 
-    this.hass.callService(domain, service, serviceData, target).catch(error => {
-      console.error('Service call failed:', error);
-      this._showError(`Service call failed: ${action.service}`);
-    });
+    return this.hass.callService(domain, service, serviceData, target);
   }
 
   private _processTemplates(obj: any): any {
@@ -1719,18 +1740,36 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       : this.config.custom_actions.slice(0, MAX_VISIBLE_ACTIONS);
 
     return html`
-      ${visibleActions.map(
-        action => html`
+      ${visibleActions.map(action => {
+        const isPending = this._pendingActionName === action.name;
+        const feedback = this._actionFeedback?.name === action.name ? this._actionFeedback : null;
+        const stateClass = isPending
+          ? 'is-pending'
+          : feedback?.status === 'success'
+            ? 'is-success'
+            : feedback?.status === 'error'
+              ? 'is-error'
+              : '';
+        const icon = isPending
+          ? 'mdi:loading'
+          : feedback?.status === 'success'
+            ? 'mdi:check'
+            : feedback?.status === 'error'
+              ? 'mdi:close'
+              : action.icon;
+
+        return html`
           <button
-            class="action-button"
+            class="action-button ${stateClass}"
             @click=${() => this._executeCustomAction(action)}
+            ?disabled=${isPending}
             aria-label=${action.name}
             title=${action.name}
           >
-            <ha-icon icon=${action.icon}></ha-icon>
+            <ha-icon icon=${icon}></ha-icon>
           </button>
-        `
-      )}
+        `;
+      })}
       ${hasMoreActions
         ? html`
             <button

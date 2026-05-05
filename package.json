@@ -1,6 +1,6 @@
 {
   "name": "compact-lawn-mower-card",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant",
   "scripts": {
     "build": "rollup -c",

@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.3.2';
+const CARD_VERSION = '1.3.3';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -2992,6 +2992,33 @@ const compactLawnMowerCardStyles = i$3 `
     max-width: 40px;
   }
 
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .action-button.is-pending {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .action-button.is-pending ha-icon {
+    animation: spin 1s linear infinite;
+  }
+
+  .action-button.is-success ha-icon {
+    color: var(--success-color, #4caf50);
+  }
+
+  .action-button.is-error ha-icon {
+    color: var(--error-color, #f44336);
+  }
+
   /* =================== */
   /*      Loader         */
   /* =================== */
@@ -4564,7 +4591,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     }
     setConfig(config) {
         if (config.custom_actions === undefined) {
-            config.custom_actions = getDefaultActions(this.hass);
+            config = { ...config, custom_actions: getDefaultActions(this.hass) };
         }
         this.config = config;
         this.requestUpdate();
@@ -5962,6 +5989,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._imgTranslateX = 0;
         this._imgTranslateY = 0;
         this._areActionsExpanded = false;
+        this._pendingActionName = null;
+        this._actionFeedback = null;
+        this._feedbackTimeout = null;
         this._viewMode = 'mower';
         this._mapWidth = 0;
         this._mapHeight = 0;
@@ -6458,25 +6488,45 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         return this.hass.states[this.config.map_image_entity];
     }
-    _executeCustomAction(customAction) {
+    async _executeCustomAction(customAction) {
         if (!customAction || !customAction.action || !this.hass) {
             return;
         }
         forwardHaptic('light');
         const action = customAction.action;
+        if (action.action === 'call-service' || action.action === 'toggle') {
+            if (this._feedbackTimeout)
+                clearTimeout(this._feedbackTimeout);
+            this._pendingActionName = customAction.name;
+            this._actionFeedback = null;
+            let feedbackStatus = 'success';
+            try {
+                if (action.action === 'call-service') {
+                    await this._executeServiceCall(action);
+                }
+                else {
+                    await toggleEntity(this.hass, action.entity || this.config.entity);
+                }
+            }
+            catch (error) {
+                console.error('Error executing custom action:', error);
+                this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
+                feedbackStatus = 'error';
+            }
+            this._pendingActionName = null;
+            this._actionFeedback = { name: customAction.name, status: feedbackStatus };
+            this._feedbackTimeout = setTimeout(() => {
+                this._actionFeedback = null;
+            }, feedbackStatus === 'error' ? 2500 : 1500);
+            return;
+        }
         try {
             switch (action.action) {
-                case 'call-service':
-                    this._executeServiceCall(action);
-                    break;
                 case 'navigate':
                     navigate(this, action.navigation_path);
                     break;
                 case 'url':
                     window.open(action.url_path, '_blank');
-                    break;
-                case 'toggle':
-                    toggleEntity(this.hass, action.entity || this.config.entity);
                     break;
                 case 'more-info':
                     fireEvent(this, 'hass-more-info', {
@@ -6497,20 +6547,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _executeServiceCall(action) {
         if (!action.service) {
-            console.error('No service specified for action');
-            return;
+            return Promise.reject(new Error('No service specified for action'));
         }
         const [domain, service] = action.service.split('.');
         if (!domain || !service) {
-            console.error('Invalid service format:', action.service);
-            return;
+            return Promise.reject(new Error(`Invalid service format: ${action.service}`));
         }
         const serviceData = this._processTemplates(action.data || action.service_data || {});
         const target = this._processTemplates(action.target);
-        this.hass.callService(domain, service, serviceData, target).catch(error => {
-            console.error('Service call failed:', error);
-            this._showError(`Service call failed: ${action.service}`);
-        });
+        return this.hass.callService(domain, service, serviceData, target);
     }
     _processTemplates(obj) {
         if (typeof obj === 'string') {
@@ -7396,16 +7441,35 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             ? this.config.custom_actions.slice(MAX_VISIBLE_ACTIONS, MAX_VISIBLE_ACTIONS * 2)
             : this.config.custom_actions.slice(0, MAX_VISIBLE_ACTIONS);
         return x `
-      ${visibleActions.map(action => x `
+      ${visibleActions.map(action => {
+            const isPending = this._pendingActionName === action.name;
+            const feedback = this._actionFeedback?.name === action.name ? this._actionFeedback : null;
+            const stateClass = isPending
+                ? 'is-pending'
+                : feedback?.status === 'success'
+                    ? 'is-success'
+                    : feedback?.status === 'error'
+                        ? 'is-error'
+                        : '';
+            const icon = isPending
+                ? 'mdi:loading'
+                : feedback?.status === 'success'
+                    ? 'mdi:check'
+                    : feedback?.status === 'error'
+                        ? 'mdi:close'
+                        : action.icon;
+            return x `
           <button
-            class="action-button"
+            class="action-button ${stateClass}"
             @click=${() => this._executeCustomAction(action)}
+            ?disabled=${isPending}
             aria-label=${action.name}
             title=${action.name}
           >
-            <ha-icon icon=${action.icon}></ha-icon>
+            <ha-icon icon=${icon}></ha-icon>
           </button>
-        `)}
+        `;
+        })}
       ${hasMoreActions
             ? x `
             <button
@@ -7541,6 +7605,12 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_areActionsExpanded", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_pendingActionName", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_actionFeedback", void 0);
 __decorate([
     e('.main-display-area')
 ], CompactLawnMowerCard.prototype, "_mainDisplayArea", void 0);

@@ -1072,6 +1072,33 @@ export const compactLawnMowerCardStyles = css`
     max-width: 40px;
   }
 
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .action-button.is-pending {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .action-button.is-pending ha-icon {
+    animation: spin 1s linear infinite;
+  }
+
+  .action-button.is-success ha-icon {
+    color: var(--success-color, #4caf50);
+  }
+
+  .action-button.is-error ha-icon {
+    color: var(--error-color, #f44336);
+  }
+
   /* =================== */
   /*      Loader         */
   /* =================== */

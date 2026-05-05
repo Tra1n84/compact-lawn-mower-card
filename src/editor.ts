@@ -121,7 +121,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
 
   setConfig(config: CompactLawnMowerCardConfig): void {
     if (config.custom_actions === undefined) {
-      config.custom_actions = getDefaultActions(this.hass);
+      config = { ...config, custom_actions: getDefaultActions(this.hass) };
     }
 
     this.config = config;
