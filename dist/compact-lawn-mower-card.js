@@ -3645,13 +3645,15 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
-  .status-ring.narrow .status-text,
-  .status-ring.narrow .badge-separator {
-    display: none;
-  }
+  @container mower-main (max-width: 175px) {
+    .status-text,
+    .badge-separator {
+      display: none;
+    }
 
-  .status-ring.narrow {
-    min-width: unset;
+    .status-ring {
+      min-width: unset;
+    }
   }
 
   @container mower-main (max-width: 200px) {
@@ -5977,7 +5979,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     constructor() {
         super(...arguments);
         this._animationClass = '';
-        this._isNarrow = false;
         this._forceCameraRefresh = false;
         this._isCameraLoading = false;
         this._isCameraReachable = true;
@@ -6043,10 +6044,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 if (newWidth > 0 && newHeight > 0 && (this._mapWidth !== newWidth || this._mapHeight !== newHeight)) {
                     this._mapWidth = newWidth;
                     this._mapHeight = newHeight;
-                }
-                const isNarrow = newWidth > 0 && newWidth < 175;
-                if (this._isNarrow !== isNarrow) {
-                    this._isNarrow = isNarrow;
                 }
             }
             fireEvent(this, 'iron-resize');
@@ -7242,7 +7239,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </button>
       `);
         }
-        return x ` <div class="view-toggle ${this._isNarrow ? 'narrow' : ''}">${buttons}</div> `;
+        return x ` <div class="view-toggle">${buttons}</div> `;
     }
     async _setViewMode(mode) {
         if (this._cameraUpdateInterval) {
@@ -7529,9 +7526,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
               ${(() => {
             const displayStatus = this._getDisplayStatus(this.mowerState);
             const statusClass = this._statusClass(displayStatus);
-            return x `<div
-                  class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${this._isNarrow ? 'narrow' : ''}"
-                >
+            return x `<div class="status-ring ${isCharging ? 'charging' : ''} ${statusClass}">
                   <div class="badge-icon status-icon ${statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
@@ -7578,9 +7573,6 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_animationClass", void 0);
-__decorate([
-    r()
-], CompactLawnMowerCard.prototype, "_isNarrow", void 0);
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_forceCameraRefresh", void 0);

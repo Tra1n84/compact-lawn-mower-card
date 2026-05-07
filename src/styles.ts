@@ -1725,13 +1725,15 @@ export const compactLawnMowerCardStyles = css`
     }
   }
 
-  .status-ring.narrow .status-text,
-  .status-ring.narrow .badge-separator {
-    display: none;
-  }
+  @container mower-main (max-width: 175px) {
+    .status-text,
+    .badge-separator {
+      display: none;
+    }
 
-  .status-ring.narrow {
-    min-width: unset;
+    .status-ring {
+      min-width: unset;
+    }
   }
 
   @container mower-main (max-width: 200px) {

@@ -57,7 +57,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @property() public config!: CompactLawnMowerCardConfig;
 
   @state() private _animationClass = '';
-  @state() private _isNarrow = false;
+
   @state() private _forceCameraRefresh = false;
   @state() private _isCameraLoading = false;
   @state() private _isCameraReachable = true;
@@ -142,11 +142,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         if (newWidth > 0 && newHeight > 0 && (this._mapWidth !== newWidth || this._mapHeight !== newHeight)) {
           this._mapWidth = newWidth;
           this._mapHeight = newHeight;
-        }
-
-        const isNarrow = newWidth > 0 && newWidth < 175;
-        if (this._isNarrow !== isNarrow) {
-          this._isNarrow = isNarrow;
         }
       }
       fireEvent(this, 'iron-resize' as any);
@@ -1524,7 +1519,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       `);
     }
 
-    return html` <div class="view-toggle ${this._isNarrow ? 'narrow' : ''}">${buttons}</div> `;
+    return html` <div class="view-toggle">${buttons}</div> `;
   }
 
   private async _setViewMode(mode: 'mower' | 'camera' | 'map') {
@@ -1833,9 +1828,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
               ${(() => {
                 const displayStatus = this._getDisplayStatus(this.mowerState);
                 const statusClass = this._statusClass(displayStatus);
-                return html`<div
-                  class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${this._isNarrow ? 'narrow' : ''}"
-                >
+                return html`<div class="status-ring ${isCharging ? 'charging' : ''} ${statusClass}">
                   <div class="badge-icon status-icon ${statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
