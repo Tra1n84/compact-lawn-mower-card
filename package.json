@@ -14,7 +14,7 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/estree": "^1.0.8",
     "prettier": "^3.8.2",
-    "rollup": "^4.60.1",
+    "rollup": "^4.60.3",
     "typescript": "^6.0.2"
   },
   "type": "module",
