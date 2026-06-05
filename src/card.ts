@@ -1883,4 +1883,15 @@ if (!(window as any).customCards) {
   name: 'Compact Lawn Mower Card',
   preview: true,
   description: 'A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant',
+  getEntitySuggestion: (_hass: any, entityId: string) => {
+    if (entityId.split('.')[0] !== 'lawn_mower') {
+      return null;
+    }
+    return {
+      config: {
+        type: 'custom:compact-lawn-mower-card',
+        entity: entityId,
+      },
+    };
+  },
 });

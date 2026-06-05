@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.3.3';
+const CARD_VERSION = '1.3.4';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -7632,6 +7632,17 @@ window.customCards.push({
     name: 'Compact Lawn Mower Card',
     preview: true,
     description: 'A compact, modern and feature-rich custom card for your robotic lawn mower in Home Assistant',
+    getEntitySuggestion: (_hass, entityId) => {
+        if (entityId.split('.')[0] !== 'lawn_mower') {
+            return null;
+        }
+        return {
+            config: {
+                type: 'custom:compact-lawn-mower-card',
+                entity: entityId,
+            },
+        };
+    },
 });
 
 export { CompactLawnMowerCard };
