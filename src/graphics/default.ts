@@ -54,6 +54,13 @@ export const renderDefaultMower: MowerRenderFunction = (
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        <mask id="defaultOutsideBody" x="0" y="0" width="178" height="100" maskUnits="userSpaceOnUse">
+          <rect width="178" height="100" fill="white" />
+          <path
+            d="M 40 61.062 C 37.5 54.359 43.817 41.062 47.567 37.152 C 50.717 33.867 55.551 29.385 63.424 27.649 C 64.719 27.363 69.722 27.218 71.252 27.284 L 81.768 29.71 C 85.08 30.968 88.612 31.873 91.46 32.965 C 95.934 34.68 104.803 37.769 108.243 39.138 C 115.539 42.041 115.714 42.453 121.409 44.848 C 122.997 45.516 131.345 50.246 132.123 50.745 C 137.513 54.202 139.531 55.222 141.426 56.962 C 145.246 60.469 144.215 63.412 144.412 69.769 L 131.515 69.851 L 120 70 L 85 70 L 50 70 L 45 65.531 L 40 61.062 Z"
+            fill="black"
+          />
+        </mask>
       </defs>
       <g transform="translate(0, 10)">
         <g
@@ -101,6 +108,14 @@ export const renderDefaultMower: MowerRenderFunction = (
             stroke="#ccc"
             stroke-width="0.5"
           />
+          <g class="mower-cuttings" mask="url(#defaultOutsideBody)" aria-hidden="true">
+            <path class="grass-clip grass-clip-1" d="M 45 67 q -5 -4 -3 -9" />
+            <path class="grass-clip grass-clip-2" d="M 53 69 q -7 -2 -7 -8" />
+            <path class="grass-clip grass-clip-3" d="M 63 70 q -6 3 -11 -1" />
+            <path class="grass-clip grass-clip-4" d="M 76 70 q -5 4 -11 1" />
+            <path class="grass-clip grass-clip-5" d="M 89 70 q -3 5 -9 3" />
+            <path class="grass-clip grass-clip-6" d="M 101 70 q -2 5 -8 3" />
+          </g>
           <rect
             x="79.317"
             y="56.547"

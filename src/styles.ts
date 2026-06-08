@@ -587,6 +587,78 @@ export const compactLawnMowerCardStyles = css`
     opacity: 0.8;
   }
 
+  .mower-cuttings {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .grass-clip {
+    fill: none;
+    stroke: rgba(203, 232, 139, 0.9);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .mower-cuttings {
+    opacity: 1;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip {
+    animation: grassClipEject var(--clip-duration, 1.55s) ease-out infinite;
+    animation-delay: var(--clip-delay, 0s);
+    will-change: transform, opacity;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-1 {
+    --clip-x: -18px;
+    --clip-y: -11px;
+    --clip-rot: -42deg;
+    --clip-duration: 1.65s;
+    --clip-delay: -0.2s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-2 {
+    --clip-x: -22px;
+    --clip-y: -3px;
+    --clip-rot: 26deg;
+    --clip-duration: 1.9s;
+    --clip-delay: -0.8s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-3 {
+    --clip-x: -18px;
+    --clip-y: 5px;
+    --clip-rot: -18deg;
+    --clip-duration: 1.45s;
+    --clip-delay: -0.45s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-4 {
+    --clip-x: -15px;
+    --clip-y: 8px;
+    --clip-rot: 34deg;
+    --clip-duration: 1.75s;
+    --clip-delay: -1.05s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-5 {
+    --clip-x: -11px;
+    --clip-y: 9px;
+    --clip-rot: -30deg;
+    --clip-duration: 1.6s;
+    --clip-delay: -0.6s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-6 {
+    --clip-x: -9px;
+    --clip-y: 7px;
+    --clip-rot: 22deg;
+    --clip-duration: 1.85s;
+    --clip-delay: -1.25s;
+  }
+
   .mower-svg.on-lawn-static.active .wheel-back .wheel-rotation {
     animation: rotateWheel 1.5s linear infinite;
     will-change: transform;
@@ -1180,6 +1252,27 @@ export const compactLawnMowerCardStyles = css`
     }
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  @keyframes grassClipEject {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(0.75);
+    }
+    12% {
+      opacity: 0.7;
+      transform: translate3d(calc(var(--clip-x) * 0.15), calc(var(--clip-y) * 0.15), 0)
+        rotate(calc(var(--clip-rot) * 0.12)) scale(1);
+    }
+    58% {
+      opacity: 0.38;
+      transform: translate3d(calc(var(--clip-x) * 0.7), calc(var(--clip-y) * 0.7), 0)
+        rotate(calc(var(--clip-rot) * 0.7)) scale(0.85);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--clip-x), var(--clip-y), 0) rotate(var(--clip-rot)) scale(0.45);
     }
   }
 
