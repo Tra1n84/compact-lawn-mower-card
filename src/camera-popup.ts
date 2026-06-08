@@ -99,7 +99,7 @@ export class CameraPopup extends LitElement {
 
     return html`
       <div class="popup-wrapper" @click=${(e: Event) => e.stopPropagation()}>
-        <button class="popup-close" @click=${this._close}>
+        <button class="popup-close" @click=${() => this._close()}>
           <ha-icon icon="mdi:close"></ha-icon>
         </button>
         <div class="popup-content">${content}</div>
