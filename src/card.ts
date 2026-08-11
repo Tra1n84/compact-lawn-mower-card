@@ -334,7 +334,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           mowerBody.style.willChange = 'auto';
         }
         this._setInitialAnimationState(this.mowerState);
-      }, 800);
+      }, 900);
       return;
     }
 
@@ -349,7 +349,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           mowerBody.style.willChange = 'auto';
         }
         this._setInitialAnimationState(this.mowerState);
-      }, 700);
+      }, 800);
       return;
     }
 

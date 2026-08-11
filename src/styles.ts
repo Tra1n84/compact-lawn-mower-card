@@ -591,6 +591,7 @@ export const compactLawnMowerCardStyles = css`
   .mower-cuttings {
     opacity: 0;
     pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
   }
 
   .grass-clip {
@@ -728,7 +729,7 @@ export const compactLawnMowerCardStyles = css`
     will-change: transform;
   }
   .mower-svg.on-lawn-static.active.startup .wheel-front .wheel-rotation {
-    animation: rotateWheelAccel 0.47s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+    animation: rotateWheelAccel 0.7s cubic-bezier(0.2, 0, 0.8, 1) forwards;
     will-change: transform;
   }
 
@@ -744,7 +745,7 @@ export const compactLawnMowerCardStyles = css`
     will-change: transform;
   }
   .mower-svg.on-lawn-static.pausing .wheel-front .wheel-rotation {
-    animation: rotateWheelDecel 0.53s cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: rotateWheelDecel 0.8s cubic-bezier(0.4, 0, 1, 1) forwards;
     will-change: transform;
   }
 

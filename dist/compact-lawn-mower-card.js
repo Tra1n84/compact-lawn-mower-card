@@ -2526,6 +2526,7 @@ const compactLawnMowerCardStyles = i$3 `
   .mower-cuttings {
     opacity: 0;
     pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
   }
 
   .grass-clip {
@@ -2663,7 +2664,7 @@ const compactLawnMowerCardStyles = i$3 `
     will-change: transform;
   }
   .mower-svg.on-lawn-static.active.startup .wheel-front .wheel-rotation {
-    animation: rotateWheelAccel 0.47s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+    animation: rotateWheelAccel 0.7s cubic-bezier(0.2, 0, 0.8, 1) forwards;
     will-change: transform;
   }
 
@@ -2679,7 +2680,7 @@ const compactLawnMowerCardStyles = i$3 `
     will-change: transform;
   }
   .mower-svg.on-lawn-static.pausing .wheel-front .wheel-rotation {
-    animation: rotateWheelDecel 0.53s cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: rotateWheelDecel 0.8s cubic-bezier(0.4, 0, 1, 1) forwards;
     will-change: transform;
   }
 
@@ -6321,7 +6322,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     mowerBody.style.willChange = 'auto';
                 }
                 this._setInitialAnimationState(this.mowerState);
-            }, 800);
+            }, 900);
             return;
         }
         const isStartingFromPause = resolvedCurrent === 'mowing' || resolvedCurrent === 'returning';
@@ -6335,7 +6336,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     mowerBody.style.willChange = 'auto';
                 }
                 this._setInitialAnimationState(this.mowerState);
-            }, 700);
+            }, 800);
             return;
         }
         this._setInitialAnimationState(currentState);
