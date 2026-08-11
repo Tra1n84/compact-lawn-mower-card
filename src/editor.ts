@@ -832,9 +832,13 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
         <div class="section-content ${expanded ? 'expanded' : 'collapsed'}">
           <div class="section-description">${localize('editor.state_map.description', { hass: this.hass })}</div>
 
-          ${entries.length === 0 && !this._showStateMappingForm
-            ? html`<div class="no-actions-text">${localize('editor.state_map.no_mappings', { hass: this.hass })}</div>`
-            : ''}
+          ${
+            entries.length === 0 && !this._showStateMappingForm
+              ? html`<div class="no-actions-text">
+                  ${localize('editor.state_map.no_mappings', { hass: this.hass })}
+                </div>`
+              : ''
+          }
           ${entries.map(
             ([key, behavior]) => html`
               <div class="action-item">
@@ -889,15 +893,17 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
               </ha-button>
             </div>
           </div>
-          ${!this._showStateMappingForm
-            ? html`
-                <div class="actions-header">
-                  <ha-button @click=${this._addStateMapping}>
-                    ${localize('editor.state_map.add', { hass: this.hass })}
-                  </ha-button>
-                </div>
-              `
-            : ''}
+          ${
+            !this._showStateMappingForm
+              ? html`
+                  <div class="actions-header">
+                    <ha-button @click=${this._addStateMapping}>
+                      ${localize('editor.state_map.add', { hass: this.hass })}
+                    </ha-button>
+                  </div>
+                `
+              : ''
+          }
         </div>
       </div>
     `;
@@ -928,51 +934,55 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             </ha-button>
           </div>
 
-          ${this.config.custom_actions && this.config.custom_actions.length > 0
-            ? this.config.custom_actions.map((action, index) => {
-                const typeBadge = this._getActionTypeBadge(action.action.action);
-                const detailLine = this._getActionDetailLine(action);
-                const serviceId = this._getActionServiceId(action);
+          ${
+            this.config.custom_actions && this.config.custom_actions.length > 0
+              ? this.config.custom_actions.map((action, index) => {
+                  const typeBadge = this._getActionTypeBadge(action.action.action);
+                  const detailLine = this._getActionDetailLine(action);
+                  const serviceId = this._getActionServiceId(action);
 
-                return html`
-                  <div class="action-item">
-                    <div class="action-icon">
-                      <ha-icon icon=${action.icon || 'mdi:help'}></ha-icon>
-                    </div>
-                    <div class="action-info">
-                      <div class="action-name">${action.name}</div>
-                      <div class="action-meta">
-                        <span class="action-type-badge">${typeBadge}</span>
-                        ${detailLine ? html`<span class="action-detail">${detailLine}</span>` : ''}
+                  return html`
+                    <div class="action-item">
+                      <div class="action-icon">
+                        <ha-icon icon=${action.icon || 'mdi:help'}></ha-icon>
                       </div>
-                      ${serviceId ? html`<div class="action-service-id">(${serviceId})</div>` : ''}
+                      <div class="action-info">
+                        <div class="action-name">${action.name}</div>
+                        <div class="action-meta">
+                          <span class="action-type-badge">${typeBadge}</span>
+                          ${detailLine ? html`<span class="action-detail">${detailLine}</span>` : ''}
+                        </div>
+                        ${serviceId ? html`<div class="action-service-id">(${serviceId})</div>` : ''}
+                      </div>
+                      <div class="action-buttons">
+                        <ha-icon-button
+                          .label=${localize('editor.actions.edit', { hass: this.hass })}
+                          @click=${() => this._editAction(index)}
+                          .disabled=${this._showActionForm && this._editingActionIndex !== index}
+                        >
+                          <ha-icon icon="mdi:pencil"></ha-icon>
+                        </ha-icon-button>
+                        <ha-icon-button
+                          .label=${localize('editor.actions.remove', { hass: this.hass })}
+                          @click=${() => this._removeAction(index)}
+                        >
+                          <ha-icon icon="mdi:close"></ha-icon>
+                        </ha-icon-button>
+                      </div>
                     </div>
-                    <div class="action-buttons">
-                      <ha-icon-button
-                        .label=${localize('editor.actions.edit', { hass: this.hass })}
-                        @click=${() => this._editAction(index)}
-                        .disabled=${this._showActionForm && this._editingActionIndex !== index}
-                      >
-                        <ha-icon icon="mdi:pencil"></ha-icon>
-                      </ha-icon-button>
-                      <ha-icon-button
-                        .label=${localize('editor.actions.remove', { hass: this.hass })}
-                        @click=${() => this._removeAction(index)}
-                      >
-                        <ha-icon icon="mdi:close"></ha-icon>
-                      </ha-icon-button>
-                    </div>
-                  </div>
-                `;
-              })
-            : html`<p class="no-actions-text">
-                ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
-              </p>`}
+                  `;
+                })
+              : html`<p class="no-actions-text">
+                  ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
+                </p>`
+          }
           <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
             <div class="form-header">
-              ${this._editingActionIndex !== null
-                ? localize('editor.actions.edit', { hass: this.hass })
-                : localize('editor.actions.add', { hass: this.hass })}
+              ${
+                this._editingActionIndex !== null
+                  ? localize('editor.actions.edit', { hass: this.hass })
+                  : localize('editor.actions.add', { hass: this.hass })
+              }
             </div>
 
             <div class="form-section">
@@ -985,29 +995,35 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
               ></ha-form>
             </div>
 
-            ${this._targetMode === 'default' && ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
-              ? html`
-                  <div class="default-target-info form-section">
-                    <ha-icon icon="mdi:information-outline"></ha-icon>
-                    <span>
-                      ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                      <strong
-                        >${this.config.entity
-                          ? this._getEntityDisplayName(this.config.entity).display
-                          : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
-                      >
-                    </span>
-                  </div>
-                `
-              : ''}
-            ${this._targetMode === 'none' && this._newActionType === 'call-service'
-              ? html`
-                  <div class="default-target-info form-section">
-                    <ha-icon icon="mdi:information-outline"></ha-icon>
-                    <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
-                  </div>
-                `
-              : ''}
+            ${
+              this._targetMode === 'default' && ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
+                ? html`
+                    <div class="default-target-info form-section">
+                      <ha-icon icon="mdi:information-outline"></ha-icon>
+                      <span>
+                        ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                        <strong
+                          >${
+                            this.config.entity
+                              ? this._getEntityDisplayName(this.config.entity).display
+                              : localize('editor.actions.no_entity_selected', { hass: this.hass })
+                          }</strong
+                        >
+                      </span>
+                    </div>
+                  `
+                : ''
+            }
+            ${
+              this._targetMode === 'none' && this._newActionType === 'call-service'
+                ? html`
+                    <div class="default-target-info form-section">
+                      <ha-icon icon="mdi:information-outline"></ha-icon>
+                      <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
+                    </div>
+                  `
+                : ''
+            }
 
             <div class="form-section">
               <div class="form-section-title">${localize('editor.actions.icon', { hass: this.hass })}</div>
@@ -1015,46 +1031,52 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
             </div>
 
             <div class="form-buttons">
-              ${this._editingActionIndex !== null
-                ? html`
-                    <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
-                      ${localize('editor.actions.save', { hass: this.hass })}
-                    </ha-button>
-                  `
-                : html`
-                    <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
-                      ${localize('editor.actions.add_button', { hass: this.hass })}
-                    </ha-button>
-                  `}
+              ${
+                this._editingActionIndex !== null
+                  ? html`
+                      <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
+                        ${localize('editor.actions.save', { hass: this.hass })}
+                      </ha-button>
+                    `
+                  : html`
+                      <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
+                        ${localize('editor.actions.add_button', { hass: this.hass })}
+                      </ha-button>
+                    `
+              }
               <ha-button @click=${this._hideActionForm}>
                 ${localize('editor.actions.cancel', { hass: this.hass })}
               </ha-button>
             </div>
           </div>
-          ${!this._showActionForm
-            ? html`
-                ${canAddAction
-                  ? html`
-                      <div class="actions-header">
-                        <ha-button @click=${this._showAddActionForm}>
-                          ${localize('editor.actions.add', { hass: this.hass })}
-                        </ha-button>
-                      </div>
-                    `
-                  : html`
-                      <div class="max-actions-reached">
-                        <ha-icon icon="mdi:information-outline"></ha-icon>
-                        <span
-                          >${localize('editor.actions.max_reached', {
-                            hass: this.hass,
-                            search: '{MAX_ACTIONS}',
-                            replace: String(this.MAX_ACTIONS),
-                          })}</span
-                        >
-                      </div>
-                    `}
-              `
-            : ''}
+          ${
+            !this._showActionForm
+              ? html`
+                  ${
+                    canAddAction
+                      ? html`
+                          <div class="actions-header">
+                            <ha-button @click=${this._showAddActionForm}>
+                              ${localize('editor.actions.add', { hass: this.hass })}
+                            </ha-button>
+                          </div>
+                        `
+                      : html`
+                          <div class="max-actions-reached">
+                            <ha-icon icon="mdi:information-outline"></ha-icon>
+                            <span
+                              >${localize('editor.actions.max_reached', {
+                                hass: this.hass,
+                                search: '{MAX_ACTIONS}',
+                                replace: String(this.MAX_ACTIONS),
+                              })}</span
+                            >
+                          </div>
+                        `
+                  }
+                `
+              : ''
+          }
         </div>
       </div>
     `;

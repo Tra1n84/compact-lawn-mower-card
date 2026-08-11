@@ -35,9 +35,10 @@ const getLanguage = (hass?: HomeAssistant): string => {
 const getNestedProperty = (obj: Translation, path: string): string | undefined => {
   const value = path
     .split('.')
-    .reduce<
-      string | Translation | undefined
-    >((o, i) => (o && typeof o === 'object' ? (o as Translation)[i] : undefined), obj);
+    .reduce<string | Translation | undefined>(
+      (o, i) => (o && typeof o === 'object' ? (o as Translation)[i] : undefined),
+      obj
+    );
 
   return typeof value === 'string' ? value : undefined;
 };

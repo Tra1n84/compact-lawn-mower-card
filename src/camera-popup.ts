@@ -79,13 +79,15 @@ export class CameraPopup extends LitElement {
     } else {
       content = html`
         <div class="popup-stream-container">
-          ${this._isLoading
-            ? html`
-                <div class="loading-indicator">
-                  <div class="loader"></div>
-                </div>
-              `
-            : ''}
+          ${
+            this._isLoading
+              ? html`
+                  <div class="loading-indicator">
+                    <div class="loader"></div>
+                  </div>
+                `
+              : ''
+          }
           <ha-camera-stream
             .hass=${this.hass}
             .stateObj=${stateObj}

@@ -973,13 +973,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         class="camera-container clickable ${this._isCameraLoading ? 'is-loading' : ''}"
         @click=${this._openCameraPopup}
       >
-        ${this._isCameraLoading
-          ? html`
-              <div class="loading-indicator">
-                <div class="loader"></div>
-              </div>
-            `
-          : ''}
+        ${
+          this._isCameraLoading
+            ? html`
+                <div class="loading-indicator">
+                  <div class="loader"></div>
+                </div>
+              `
+            : ''
+        }
         <ha-camera-stream
           class="fit-mode-${fitMode}"
           .hass=${this.hass}
@@ -1298,8 +1300,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         ${this._isMapImageLoading ? html`<div class="loading-indicator"><div class="loader"></div></div>` : ''}
         <div
           class="map-image-transform-layer"
-          style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this
-            ._imgScale}); transform-origin: 0 0;"
+          style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${
+            this._imgScale
+          }); transform-origin: 0 0;"
         >
           <img
             class="map-image map-image-entity"
@@ -1317,36 +1320,38 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             style="opacity: ${this._isMapImageLoading ? 0 : 1};"
           />
         </div>
-        ${!this._isMapImageLoading
-          ? html`<div class="map-controls-wrapper">
-              <div class="map-controls">
-                <button
-                  class="map-control-button"
-                  @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
-                  @dblclick=${(e: MouseEvent) => e.stopPropagation()}
-                  @click=${(e: Event) => this._handleImgZoomButton(e, 'in')}
-                >
-                  <ha-icon icon="mdi:plus"></ha-icon>
-                </button>
-                <button
-                  class="map-control-button"
-                  @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
-                  @dblclick=${(e: MouseEvent) => e.stopPropagation()}
-                  @click=${(e: Event) => this._handleImgZoomButton(e, 'out')}
-                >
-                  <ha-icon icon="mdi:minus"></ha-icon>
-                </button>
-                <button
-                  class="map-control-button"
-                  @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
-                  @dblclick=${(e: MouseEvent) => e.stopPropagation()}
-                  @click=${(e: Event) => this._handleImgReset(e)}
-                >
-                  <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
-                </button>
-              </div>
-            </div>`
-          : nothing}
+        ${
+          !this._isMapImageLoading
+            ? html`<div class="map-controls-wrapper">
+                <div class="map-controls">
+                  <button
+                    class="map-control-button"
+                    @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                    @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                    @click=${(e: Event) => this._handleImgZoomButton(e, 'in')}
+                  >
+                    <ha-icon icon="mdi:plus"></ha-icon>
+                  </button>
+                  <button
+                    class="map-control-button"
+                    @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                    @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                    @click=${(e: Event) => this._handleImgZoomButton(e, 'out')}
+                  >
+                    <ha-icon icon="mdi:minus"></ha-icon>
+                  </button>
+                  <button
+                    class="map-control-button"
+                    @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                    @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                    @click=${(e: Event) => this._handleImgReset(e)}
+                  >
+                    <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
+                  </button>
+                </div>
+              </div>`
+            : nothing
+        }
       </div>
     `;
   }
@@ -1388,13 +1393,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
       return html`
         <div class="map-container ${this._isMapLoading ? 'is-loading' : ''}">
-          ${this._isMapLoading
-            ? html`
-                <div class="loading-indicator">
-                  <div class="loader"></div>
-                </div>
-              `
-            : ''}
+          ${
+            this._isMapLoading
+              ? html`
+                  <div class="loading-indicator">
+                    <div class="loader"></div>
+                  </div>
+                `
+              : ''
+          }
           <img
             class="map-image"
             src="${mapUrl}"
@@ -1778,18 +1785,20 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           </button>
         `;
       })}
-      ${hasMoreActions
-        ? html`
-            <button
-              class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
-              @click=${() => this._toggleActionsExpanded()}
-              aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-              title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-            >
-              <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
-            </button>
-          `
-        : nothing}
+      ${
+        hasMoreActions
+          ? html`
+              <button
+                class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
+                @click=${() => this._toggleActionsExpanded()}
+                aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+                title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+              >
+                <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
+              </button>
+            `
+          : nothing
+      }
     `;
   }
 
@@ -1806,9 +1815,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             <div class="entity-error">
               <ha-icon icon="mdi:robot-mower-outline"></ha-icon>
               <span class="error-title"
-                >${this.config.entity
-                  ? localize('error.entity_not_found', { hass: this.hass })
-                  : localize('error.missing_entity', { hass: this.hass })}</span
+                >${
+                  this.config.entity
+                    ? localize('error.entity_not_found', { hass: this.hass })
+                    : localize('error.missing_entity', { hass: this.hass })
+                }</span
               >
               ${this.config.entity ? html`<span class="error-entity">${this.config.entity}</span>` : nothing}
             </div>
@@ -1825,16 +1836,18 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           <div class="main-display-area ${this._viewMode}-view">
             <div class="mower-display">${this._renderMowerDisplay()} ${this._renderSleepAnimation()}</div>
 
-            ${this.progressLevel !== '-'
-              ? html`
-                  <div class="progress-badges">
-                    <div class="progress-badge">
-                      <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                      <span class="progress-text">${this.progressLevel}%</span>
+            ${
+              this.progressLevel !== '-'
+                ? html`
+                    <div class="progress-badges">
+                      <div class="progress-badge">
+                        <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
+                        <span class="progress-text">${this.progressLevel}%</span>
+                      </div>
                     </div>
-                  </div>
-                `
-              : ''}
+                  `
+                : ''
+            }
             ${this._renderViewToggles()}
 
             <div class="status-badges">
@@ -1851,15 +1864,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             </div>
           </div>
 
-          ${this.config?.custom_actions && this.config.custom_actions.length > 0
-            ? html`
-                <div class="controls-area">
-                  <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
-                    ${this._renderActionButtons()}
+          ${
+            this.config?.custom_actions && this.config.custom_actions.length > 0
+              ? html`
+                  <div class="controls-area">
+                    <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
+                      ${this._renderActionButtons()}
+                    </div>
                   </div>
-                </div>
-              `
-            : nothing}
+                `
+              : nothing
+          }
         </div>
       </ha-card>
     `;

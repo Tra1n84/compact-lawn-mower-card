@@ -5349,7 +5349,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           <div class="section-description">${localize('editor.state_map.description', { hass: this.hass })}</div>
 
           ${entries.length === 0 && !this._showStateMappingForm
-            ? x `<div class="no-actions-text">${localize('editor.state_map.no_mappings', { hass: this.hass })}</div>`
+            ? x `<div class="no-actions-text">
+                  ${localize('editor.state_map.no_mappings', { hass: this.hass })}
+                </div>`
             : ''}
           ${entries.map(([key, behavior]) => x `
               <div class="action-item">
@@ -5407,12 +5409,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           </div>
           ${!this._showStateMappingForm
             ? x `
-                <div class="actions-header">
-                  <ha-button @click=${this._addStateMapping}>
-                    ${localize('editor.state_map.add', { hass: this.hass })}
-                  </ha-button>
-                </div>
-              `
+                  <div class="actions-header">
+                    <ha-button @click=${this._addStateMapping}>
+                      ${localize('editor.state_map.add', { hass: this.hass })}
+                    </ha-button>
+                  </div>
+                `
             : ''}
         </div>
       </div>
@@ -5448,39 +5450,39 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 const detailLine = this._getActionDetailLine(action);
                 const serviceId = this._getActionServiceId(action);
                 return x `
-                  <div class="action-item">
-                    <div class="action-icon">
-                      <ha-icon icon=${action.icon || 'mdi:help'}></ha-icon>
-                    </div>
-                    <div class="action-info">
-                      <div class="action-name">${action.name}</div>
-                      <div class="action-meta">
-                        <span class="action-type-badge">${typeBadge}</span>
-                        ${detailLine ? x `<span class="action-detail">${detailLine}</span>` : ''}
+                    <div class="action-item">
+                      <div class="action-icon">
+                        <ha-icon icon=${action.icon || 'mdi:help'}></ha-icon>
                       </div>
-                      ${serviceId ? x `<div class="action-service-id">(${serviceId})</div>` : ''}
+                      <div class="action-info">
+                        <div class="action-name">${action.name}</div>
+                        <div class="action-meta">
+                          <span class="action-type-badge">${typeBadge}</span>
+                          ${detailLine ? x `<span class="action-detail">${detailLine}</span>` : ''}
+                        </div>
+                        ${serviceId ? x `<div class="action-service-id">(${serviceId})</div>` : ''}
+                      </div>
+                      <div class="action-buttons">
+                        <ha-icon-button
+                          .label=${localize('editor.actions.edit', { hass: this.hass })}
+                          @click=${() => this._editAction(index)}
+                          .disabled=${this._showActionForm && this._editingActionIndex !== index}
+                        >
+                          <ha-icon icon="mdi:pencil"></ha-icon>
+                        </ha-icon-button>
+                        <ha-icon-button
+                          .label=${localize('editor.actions.remove', { hass: this.hass })}
+                          @click=${() => this._removeAction(index)}
+                        >
+                          <ha-icon icon="mdi:close"></ha-icon>
+                        </ha-icon-button>
+                      </div>
                     </div>
-                    <div class="action-buttons">
-                      <ha-icon-button
-                        .label=${localize('editor.actions.edit', { hass: this.hass })}
-                        @click=${() => this._editAction(index)}
-                        .disabled=${this._showActionForm && this._editingActionIndex !== index}
-                      >
-                        <ha-icon icon="mdi:pencil"></ha-icon>
-                      </ha-icon-button>
-                      <ha-icon-button
-                        .label=${localize('editor.actions.remove', { hass: this.hass })}
-                        @click=${() => this._removeAction(index)}
-                      >
-                        <ha-icon icon="mdi:close"></ha-icon>
-                      </ha-icon-button>
-                    </div>
-                  </div>
-                `;
+                  `;
             })
             : x `<p class="no-actions-text">
-                ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
-              </p>`}
+                  ${localize('editor.actions.no_actions_configured', { hass: this.hass })}
+                </p>`}
           <div class="add-action-form ${this._showActionForm ? '' : 'hidden'}">
             <div class="form-header">
               ${this._editingActionIndex !== null
@@ -5500,26 +5502,26 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
 
             ${this._targetMode === 'default' && ['call-service', 'toggle', 'more-info'].includes(this._newActionType)
             ? x `
-                  <div class="default-target-info form-section">
-                    <ha-icon icon="mdi:information-outline"></ha-icon>
-                    <span>
-                      ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
-                      <strong
-                        >${this.config.entity
+                    <div class="default-target-info form-section">
+                      <ha-icon icon="mdi:information-outline"></ha-icon>
+                      <span>
+                        ${localize('editor.actions.using_default_entity', { hass: this.hass })}:
+                        <strong
+                          >${this.config.entity
                 ? this._getEntityDisplayName(this.config.entity).display
                 : localize('editor.actions.no_entity_selected', { hass: this.hass })}</strong
-                      >
-                    </span>
-                  </div>
-                `
+                        >
+                      </span>
+                    </div>
+                  `
             : ''}
             ${this._targetMode === 'none' && this._newActionType === 'call-service'
             ? x `
-                  <div class="default-target-info form-section">
-                    <ha-icon icon="mdi:information-outline"></ha-icon>
-                    <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
-                  </div>
-                `
+                    <div class="default-target-info form-section">
+                      <ha-icon icon="mdi:information-outline"></ha-icon>
+                      <span> ${localize('editor.actions.target_mode_none_helper', { hass: this.hass })} </span>
+                    </div>
+                  `
             : ''}
 
             <div class="form-section">
@@ -5530,15 +5532,15 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             <div class="form-buttons">
               ${this._editingActionIndex !== null
             ? x `
-                    <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
-                      ${localize('editor.actions.save', { hass: this.hass })}
-                    </ha-button>
-                  `
+                      <ha-button @click=${this._saveEditingAction} .disabled=${!this._isActionFormValid()}>
+                        ${localize('editor.actions.save', { hass: this.hass })}
+                      </ha-button>
+                    `
             : x `
-                    <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
-                      ${localize('editor.actions.add_button', { hass: this.hass })}
-                    </ha-button>
-                  `}
+                      <ha-button @click=${this._addAction} .disabled=${!this._isActionFormValid() || !canAddAction}>
+                        ${localize('editor.actions.add_button', { hass: this.hass })}
+                      </ha-button>
+                    `}
               <ha-button @click=${this._hideActionForm}>
                 ${localize('editor.actions.cancel', { hass: this.hass })}
               </ha-button>
@@ -5546,27 +5548,27 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
           </div>
           ${!this._showActionForm
             ? x `
-                ${canAddAction
+                  ${canAddAction
                 ? x `
-                      <div class="actions-header">
-                        <ha-button @click=${this._showAddActionForm}>
-                          ${localize('editor.actions.add', { hass: this.hass })}
-                        </ha-button>
-                      </div>
-                    `
+                          <div class="actions-header">
+                            <ha-button @click=${this._showAddActionForm}>
+                              ${localize('editor.actions.add', { hass: this.hass })}
+                            </ha-button>
+                          </div>
+                        `
                 : x `
-                      <div class="max-actions-reached">
-                        <ha-icon icon="mdi:information-outline"></ha-icon>
-                        <span
-                          >${localize('editor.actions.max_reached', {
+                          <div class="max-actions-reached">
+                            <ha-icon icon="mdi:information-outline"></ha-icon>
+                            <span
+                              >${localize('editor.actions.max_reached', {
                     hass: this.hass,
                     search: '{MAX_ACTIONS}',
                     replace: String(this.MAX_ACTIONS),
                 })}</span
-                        >
-                      </div>
-                    `}
-              `
+                            >
+                          </div>
+                        `}
+                `
             : ''}
         </div>
       </div>
@@ -6042,10 +6044,10 @@ let CameraPopup = class CameraPopup extends i {
         <div class="popup-stream-container">
           ${this._isLoading
                 ? x `
-                <div class="loading-indicator">
-                  <div class="loader"></div>
-                </div>
-              `
+                  <div class="loading-indicator">
+                    <div class="loader"></div>
+                  </div>
+                `
                 : ''}
           <ha-camera-stream
             .hass=${this.hass}
@@ -6899,10 +6901,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
       >
         ${this._isCameraLoading
             ? x `
-              <div class="loading-indicator">
-                <div class="loader"></div>
-              </div>
-            `
+                <div class="loading-indicator">
+                  <div class="loader"></div>
+                </div>
+              `
             : ''}
         <ha-camera-stream
           class="fit-mode-${fitMode}"
@@ -7166,8 +7168,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         ${this._isMapImageLoading ? x `<div class="loading-indicator"><div class="loader"></div></div>` : ''}
         <div
           class="map-image-transform-layer"
-          style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this
-            ._imgScale}); transform-origin: 0 0;"
+          style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this._imgScale}); transform-origin: 0 0;"
         >
           <img
             class="map-image map-image-entity"
@@ -7187,33 +7188,33 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </div>
         ${!this._isMapImageLoading
             ? x `<div class="map-controls-wrapper">
-              <div class="map-controls">
-                <button
-                  class="map-control-button"
-                  @pointerdown=${(e) => e.stopPropagation()}
-                  @dblclick=${(e) => e.stopPropagation()}
-                  @click=${(e) => this._handleImgZoomButton(e, 'in')}
-                >
-                  <ha-icon icon="mdi:plus"></ha-icon>
-                </button>
-                <button
-                  class="map-control-button"
-                  @pointerdown=${(e) => e.stopPropagation()}
-                  @dblclick=${(e) => e.stopPropagation()}
-                  @click=${(e) => this._handleImgZoomButton(e, 'out')}
-                >
-                  <ha-icon icon="mdi:minus"></ha-icon>
-                </button>
-                <button
-                  class="map-control-button"
-                  @pointerdown=${(e) => e.stopPropagation()}
-                  @dblclick=${(e) => e.stopPropagation()}
-                  @click=${(e) => this._handleImgReset(e)}
-                >
-                  <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
-                </button>
-              </div>
-            </div>`
+                <div class="map-controls">
+                  <button
+                    class="map-control-button"
+                    @pointerdown=${(e) => e.stopPropagation()}
+                    @dblclick=${(e) => e.stopPropagation()}
+                    @click=${(e) => this._handleImgZoomButton(e, 'in')}
+                  >
+                    <ha-icon icon="mdi:plus"></ha-icon>
+                  </button>
+                  <button
+                    class="map-control-button"
+                    @pointerdown=${(e) => e.stopPropagation()}
+                    @dblclick=${(e) => e.stopPropagation()}
+                    @click=${(e) => this._handleImgZoomButton(e, 'out')}
+                  >
+                    <ha-icon icon="mdi:minus"></ha-icon>
+                  </button>
+                  <button
+                    class="map-control-button"
+                    @pointerdown=${(e) => e.stopPropagation()}
+                    @dblclick=${(e) => e.stopPropagation()}
+                    @click=${(e) => this._handleImgReset(e)}
+                  >
+                    <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
+                  </button>
+                </div>
+              </div>`
             : E}
       </div>
     `;
@@ -7240,10 +7241,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         <div class="map-container ${this._isMapLoading ? 'is-loading' : ''}">
           ${this._isMapLoading
                 ? x `
-                <div class="loading-indicator">
-                  <div class="loader"></div>
-                </div>
-              `
+                  <div class="loading-indicator">
+                    <div class="loader"></div>
+                  </div>
+                `
                 : ''}
           <img
             class="map-image"
@@ -7598,15 +7599,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         })}
       ${hasMoreActions
             ? x `
-            <button
-              class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
-              @click=${() => this._toggleActionsExpanded()}
-              aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-              title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
-            >
-              <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
-            </button>
-          `
+              <button
+                class="action-button more-button ${this._areActionsExpanded ? 'expanded' : ''}"
+                @click=${() => this._toggleActionsExpanded()}
+                aria-label=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+                title=${this._areActionsExpanded ? 'Show first actions' : 'Show more actions'}
+              >
+                <ha-icon icon=${this._areActionsExpanded ? 'mdi:chevron-left' : 'mdi:dots-horizontal'}></ha-icon>
+              </button>
+            `
             : E}
     `;
     }
@@ -7641,13 +7642,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
 
             ${this.progressLevel !== '-'
             ? x `
-                  <div class="progress-badges">
-                    <div class="progress-badge">
-                      <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                      <span class="progress-text">${this.progressLevel}%</span>
+                    <div class="progress-badges">
+                      <div class="progress-badge">
+                        <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
+                        <span class="progress-text">${this.progressLevel}%</span>
+                      </div>
                     </div>
-                  </div>
-                `
+                  `
             : ''}
             ${this._renderViewToggles()}
 
@@ -7667,12 +7668,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
 
           ${this.config?.custom_actions && this.config.custom_actions.length > 0
             ? x `
-                <div class="controls-area">
-                  <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
-                    ${this._renderActionButtons()}
+                  <div class="controls-area">
+                    <div class="buttons-section ${this._areActionsExpanded ? 'expanded' : ''}">
+                      ${this._renderActionButtons()}
+                    </div>
                   </div>
-                </div>
-              `
+                `
             : E}
         </div>
       </ha-card>
