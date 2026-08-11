@@ -7,8 +7,8 @@ export const MAX_MAP_ZOOM = 21;
 export const MAX_STATIC_MAP_SIZE = 640;
 
 export const MOWER_COLUMN_WIDTH = 120;
-export const MIN_SKY_PERCENTAGE = 45;
-export const MAX_SKY_PERCENTAGE = 70;
+export const MIN_SKY_PERCENTAGE = 38;
+export const MAX_SKY_PERCENTAGE = 62;
 
 export const CAMERA_RETRY_INTERVAL = 5000;
 export const MAP_UPDATE_INTERVAL = 10000;

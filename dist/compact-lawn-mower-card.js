@@ -211,8 +211,8 @@ const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
 const MAX_STATIC_MAP_SIZE = 640;
 const MOWER_COLUMN_WIDTH = 120;
-const MIN_SKY_PERCENTAGE = 45;
-const MAX_SKY_PERCENTAGE = 70;
+const MIN_SKY_PERCENTAGE = 38;
+const MAX_SKY_PERCENTAGE = 62;
 const CAMERA_RETRY_INTERVAL = 5000;
 const MAP_UPDATE_INTERVAL = 10000;
 const CAMERA_LOADING_DELAY = 1000;
@@ -2268,6 +2268,7 @@ const compactLawnMowerCardStyles = i$3 `
     align-items: flex-start;
     justify-content: flex-end;
     padding: 8px;
+    padding-left: 96px;
     pointer-events: none;
   }
 
@@ -2284,7 +2285,8 @@ const compactLawnMowerCardStyles = i$3 `
     pointer-events: auto;
     padding: 6px 10px;
     gap: 6px;
-    min-width: fit-content;
+    min-width: 0;
+    max-width: 100%;
     height: 38px;
     box-sizing: border-box;
   }
@@ -2372,6 +2374,12 @@ const compactLawnMowerCardStyles = i$3 `
     white-space: nowrap;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .status-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .status-icon {
@@ -6225,12 +6233,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         const wheelOffsetFromBottomInSvg = mowerHeight * 0.05;
         const grassHeight = containerHeight * (1 - skyPercentage / 100);
-        let verticalPositionFactor = 0.4;
+        let verticalPositionFactor = 0.32;
         if (containerWidth < 300) {
-            verticalPositionFactor = 0.7;
+            verticalPositionFactor = 0.55;
         }
         else if (containerWidth < 380) {
-            verticalPositionFactor = 0.5;
+            verticalPositionFactor = 0.4;
         }
         const desiredWheelPosition = grassHeight * verticalPositionFactor;
         const newBottom = desiredWheelPosition - wheelOffsetFromBottomInSvg;

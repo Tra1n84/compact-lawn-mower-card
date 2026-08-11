@@ -224,11 +224,11 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const wheelOffsetFromBottomInSvg = mowerHeight * 0.05;
     const grassHeight = containerHeight * (1 - skyPercentage / 100);
 
-    let verticalPositionFactor = 0.4;
+    let verticalPositionFactor = 0.32;
     if (containerWidth < 300) {
-      verticalPositionFactor = 0.7;
+      verticalPositionFactor = 0.55;
     } else if (containerWidth < 380) {
-      verticalPositionFactor = 0.5;
+      verticalPositionFactor = 0.4;
     }
     const desiredWheelPosition = grassHeight * verticalPositionFactor;
     const newBottom = desiredWheelPosition - wheelOffsetFromBottomInSvg;
