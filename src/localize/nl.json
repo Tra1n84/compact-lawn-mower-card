@@ -10,6 +10,7 @@
     "charging": "Opladen",
     "paused": "Gepauzeerd",
     "returning": "Terugkeren naar dock",
+    "returning_short": "Terugkeren",
     "error": "Fout",
     "unavailable": "Niet beschikbaar",
     "unknown": "Onbekend"

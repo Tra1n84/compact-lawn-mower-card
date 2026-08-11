@@ -213,6 +213,7 @@ const MAX_STATIC_MAP_SIZE = 640;
 const MOWER_COLUMN_WIDTH = 120;
 const MIN_SKY_PERCENTAGE = 38;
 const MAX_SKY_PERCENTAGE = 62;
+const STATUS_SHORT_LABEL_WIDTH = 300;
 const CAMERA_RETRY_INTERVAL = 5000;
 const MAP_UPDATE_INTERVAL = 10000;
 const CAMERA_LOADING_DELAY = 1000;
@@ -242,6 +243,7 @@ var status$7 = {
 	charging: "Charging",
 	paused: "Paused",
 	returning: "Returning to Dock",
+	returning_short: "Returning",
 	error: "Error",
 	unavailable: "Unavailable",
 	unknown: "Unknown"
@@ -424,6 +426,7 @@ var status$6 = {
 	charging: "Lädt",
 	paused: "Pausiert",
 	returning: "Rückkehr zum Dock",
+	returning_short: "Rückkehr",
 	error: "Fehler",
 	unavailable: "Nicht verfügbar",
 	unknown: "Unbekannt"
@@ -606,6 +609,7 @@ var status$5 = {
 	charging: "En charge",
 	paused: "Pause",
 	returning: "Retour à la station",
+	returning_short: "Retour",
 	error: "Erreur",
 	unavailable: "Indisponible",
 	unknown: "Inconnu"
@@ -788,6 +792,7 @@ var status$4 = {
 	charging: "Cargando",
 	paused: "Pausado",
 	returning: "Volviendo a base",
+	returning_short: "Volviendo",
 	error: "Error",
 	unavailable: "No disponible",
 	unknown: "Desconocido"
@@ -970,6 +975,7 @@ var status$3 = {
 	charging: "In carica",
 	paused: "In pausa",
 	returning: "Ritorno alla base",
+	returning_short: "Ritorno",
 	error: "Errore",
 	unavailable: "Non disponibile",
 	unknown: "Sconosciuto"
@@ -1152,6 +1158,7 @@ var status$2 = {
 	charging: "Opladen",
 	paused: "Gepauzeerd",
 	returning: "Terugkeren naar dock",
+	returning_short: "Terugkeren",
 	error: "Fout",
 	unavailable: "Niet beschikbaar",
 	unknown: "Onbekend"
@@ -1334,6 +1341,7 @@ var status$1 = {
 	charging: "Ładowanie",
 	paused: "Wstrzymano",
 	returning: "Powrót do stacji",
+	returning_short: "Powrót",
 	error: "Błąd",
 	unavailable: "Niedostępny",
 	unknown: "Nieznany"
@@ -1516,6 +1524,7 @@ var status = {
 	charging: "Laddar",
 	paused: "Pausad",
 	returning: "Återvänder till docka",
+	returning_short: "Återvänder",
 	error: "Fel",
 	unavailable: "Ej tillgänglig",
 	unknown: "Okänd"
@@ -2268,7 +2277,6 @@ const compactLawnMowerCardStyles = i$3 `
     align-items: flex-start;
     justify-content: flex-end;
     padding: 8px;
-    padding-left: 96px;
     pointer-events: none;
   }
 
@@ -2285,8 +2293,7 @@ const compactLawnMowerCardStyles = i$3 `
     pointer-events: auto;
     padding: 6px 10px;
     gap: 6px;
-    min-width: 0;
-    max-width: 100%;
+    min-width: fit-content;
     height: 38px;
     box-sizing: border-box;
   }
@@ -2374,12 +2381,6 @@ const compactLawnMowerCardStyles = i$3 `
     white-space: nowrap;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .status-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
   }
 
   .status-icon {
@@ -6783,6 +6784,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
     }
+    _getShortStatus(state) {
+        const full = this._getTranslatedStatus(state);
+        if (this._mapWidth === 0 || this._mapWidth > STATUS_SHORT_LABEL_WIDTH)
+            return full;
+        if (this._resolveStateBehavior(state).toLowerCase() !== 'returning')
+            return full;
+        const short = localize('status.returning_short', { hass: this.hass });
+        return short === 'status.returning_short' ? full : short;
+    }
     _getStatusIcon(state) {
         if (this.chargingStatus)
             return 'mdi:lightning-bolt';
@@ -7649,7 +7659,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                   <div class="badge-icon status-icon ${statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
-                  <span class="status-text">${this._getTranslatedStatus(displayStatus)}</span>
+                  <span class="status-text">${this._getShortStatus(displayStatus)}</span>
                 </div>`;
         })()}
             </div>

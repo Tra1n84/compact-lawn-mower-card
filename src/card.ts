@@ -15,6 +15,7 @@ import {
   MOWER_COLUMN_WIDTH,
   MIN_SKY_PERCENTAGE,
   MAX_SKY_PERCENTAGE,
+  STATUS_SHORT_LABEL_WIDTH,
   CAMERA_RETRY_INTERVAL,
   MAP_UPDATE_INTERVAL,
   CAMERA_LOADING_DELAY,
@@ -849,6 +850,14 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
 
     return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
+  }
+
+  private _getShortStatus(state: string): string {
+    const full = this._getTranslatedStatus(state);
+    if (this._mapWidth === 0 || this._mapWidth > STATUS_SHORT_LABEL_WIDTH) return full;
+    if (this._resolveStateBehavior(state).toLowerCase() !== 'returning') return full;
+    const short = localize('status.returning_short', { hass: this.hass });
+    return short === 'status.returning_short' ? full : short;
   }
 
   private _getStatusIcon(state: string): string {
@@ -1836,7 +1845,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
                   <div class="badge-icon status-icon ${statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
-                  <span class="status-text">${this._getTranslatedStatus(displayStatus)}</span>
+                  <span class="status-text">${this._getShortStatus(displayStatus)}</span>
                 </div>`;
               })()}
             </div>

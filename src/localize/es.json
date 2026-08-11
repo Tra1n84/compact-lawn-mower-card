@@ -10,6 +10,7 @@
     "charging": "Cargando",
     "paused": "Pausado",
     "returning": "Volviendo a base",
+    "returning_short": "Volviendo",
     "error": "Error",
     "unavailable": "No disponible",
     "unknown": "Desconocido"

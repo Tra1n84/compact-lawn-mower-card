@@ -10,6 +10,7 @@
     "charging": "En charge",
     "paused": "Pause",
     "returning": "Retour à la station",
+    "returning_short": "Retour",
     "error": "Erreur",
     "unavailable": "Indisponible",
     "unknown": "Inconnu"

@@ -10,6 +10,7 @@
     "charging": "Laddar",
     "paused": "Pausad",
     "returning": "Återvänder till docka",
+    "returning_short": "Återvänder",
     "error": "Fel",
     "unavailable": "Ej tillgänglig",
     "unknown": "Okänd"

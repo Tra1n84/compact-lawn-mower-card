@@ -10,6 +10,7 @@
     "charging": "Lädt",
     "paused": "Pausiert",
     "returning": "Rückkehr zum Dock",
+    "returning_short": "Rückkehr",
     "error": "Fehler",
     "unavailable": "Nicht verfügbar",
     "unknown": "Unbekannt"

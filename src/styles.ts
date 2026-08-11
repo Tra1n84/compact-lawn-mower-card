@@ -333,7 +333,6 @@ export const compactLawnMowerCardStyles = css`
     align-items: flex-start;
     justify-content: flex-end;
     padding: 8px;
-    padding-left: 96px;
     pointer-events: none;
   }
 
@@ -350,8 +349,7 @@ export const compactLawnMowerCardStyles = css`
     pointer-events: auto;
     padding: 6px 10px;
     gap: 6px;
-    min-width: 0;
-    max-width: 100%;
+    min-width: fit-content;
     height: 38px;
     box-sizing: border-box;
   }
@@ -439,12 +437,6 @@ export const compactLawnMowerCardStyles = css`
     white-space: nowrap;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
-
-  .status-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
   }
 
   .status-icon {
