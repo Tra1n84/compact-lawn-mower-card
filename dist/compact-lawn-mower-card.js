@@ -6249,12 +6249,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _updateAnimation(previousState, currentState, wasDocked) {
         const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
-        const isDriving = this._animationClass === 'driving-from-dock' || this._animationClass === 'driving-to-dock';
-        if (isDriving) {
-            const drivingTowardsDock = this._animationClass === 'driving-to-dock';
-            if (drivingTowardsDock === isDocked) {
-                return;
-            }
+        if (this._animationClass === 'driving-from-dock' || this._animationClass === 'driving-to-dock') {
+            return;
         }
         if (this._animationTimeout) {
             clearTimeout(this._animationTimeout);
@@ -6267,6 +6263,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         const onAnimationEnd = () => {
             this._mowerBodyAnimEndListener = undefined;
+            if (this._animationTimeout) {
+                clearTimeout(this._animationTimeout);
+                this._animationTimeout = undefined;
+            }
             if (mowerBody) {
                 mowerBody.style.willChange = 'auto';
             }
@@ -6289,12 +6289,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._mowerBodyAnimEndListener = listener;
                     mowerBody.addEventListener('animationend', listener);
                     mowerBody.style.willChange = 'transform';
-                    this._animationClass = 'driving-from-dock';
                 }
-                else {
-                    this._animationClass = 'driving-from-dock';
-                    this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
-                }
+                this._animationClass = 'driving-from-dock';
+                this._animationTimeout = window.setTimeout(onAnimationEnd, 2500);
             }
             return;
         }
@@ -6305,12 +6302,9 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._mowerBodyAnimEndListener = listener;
                     mowerBody.addEventListener('animationend', listener);
                     mowerBody.style.willChange = 'transform';
-                    this._animationClass = 'driving-to-dock';
                 }
-                else {
-                    this._animationClass = 'driving-to-dock';
-                    this._animationTimeout = window.setTimeout(onAnimationEnd, 2000);
-                }
+                this._animationClass = 'driving-to-dock';
+                this._animationTimeout = window.setTimeout(onAnimationEnd, 2500);
             }
             return;
         }
