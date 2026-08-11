@@ -6,10 +6,15 @@ export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 21;
 export const MAX_STATIC_MAP_SIZE = 640;
 
+export const STATUS_BADGE_GAP = 6;
+export const STATUS_LABEL_HYSTERESIS = 8;
+export const STATUS_TEXT_FONT_SIZE = 12;
+export const STATUS_TEXT_FONT_WEIGHT = 600;
+export const STATUS_TEXT_LETTER_SPACING = 0.5;
+
 export const MOWER_COLUMN_WIDTH = 120;
 export const MIN_SKY_PERCENTAGE = 38;
 export const MAX_SKY_PERCENTAGE = 62;
-export const STATUS_SHORT_LABEL_WIDTH = 300;
 
 export const CAMERA_RETRY_INTERVAL = 5000;
 export const MAP_UPDATE_INTERVAL = 10000;

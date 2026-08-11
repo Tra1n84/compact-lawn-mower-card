@@ -210,10 +210,14 @@ const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
 const MAX_STATIC_MAP_SIZE = 640;
+const STATUS_BADGE_GAP = 6;
+const STATUS_LABEL_HYSTERESIS = 8;
+const STATUS_TEXT_FONT_SIZE = 12;
+const STATUS_TEXT_FONT_WEIGHT = 600;
+const STATUS_TEXT_LETTER_SPACING = 0.5;
 const MOWER_COLUMN_WIDTH = 120;
 const MIN_SKY_PERCENTAGE = 38;
 const MAX_SKY_PERCENTAGE = 62;
-const STATUS_SHORT_LABEL_WIDTH = 300;
 const CAMERA_RETRY_INTERVAL = 5000;
 const MAP_UPDATE_INTERVAL = 10000;
 const CAMERA_LOADING_DELAY = 1000;
@@ -2243,18 +2247,28 @@ const compactLawnMowerCardStyles = i$3 `
   /* =================== */
   /*      Badges         */
   /* =================== */
-  .progress-badges {
+  .badge-row {
     grid-area: display;
     position: relative;
     z-index: 10;
     display: flex;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: space-between;
+    gap: 8px;
     padding: 8px;
     pointer-events: none;
+    overflow: hidden;
+  }
+
+  .badge-spacer {
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   .progress-badge {
+    flex: 0 1 auto;
+    min-width: fit-content;
+    overflow: hidden;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     border: none;
@@ -2269,18 +2283,9 @@ const compactLawnMowerCardStyles = i$3 `
     box-sizing: border-box;
   }
 
-  .status-badges {
-    grid-area: display;
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 8px;
-    pointer-events: none;
-  }
-
   .status-ring {
+    flex: 0 1 auto;
+    --status-ring-padding-x: 10px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     border: none;
@@ -2291,11 +2296,18 @@ const compactLawnMowerCardStyles = i$3 `
     justify-content: center;
     position: relative;
     pointer-events: auto;
-    padding: 6px 10px;
+    padding: 6px var(--status-ring-padding-x);
     gap: 6px;
-    min-width: fit-content;
+    min-width: 0;
     height: 38px;
     box-sizing: border-box;
+  }
+
+  .status-ring.icon-only {
+    gap: 0;
+    padding: 6px;
+    aspect-ratio: 1;
+    justify-content: center;
   }
 
   .status-ring.charging {
@@ -2381,6 +2393,12 @@ const compactLawnMowerCardStyles = i$3 `
     white-space: nowrap;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .status-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .status-icon {
@@ -3765,13 +3783,8 @@ const compactLawnMowerCardStyles = i$3 `
   }
 
   @container mower-main (max-width: 175px) {
-    .status-text,
     .badge-separator {
       display: none;
-    }
-
-    .status-ring {
-      min-width: unset;
     }
   }
 
@@ -3785,8 +3798,7 @@ const compactLawnMowerCardStyles = i$3 `
       min-height: 80px;
     }
 
-    .progress-badges,
-    .status-badges,
+    .badge-row,
     .view-toggle {
       padding: 4px;
     }
@@ -3821,7 +3833,10 @@ const compactLawnMowerCardStyles = i$3 `
       --mdc-icon-size: 18px;
     }
 
-    .status-ring,
+    .status-ring {
+      height: 36px;
+    }
+
     .view-toggle-button {
       width: 34px;
       height: 36px;
@@ -3881,8 +3896,7 @@ const compactLawnMowerCardStyles = i$3 `
       min-height: 100px;
     }
 
-    .progress-badges,
-    .status-badges,
+    .badge-row,
     .view-toggle {
       padding: 6px;
     }
@@ -3967,7 +3981,8 @@ const compactLawnMowerCardStyles = i$3 `
 
   @media (min-width: 768px) {
     .status-ring {
-      padding: 8px 12px;
+      --status-ring-padding-x: 12px;
+      padding: 8px var(--status-ring-padding-x);
       gap: 6px;
     }
 
@@ -6114,6 +6129,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._pendingActionName = null;
         this._actionFeedback = null;
         this._feedbackTimeout = null;
+        this._statusLabelTier = 0;
         this._viewMode = 'mower';
         this._mapWidth = 0;
         this._mapHeight = 0;
@@ -6172,6 +6188,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (this._mainDisplayArea) {
             this._mainResizeObserver.observe(this._mainDisplayArea);
         }
+        this._setupBadgeResizeObserver();
+        document.fonts?.ready.then(() => this._measureStatusLabelTier());
         this._applyStyles();
         this.requestUpdate();
     }
@@ -6180,6 +6198,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._clearAllTimers();
         this._mainResizeObserver?.disconnect();
         this._mowerResizeObserver?.disconnect();
+        this._badgeResizeObserver?.disconnect();
         this._closePopup();
         this._haMapShadowObserver?.disconnect();
         this._haMapShadowObserver = undefined;
@@ -6246,6 +6265,17 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const desiredWheelPosition = grassHeight * verticalPositionFactor;
         const newBottom = desiredWheelPosition - wheelOffsetFromBottomInSvg;
         mowerSvg.style.bottom = `${newBottom}px`;
+    }
+    _setupBadgeResizeObserver() {
+        if (this._badgeResizeObserver) {
+            this._badgeResizeObserver.disconnect();
+        }
+        if (!this._badgeRow)
+            return;
+        this._badgeResizeObserver = new ResizeObserver(() => {
+            requestAnimationFrame(() => this._measureStatusLabelTier());
+        });
+        this._badgeResizeObserver.observe(this._badgeRow);
     }
     _setupMowerResizeObserver() {
         if (this._mowerResizeObserver) {
@@ -6517,6 +6547,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 this._isMapImageLoading = false;
             }
         }
+        this._setupBadgeResizeObserver();
+        this._measureStatusLabelTier();
     }
     _isCurrentlyDocked(state, isCharging) {
         if (isCharging) {
@@ -6786,14 +6818,91 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
     }
-    _getShortStatus(state) {
+    _getStatusLabelCandidates(state) {
         const full = this._getTranslatedStatus(state);
-        if (this._mapWidth === 0 || this._mapWidth > STATUS_SHORT_LABEL_WIDTH)
-            return full;
         if (this._resolveStateBehavior(state).toLowerCase() !== 'returning')
-            return full;
+            return [full];
         const short = localize('status.returning_short', { hass: this.hass });
-        return short === 'status.returning_short' ? full : short;
+        return short === 'status.returning_short' || short === full ? [full] : [full, short];
+    }
+    _getStatusLabel(state) {
+        const candidates = this._getStatusLabelCandidates(state);
+        if (this._statusLabelTier === 0)
+            return candidates[0];
+        if (this._statusLabelTier >= candidates.length)
+            return '';
+        return candidates[this._statusLabelTier];
+    }
+    _measureStatusLabelTier() {
+        const row = this._badgeRow;
+        const ring = this._statusRing;
+        if (!row || !ring)
+            return;
+        const available = row.clientWidth - this._badgeRowFixedWidth(row);
+        if (available <= 0)
+            return;
+        const candidates = this._getStatusLabelCandidates(this._getDisplayStatus(this.mowerState));
+        const iconOnlyWidth = this._statusRingChromeWidth(ring);
+        if (iconOnlyWidth <= 0)
+            return;
+        let tier = candidates.length;
+        for (let i = 0; i < candidates.length; i++) {
+            const needed = iconOnlyWidth + this._measureStatusTextWidth(candidates[i], ring);
+            const budget = i < this._statusLabelTier ? available - STATUS_LABEL_HYSTERESIS : available;
+            if (needed <= budget) {
+                tier = i;
+                break;
+            }
+        }
+        if (tier !== this._statusLabelTier)
+            this._statusLabelTier = tier;
+    }
+    _badgeRowFixedWidth(row) {
+        const style = getComputedStyle(row);
+        let used = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        const progress = row.querySelector('.progress-badge');
+        if (progress) {
+            const gap = parseFloat(style.columnGap || '0');
+            const rendered = progress.getBoundingClientRect().width;
+            used += Math.max(rendered, progress.scrollWidth) + (Number.isNaN(gap) ? 0 : gap);
+        }
+        return used;
+    }
+    _statusRingChromeWidth(ring) {
+        const style = getComputedStyle(ring);
+        const icon = ring.querySelector('.status-icon');
+        const iconWidth = icon ? icon.getBoundingClientRect().width : 0;
+        const isIconOnly = ring.classList.contains('icon-only');
+        const gap = isIconOnly ? STATUS_BADGE_GAP : parseFloat(style.columnGap || '0');
+        const labelPaddingX = parseFloat(style.getPropertyValue('--status-ring-padding-x'));
+        const sidePadding = isIconOnly && !Number.isNaN(labelPaddingX)
+            ? labelPaddingX * 2
+            : parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        return (sidePadding +
+            parseFloat(style.borderLeftWidth) +
+            parseFloat(style.borderRightWidth) +
+            iconWidth +
+            (Number.isNaN(gap) ? 0 : gap));
+    }
+    _measureStatusTextWidth(text, ring) {
+        if (!text)
+            return 0;
+        const probe = ring.querySelector('.status-text');
+        const style = getComputedStyle(probe ?? ring);
+        const fontSize = probe ? style.fontSize : `${STATUS_TEXT_FONT_SIZE}px`;
+        const fontWeight = probe ? style.fontWeight : `${STATUS_TEXT_FONT_WEIGHT}`;
+        const spacing = probe ? parseFloat(style.letterSpacing) : STATUS_TEXT_LETTER_SPACING;
+        const ctx = CompactLawnMowerCard_1._textMeasureContext();
+        if (!ctx)
+            return text.length * parseFloat(fontSize) * 0.62;
+        ctx.font = `${fontWeight} ${fontSize} ${style.fontFamily}`;
+        return ctx.measureText(text).width + (Number.isNaN(spacing) ? 0 : spacing * text.length);
+    }
+    static _textMeasureContext() {
+        if (!CompactLawnMowerCard_1._measureCanvas) {
+            CompactLawnMowerCard_1._measureCanvas = document.createElement('canvas');
+        }
+        return CompactLawnMowerCard_1._measureCanvas.getContext('2d');
     }
     _getStatusIcon(state) {
         if (this.chargingStatus)
@@ -7640,27 +7749,28 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
           <div class="main-display-area ${this._viewMode}-view">
             <div class="mower-display">${this._renderMowerDisplay()} ${this._renderSleepAnimation()}</div>
 
-            ${this.progressLevel !== '-'
+            ${this._renderViewToggles()}
+
+            <div class="badge-row">
+              ${this.progressLevel !== '-'
             ? x `
-                    <div class="progress-badges">
                       <div class="progress-badge">
                         <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
                         <span class="progress-text">${this.progressLevel}%</span>
                       </div>
-                    </div>
-                  `
-            : ''}
-            ${this._renderViewToggles()}
-
-            <div class="status-badges">
+                    `
+            : x `<div class="badge-spacer"></div>`}
               ${(() => {
             const displayStatus = this._getDisplayStatus(this.mowerState);
             const statusClass = this._statusClass(displayStatus);
-            return x `<div class="status-ring ${isCharging ? 'charging' : ''} ${statusClass}">
+            const label = this._getStatusLabel(displayStatus);
+            return x `<div
+                  class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${label ? '' : 'icon-only'}"
+                >
                   <div class="badge-icon status-icon ${statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
-                  <span class="status-text">${this._getShortStatus(displayStatus)}</span>
+                  ${label ? x `<span class="status-text">${label}</span>` : E}
                 </div>`;
         })()}
             </div>
@@ -7736,6 +7846,15 @@ __decorate([
 __decorate([
     e('.main-display-area')
 ], CompactLawnMowerCard.prototype, "_mainDisplayArea", void 0);
+__decorate([
+    e('.badge-row')
+], CompactLawnMowerCard.prototype, "_badgeRow", void 0);
+__decorate([
+    e('.status-ring')
+], CompactLawnMowerCard.prototype, "_statusRing", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_statusLabelTier", void 0);
 __decorate([
     n({ attribute: false })
 ], CompactLawnMowerCard.prototype, "_viewMode", void 0);

@@ -12,10 +12,14 @@ import {
   MIN_MAP_ZOOM,
   MAX_MAP_ZOOM,
   MAX_STATIC_MAP_SIZE,
+  STATUS_BADGE_GAP,
+  STATUS_LABEL_HYSTERESIS,
+  STATUS_TEXT_FONT_SIZE,
+  STATUS_TEXT_FONT_WEIGHT,
+  STATUS_TEXT_LETTER_SPACING,
   MOWER_COLUMN_WIDTH,
   MIN_SKY_PERCENTAGE,
   MAX_SKY_PERCENTAGE,
-  STATUS_SHORT_LABEL_WIDTH,
   CAMERA_RETRY_INTERVAL,
   MAP_UPDATE_INTERVAL,
   CAMERA_LOADING_DELAY,
@@ -78,6 +82,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _feedbackTimeout: ReturnType<typeof setTimeout> | null = null;
   private _currentPopup?: CameraPopup;
   @query('.main-display-area') private _mainDisplayArea?: HTMLElement;
+  @query('.badge-row') private _badgeRow?: HTMLElement;
+  @query('.status-ring') private _statusRing?: HTMLElement;
+  @state() private _statusLabelTier = 0;
+  private _badgeResizeObserver?: ResizeObserver;
   @property({ attribute: false }) private _viewMode: 'mower' | 'camera' | 'map' = 'mower';
   @state() private _mapWidth = 0;
   @state() private _mapHeight = 0;
@@ -152,6 +160,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._mainResizeObserver.observe(this._mainDisplayArea);
     }
 
+    this._setupBadgeResizeObserver();
+    document.fonts?.ready.then(() => this._measureStatusLabelTier());
+
     this._applyStyles();
     this.requestUpdate();
   }
@@ -161,6 +172,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._clearAllTimers();
     this._mainResizeObserver?.disconnect();
     this._mowerResizeObserver?.disconnect();
+    this._badgeResizeObserver?.disconnect();
     this._closePopup();
     this._haMapShadowObserver?.disconnect();
     this._haMapShadowObserver = undefined;
@@ -235,6 +247,19 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const newBottom = desiredWheelPosition - wheelOffsetFromBottomInSvg;
 
     mowerSvg.style.bottom = `${newBottom}px`;
+  }
+
+  private _setupBadgeResizeObserver(): void {
+    if (this._badgeResizeObserver) {
+      this._badgeResizeObserver.disconnect();
+    }
+
+    if (!this._badgeRow) return;
+
+    this._badgeResizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => this._measureStatusLabelTier());
+    });
+    this._badgeResizeObserver.observe(this._badgeRow);
   }
 
   _setupMowerResizeObserver() {
@@ -547,6 +572,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         this._isMapImageLoading = false;
       }
     }
+
+    this._setupBadgeResizeObserver();
+    this._measureStatusLabelTier();
   }
 
   private _isCurrentlyDocked(state: string, isCharging: boolean): boolean {
@@ -852,12 +880,97 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     return state.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase());
   }
 
-  private _getShortStatus(state: string): string {
+  private _getStatusLabelCandidates(state: string): string[] {
     const full = this._getTranslatedStatus(state);
-    if (this._mapWidth === 0 || this._mapWidth > STATUS_SHORT_LABEL_WIDTH) return full;
-    if (this._resolveStateBehavior(state).toLowerCase() !== 'returning') return full;
+    if (this._resolveStateBehavior(state).toLowerCase() !== 'returning') return [full];
     const short = localize('status.returning_short', { hass: this.hass });
-    return short === 'status.returning_short' ? full : short;
+    return short === 'status.returning_short' || short === full ? [full] : [full, short];
+  }
+
+  private _getStatusLabel(state: string): string {
+    const candidates = this._getStatusLabelCandidates(state);
+    if (this._statusLabelTier === 0) return candidates[0];
+    if (this._statusLabelTier >= candidates.length) return '';
+    return candidates[this._statusLabelTier];
+  }
+
+  private _measureStatusLabelTier(): void {
+    const row = this._badgeRow;
+    const ring = this._statusRing;
+    if (!row || !ring) return;
+
+    const available = row.clientWidth - this._badgeRowFixedWidth(row);
+    if (available <= 0) return;
+
+    const candidates = this._getStatusLabelCandidates(this._getDisplayStatus(this.mowerState));
+    const iconOnlyWidth = this._statusRingChromeWidth(ring);
+    if (iconOnlyWidth <= 0) return;
+
+    let tier = candidates.length;
+    for (let i = 0; i < candidates.length; i++) {
+      const needed = iconOnlyWidth + this._measureStatusTextWidth(candidates[i], ring);
+      const budget = i < this._statusLabelTier ? available - STATUS_LABEL_HYSTERESIS : available;
+      if (needed <= budget) {
+        tier = i;
+        break;
+      }
+    }
+
+    if (tier !== this._statusLabelTier) this._statusLabelTier = tier;
+  }
+
+  private _badgeRowFixedWidth(row: HTMLElement): number {
+    const style = getComputedStyle(row);
+    let used = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    const progress = row.querySelector<HTMLElement>('.progress-badge');
+    if (progress) {
+      const gap = parseFloat(style.columnGap || '0');
+      const rendered = progress.getBoundingClientRect().width;
+      used += Math.max(rendered, progress.scrollWidth) + (Number.isNaN(gap) ? 0 : gap);
+    }
+    return used;
+  }
+
+  private _statusRingChromeWidth(ring: HTMLElement): number {
+    const style = getComputedStyle(ring);
+    const icon = ring.querySelector<HTMLElement>('.status-icon');
+    const iconWidth = icon ? icon.getBoundingClientRect().width : 0;
+    const isIconOnly = ring.classList.contains('icon-only');
+    const gap = isIconOnly ? STATUS_BADGE_GAP : parseFloat(style.columnGap || '0');
+    const labelPaddingX = parseFloat(style.getPropertyValue('--status-ring-padding-x'));
+    const sidePadding =
+      isIconOnly && !Number.isNaN(labelPaddingX)
+        ? labelPaddingX * 2
+        : parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    return (
+      sidePadding +
+      parseFloat(style.borderLeftWidth) +
+      parseFloat(style.borderRightWidth) +
+      iconWidth +
+      (Number.isNaN(gap) ? 0 : gap)
+    );
+  }
+
+  private _measureStatusTextWidth(text: string, ring: HTMLElement): number {
+    if (!text) return 0;
+    const probe = ring.querySelector<HTMLElement>('.status-text');
+    const style = getComputedStyle(probe ?? ring);
+    const fontSize = probe ? style.fontSize : `${STATUS_TEXT_FONT_SIZE}px`;
+    const fontWeight = probe ? style.fontWeight : `${STATUS_TEXT_FONT_WEIGHT}`;
+    const spacing = probe ? parseFloat(style.letterSpacing) : STATUS_TEXT_LETTER_SPACING;
+    const ctx = CompactLawnMowerCard._textMeasureContext();
+    if (!ctx) return text.length * parseFloat(fontSize) * 0.62;
+    ctx.font = `${fontWeight} ${fontSize} ${style.fontFamily}`;
+    return ctx.measureText(text).width + (Number.isNaN(spacing) ? 0 : spacing * text.length);
+  }
+
+  private static _measureCanvas?: HTMLCanvasElement;
+
+  private static _textMeasureContext(): CanvasRenderingContext2D | null {
+    if (!CompactLawnMowerCard._measureCanvas) {
+      CompactLawnMowerCard._measureCanvas = document.createElement('canvas');
+    }
+    return CompactLawnMowerCard._measureCanvas.getContext('2d');
   }
 
   private _getStatusIcon(state: string): string {
@@ -1836,29 +1949,30 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           <div class="main-display-area ${this._viewMode}-view">
             <div class="mower-display">${this._renderMowerDisplay()} ${this._renderSleepAnimation()}</div>
 
-            ${
-              this.progressLevel !== '-'
-                ? html`
-                    <div class="progress-badges">
+            ${this._renderViewToggles()}
+
+            <div class="badge-row">
+              ${
+                this.progressLevel !== '-'
+                  ? html`
                       <div class="progress-badge">
                         <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
                         <span class="progress-text">${this.progressLevel}%</span>
                       </div>
-                    </div>
-                  `
-                : ''
-            }
-            ${this._renderViewToggles()}
-
-            <div class="status-badges">
+                    `
+                  : html`<div class="badge-spacer"></div>`
+              }
               ${(() => {
                 const displayStatus = this._getDisplayStatus(this.mowerState);
                 const statusClass = this._statusClass(displayStatus);
-                return html`<div class="status-ring ${isCharging ? 'charging' : ''} ${statusClass}">
+                const label = this._getStatusLabel(displayStatus);
+                return html`<div
+                  class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${label ? '' : 'icon-only'}"
+                >
                   <div class="badge-icon status-icon ${statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
-                  <span class="status-text">${this._getShortStatus(displayStatus)}</span>
+                  ${label ? html`<span class="status-text">${label}</span>` : nothing}
                 </div>`;
               })()}
             </div>

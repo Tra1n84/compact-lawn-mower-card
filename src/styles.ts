@@ -299,18 +299,28 @@ export const compactLawnMowerCardStyles = css`
   /* =================== */
   /*      Badges         */
   /* =================== */
-  .progress-badges {
+  .badge-row {
     grid-area: display;
     position: relative;
     z-index: 10;
     display: flex;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: space-between;
+    gap: 8px;
     padding: 8px;
     pointer-events: none;
+    overflow: hidden;
+  }
+
+  .badge-spacer {
+    flex: 0 1 auto;
+    min-width: 0;
   }
 
   .progress-badge {
+    flex: 0 1 auto;
+    min-width: fit-content;
+    overflow: hidden;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     border: none;
@@ -325,18 +335,9 @@ export const compactLawnMowerCardStyles = css`
     box-sizing: border-box;
   }
 
-  .status-badges {
-    grid-area: display;
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-    padding: 8px;
-    pointer-events: none;
-  }
-
   .status-ring {
+    flex: 0 1 auto;
+    --status-ring-padding-x: 10px;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     border: none;
@@ -347,11 +348,18 @@ export const compactLawnMowerCardStyles = css`
     justify-content: center;
     position: relative;
     pointer-events: auto;
-    padding: 6px 10px;
+    padding: 6px var(--status-ring-padding-x);
     gap: 6px;
-    min-width: fit-content;
+    min-width: 0;
     height: 38px;
     box-sizing: border-box;
+  }
+
+  .status-ring.icon-only {
+    gap: 0;
+    padding: 6px;
+    aspect-ratio: 1;
+    justify-content: center;
   }
 
   .status-ring.charging {
@@ -437,6 +445,12 @@ export const compactLawnMowerCardStyles = css`
     white-space: nowrap;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .status-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .status-icon {
@@ -1821,13 +1835,8 @@ export const compactLawnMowerCardStyles = css`
   }
 
   @container mower-main (max-width: 175px) {
-    .status-text,
     .badge-separator {
       display: none;
-    }
-
-    .status-ring {
-      min-width: unset;
     }
   }
 
@@ -1841,8 +1850,7 @@ export const compactLawnMowerCardStyles = css`
       min-height: 80px;
     }
 
-    .progress-badges,
-    .status-badges,
+    .badge-row,
     .view-toggle {
       padding: 4px;
     }
@@ -1877,7 +1885,10 @@ export const compactLawnMowerCardStyles = css`
       --mdc-icon-size: 18px;
     }
 
-    .status-ring,
+    .status-ring {
+      height: 36px;
+    }
+
     .view-toggle-button {
       width: 34px;
       height: 36px;
@@ -1937,8 +1948,7 @@ export const compactLawnMowerCardStyles = css`
       min-height: 100px;
     }
 
-    .progress-badges,
-    .status-badges,
+    .badge-row,
     .view-toggle {
       padding: 6px;
     }
@@ -2023,7 +2033,8 @@ export const compactLawnMowerCardStyles = css`
 
   @media (min-width: 768px) {
     .status-ring {
-      padding: 8px 12px;
+      --status-ring-padding-x: 12px;
+      padding: 8px var(--status-ring-padding-x);
       gap: 6px;
     }
 
