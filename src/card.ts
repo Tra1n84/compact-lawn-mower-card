@@ -254,6 +254,14 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _updateAnimation(previousState: string, currentState: string, wasDocked: boolean): void {
     const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
 
+    const isDriving = this._animationClass === 'driving-from-dock' || this._animationClass === 'driving-to-dock';
+    if (isDriving) {
+      const drivingTowardsDock = this._animationClass === 'driving-to-dock';
+      if (drivingTowardsDock === isDocked) {
+        return;
+      }
+    }
+
     if (this._animationTimeout) {
       clearTimeout(this._animationTimeout);
       this._animationTimeout = undefined;

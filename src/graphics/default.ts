@@ -38,7 +38,7 @@ export const renderDefaultMower: MowerRenderFunction = (
         </linearGradient>
 
         <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15" />
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.15" />
         </filter>
         <filter id="ledGlow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
@@ -110,11 +110,11 @@ export const renderDefaultMower: MowerRenderFunction = (
           />
           <g class="mower-cuttings" mask="url(#defaultOutsideBody)" aria-hidden="true">
             <path class="grass-clip grass-clip-1" d="M 45 67 q -5 -4 -3 -9" />
-            <path class="grass-clip grass-clip-2" d="M 53 69 q -7 -2 -7 -8" />
+            <path class="grass-clip grass-clip-2" d="M 53 69 q -6 3 -7 -4" />
             <path class="grass-clip grass-clip-3" d="M 63 70 q -6 3 -11 -1" />
-            <path class="grass-clip grass-clip-4" d="M 76 70 q -5 4 -11 1" />
+            <path class="grass-clip grass-clip-4" d="M 76 70 q -4 -5 -11 -1" />
             <path class="grass-clip grass-clip-5" d="M 89 70 q -3 5 -9 3" />
-            <path class="grass-clip grass-clip-6" d="M 101 70 q -2 5 -8 3" />
+            <path class="grass-clip grass-clip-6" d="M 101 70 q -3 -4 -8 -2" />
           </g>
           <rect
             x="79.317"
@@ -150,7 +150,7 @@ export const renderDefaultMower: MowerRenderFunction = (
               <rect x="-2.5" y="-2" width="5" height="4" rx="0.5" fill="${batteryColor}" opacity="0.8" />
             </g>
           </g>
-          <ellipse cx="87" cy="84" rx="56.319" ry="4" fill="#000" opacity="0.1" filter="blur(1px)" />
+          <ellipse cx="87" cy="83" rx="56.319" ry="3" fill="#000" opacity="0.1" filter="blur(1px)" />
         </g>
         <g class="charging-station" filter="url(#softShadow)" transform="matrix(1, 0, 0, 1.091808, 0, -4.724333)">
           <path

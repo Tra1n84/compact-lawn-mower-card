@@ -537,7 +537,8 @@ export const compactLawnMowerCardStyles = css`
     flex-shrink: 0;
     position: absolute;
     left: 10px;
-    bottom: -2%;
+    bottom: -1%;
+    z-index: 1;
     will-change: filter;
   }
 
@@ -664,7 +665,7 @@ export const compactLawnMowerCardStyles = css`
     will-change: transform;
   }
   .mower-svg.on-lawn-static.active .wheel-front .wheel-rotation {
-    animation: rotateWheel 0.6s linear infinite;
+    animation: rotateWheel 1s linear infinite;
     will-change: transform;
   }
 
@@ -727,7 +728,7 @@ export const compactLawnMowerCardStyles = css`
     will-change: transform;
   }
   .mower-svg.on-lawn-static.active.startup .wheel-front .wheel-rotation {
-    animation: rotateWheelAccel 0.4s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+    animation: rotateWheelAccel 0.47s cubic-bezier(0.2, 0, 0.8, 1) forwards;
     will-change: transform;
   }
 
@@ -743,7 +744,7 @@ export const compactLawnMowerCardStyles = css`
     will-change: transform;
   }
   .mower-svg.on-lawn-static.pausing .wheel-front .wheel-rotation {
-    animation: rotateWheelDecel 0.5s cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: rotateWheelDecel 0.53s cubic-bezier(0.4, 0, 1, 1) forwards;
     will-change: transform;
   }
 
@@ -1281,7 +1282,7 @@ export const compactLawnMowerCardStyles = css`
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(480deg);
+      transform: rotate(360deg);
     }
   }
 
@@ -1290,7 +1291,7 @@ export const compactLawnMowerCardStyles = css`
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(1200deg);
+      transform: rotate(720deg);
     }
   }
 
@@ -1435,7 +1436,7 @@ export const compactLawnMowerCardStyles = css`
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(270deg);
+      transform: rotate(360deg);
     }
   }
 

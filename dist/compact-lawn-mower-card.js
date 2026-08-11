@@ -1784,7 +1784,7 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
         </linearGradient>
 
         <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.15" />
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.15" />
         </filter>
         <filter id="ledGlow" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
@@ -1800,6 +1800,13 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        <mask id="defaultOutsideBody" x="0" y="0" width="178" height="100" maskUnits="userSpaceOnUse">
+          <rect width="178" height="100" fill="white" />
+          <path
+            d="M 40 61.062 C 37.5 54.359 43.817 41.062 47.567 37.152 C 50.717 33.867 55.551 29.385 63.424 27.649 C 64.719 27.363 69.722 27.218 71.252 27.284 L 81.768 29.71 C 85.08 30.968 88.612 31.873 91.46 32.965 C 95.934 34.68 104.803 37.769 108.243 39.138 C 115.539 42.041 115.714 42.453 121.409 44.848 C 122.997 45.516 131.345 50.246 132.123 50.745 C 137.513 54.202 139.531 55.222 141.426 56.962 C 145.246 60.469 144.215 63.412 144.412 69.769 L 131.515 69.851 L 120 70 L 85 70 L 50 70 L 45 65.531 L 40 61.062 Z"
+            fill="black"
+          />
+        </mask>
       </defs>
       <g transform="translate(0, 10)">
         <g
@@ -1847,6 +1854,14 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
             stroke="#ccc"
             stroke-width="0.5"
           />
+          <g class="mower-cuttings" mask="url(#defaultOutsideBody)" aria-hidden="true">
+            <path class="grass-clip grass-clip-1" d="M 45 67 q -5 -4 -3 -9" />
+            <path class="grass-clip grass-clip-2" d="M 53 69 q -6 3 -7 -4" />
+            <path class="grass-clip grass-clip-3" d="M 63 70 q -6 3 -11 -1" />
+            <path class="grass-clip grass-clip-4" d="M 76 70 q -4 -5 -11 -1" />
+            <path class="grass-clip grass-clip-5" d="M 89 70 q -3 5 -9 3" />
+            <path class="grass-clip grass-clip-6" d="M 101 70 q -3 -4 -8 -2" />
+          </g>
           <rect
             x="79.317"
             y="56.547"
@@ -1881,7 +1896,7 @@ const renderDefaultMower = (state, svgClass, ledColor, batteryColor, ringCircumf
               <rect x="-2.5" y="-2" width="5" height="4" rx="0.5" fill="${batteryColor}" opacity="0.8" />
             </g>
           </g>
-          <ellipse cx="87" cy="84" rx="56.319" ry="4" fill="#000" opacity="0.1" filter="blur(1px)" />
+          <ellipse cx="87" cy="83" rx="56.319" ry="3" fill="#000" opacity="0.1" filter="blur(1px)" />
         </g>
         <g class="charging-station" filter="url(#softShadow)" transform="matrix(1, 0, 0, 1.091808, 0, -4.724333)">
           <path
@@ -2457,7 +2472,8 @@ const compactLawnMowerCardStyles = i$3 `
     flex-shrink: 0;
     position: absolute;
     left: 10px;
-    bottom: -2%;
+    bottom: -1%;
+    z-index: 1;
     will-change: filter;
   }
 
@@ -2507,12 +2523,84 @@ const compactLawnMowerCardStyles = i$3 `
     opacity: 0.8;
   }
 
+  .mower-cuttings {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .grass-clip {
+    fill: none;
+    stroke: rgba(203, 232, 139, 0.9);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .mower-cuttings {
+    opacity: 1;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip {
+    animation: grassClipEject var(--clip-duration, 1.55s) ease-out infinite;
+    animation-delay: var(--clip-delay, 0s);
+    will-change: transform, opacity;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-1 {
+    --clip-x: -18px;
+    --clip-y: -11px;
+    --clip-rot: -42deg;
+    --clip-duration: 1.65s;
+    --clip-delay: -0.2s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-2 {
+    --clip-x: -22px;
+    --clip-y: -3px;
+    --clip-rot: 26deg;
+    --clip-duration: 1.9s;
+    --clip-delay: -0.8s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-3 {
+    --clip-x: -18px;
+    --clip-y: 5px;
+    --clip-rot: -18deg;
+    --clip-duration: 1.45s;
+    --clip-delay: -0.45s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-4 {
+    --clip-x: -15px;
+    --clip-y: 8px;
+    --clip-rot: 34deg;
+    --clip-duration: 1.75s;
+    --clip-delay: -1.05s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-5 {
+    --clip-x: -11px;
+    --clip-y: 9px;
+    --clip-rot: -30deg;
+    --clip-duration: 1.6s;
+    --clip-delay: -0.6s;
+  }
+
+  .mower-svg.on-lawn-static.active:not(.returning) .grass-clip-6 {
+    --clip-x: -9px;
+    --clip-y: 7px;
+    --clip-rot: 22deg;
+    --clip-duration: 1.85s;
+    --clip-delay: -1.25s;
+  }
+
   .mower-svg.on-lawn-static.active .wheel-back .wheel-rotation {
     animation: rotateWheel 1.5s linear infinite;
     will-change: transform;
   }
   .mower-svg.on-lawn-static.active .wheel-front .wheel-rotation {
-    animation: rotateWheel 0.6s linear infinite;
+    animation: rotateWheel 1s linear infinite;
     will-change: transform;
   }
 
@@ -2575,7 +2663,7 @@ const compactLawnMowerCardStyles = i$3 `
     will-change: transform;
   }
   .mower-svg.on-lawn-static.active.startup .wheel-front .wheel-rotation {
-    animation: rotateWheelAccel 0.4s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+    animation: rotateWheelAccel 0.47s cubic-bezier(0.2, 0, 0.8, 1) forwards;
     will-change: transform;
   }
 
@@ -2591,7 +2679,7 @@ const compactLawnMowerCardStyles = i$3 `
     will-change: transform;
   }
   .mower-svg.on-lawn-static.pausing .wheel-front .wheel-rotation {
-    animation: rotateWheelDecel 0.5s cubic-bezier(0.4, 0, 1, 1) forwards;
+    animation: rotateWheelDecel 0.53s cubic-bezier(0.4, 0, 1, 1) forwards;
     will-change: transform;
   }
 
@@ -3103,12 +3191,33 @@ const compactLawnMowerCardStyles = i$3 `
     }
   }
 
+  @keyframes grassClipEject {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(0.75);
+    }
+    12% {
+      opacity: 0.7;
+      transform: translate3d(calc(var(--clip-x) * 0.15), calc(var(--clip-y) * 0.15), 0)
+        rotate(calc(var(--clip-rot) * 0.12)) scale(1);
+    }
+    58% {
+      opacity: 0.38;
+      transform: translate3d(calc(var(--clip-x) * 0.7), calc(var(--clip-y) * 0.7), 0)
+        rotate(calc(var(--clip-rot) * 0.7)) scale(0.85);
+    }
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--clip-x), var(--clip-y), 0) rotate(var(--clip-rot)) scale(0.45);
+    }
+  }
+
   @keyframes rotateWheelDriveBack {
     from {
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(480deg);
+      transform: rotate(360deg);
     }
   }
 
@@ -3117,7 +3226,7 @@ const compactLawnMowerCardStyles = i$3 `
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(1200deg);
+      transform: rotate(720deg);
     }
   }
 
@@ -3262,7 +3371,7 @@ const compactLawnMowerCardStyles = i$3 `
       transform: rotate(0deg);
     }
     to {
-      transform: rotate(270deg);
+      transform: rotate(360deg);
     }
   }
 
@@ -5940,7 +6049,7 @@ let CameraPopup = class CameraPopup extends i {
         }
         return x `
       <div class="popup-wrapper" @click=${(e) => e.stopPropagation()}>
-        <button class="popup-close" @click=${this._close}>
+        <button class="popup-close" @click=${() => this._close()}>
           <ha-icon icon="mdi:close"></ha-icon>
         </button>
         <div class="popup-content">${content}</div>
@@ -6140,6 +6249,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _updateAnimation(previousState, currentState, wasDocked) {
         const isDocked = this._isCurrentlyDocked(currentState, this.chargingStatus);
+        const isDriving = this._animationClass === 'driving-from-dock' || this._animationClass === 'driving-to-dock';
+        if (isDriving) {
+            const drivingTowardsDock = this._animationClass === 'driving-to-dock';
+            if (drivingTowardsDock === isDocked) {
+                return;
+            }
+        }
         if (this._animationTimeout) {
             clearTimeout(this._animationTimeout);
             this._animationTimeout = undefined;
