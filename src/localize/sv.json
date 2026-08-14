@@ -58,6 +58,8 @@
         "hybrid": "Hybrid"
       },
       "default_map_zoom": "Standard zoomnivå för kartan",
+      "map_image_bg_auto": "Identifiera kartbakgrund automatiskt",
+      "map_image_bg_color": "Kartans bakgrundsfärg",
       "map_options_title": "Karta",
       "color_options_title": "Färg",
       "model_options_title": "Modell",

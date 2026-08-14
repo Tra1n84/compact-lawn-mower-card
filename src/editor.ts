@@ -5,6 +5,7 @@ import { CARD_NAME, CARD_VERSION, MIN_MAP_ZOOM, MAX_MAP_ZOOM, DEFAULT_MAP_ZOOM }
 import { getDefaultActions } from './defaults';
 import { getAvailableMowerModels } from './graphics';
 import { localize } from './localize';
+import { buildImageUrl, cacheMapBackground, detectEdgeColorFromUrl, readCachedMapBackground } from './map-bg';
 import { editorStyles } from './styles';
 import type {
   CompactLawnMowerCardConfig,
@@ -46,6 +47,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
   @state() private _targetMode: 'default' | 'custom' | 'none' = 'default';
   @state() private _newActionNavigationPath = '';
   @state() private _newActionUrlPath = '';
+  @state() private _detectedMapBg: string | null = null;
+  private _mapBgProbedFor?: string;
   private _resizeObserver?: ResizeObserver;
   private _serviceTranslationsLoaded = false;
   private _cachedServices?: {
@@ -108,6 +111,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     if (changedProps.has('hass') && this.hass && !this._serviceTranslationsLoaded) {
       this._loadServiceTranslations();
     }
+    this._ensureMapBackgroundProbe();
   }
 
   private async _loadServiceTranslations(): Promise<void> {
@@ -128,6 +132,38 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     this.requestUpdate();
   }
 
+  private _ensureMapBackgroundProbe(): void {
+    const entityId = this.config?.map_image_entity;
+
+    if (!entityId || this._mapBgProbedFor === entityId) {
+      return;
+    }
+
+    const cached = readCachedMapBackground(entityId);
+
+    if (cached) {
+      this._mapBgProbedFor = entityId;
+      this._detectedMapBg = cached;
+      return;
+    }
+
+    const entityState = this.hass?.states[entityId];
+
+    if (!entityState) {
+      return;
+    }
+
+    this._mapBgProbedFor = entityId;
+
+    detectEdgeColorFromUrl(buildImageUrl(entityId, entityState.attributes.entity_picture)).then(result => {
+      if (result.type !== 'color' || this.config?.map_image_entity !== entityId) {
+        return;
+      }
+      cacheMapBackground(entityId, result.value);
+      this._detectedMapBg = result.value;
+    });
+  }
+
   private _valueChanged(ev: CustomEvent): void {
     ev.stopPropagation();
     if (!this.config || !this.hass) {
@@ -142,6 +178,13 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
         delete newConfig[key];
       } else {
         newConfig[key] = value;
+      }
+    }
+
+    if (this.config.map_image_bg_auto !== false && newConfig.map_image_bg_auto === false) {
+      const detected = this._parseColor(this._detectedMapBg ?? undefined);
+      if (detected) {
+        newConfig.map_image_bg_color = detected;
       }
     }
 
@@ -1146,6 +1189,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
 
     const effectiveSource = hasBothSources ? this.config.map_source || 'gps' : hasMapEntity ? 'gps' : 'image';
     const gpsActive = mapIsEnabled && effectiveSource === 'gps';
+    const imageActive = mapIsEnabled && effectiveSource === 'image';
 
     const mapSourceOptions: { value: string; label: string }[] = [];
     if (hasMapEntity) {
@@ -1215,6 +1259,16 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
         },
         disabled: !gpsActive,
       },
+      {
+        name: 'map_image_bg_auto',
+        selector: { boolean: {} },
+        disabled: !imageActive,
+      },
+      {
+        name: 'map_image_bg_color',
+        selector: { color_rgb: {} },
+        disabled: !imageActive || this.config.map_image_bg_auto !== false,
+      },
     ];
 
     return schema;
@@ -1277,6 +1331,10 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     return fallback;
   }
 
+  private _mapBackgroundSeed(): number[] {
+    return this._parseColor(this._detectedMapBg ?? undefined) || [26, 26, 26];
+  }
+
   private get _mainData() {
     return {
       entity: this.config.entity || '',
@@ -1304,6 +1362,8 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       map_type: this.config.map_type || 'hybrid',
       use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
       default_map_zoom: this.config.default_map_zoom ?? DEFAULT_MAP_ZOOM,
+      map_image_bg_auto: this.config.map_image_bg_auto !== false,
+      map_image_bg_color: this._parseColor(this.config.map_image_bg_color) || this._mapBackgroundSeed(),
       mower_model: this.config.mower_model || 'default',
       sky_color_top: this._parseColor(this.config.sky_color_top) || [41, 128, 185],
       sky_color_bottom: this._parseColor(this.config.sky_color_bottom) || [109, 213, 250],

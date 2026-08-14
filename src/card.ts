@@ -32,6 +32,13 @@ import {
 import { getGraphics } from './graphics';
 import { localize } from './localize';
 import {
+  buildImageUrl,
+  cacheMapBackground,
+  detectEdgeColor,
+  readCachedMapBackground,
+  THEME_BACKGROUND,
+} from './map-bg';
+import {
   CompactLawnMowerCardConfig,
   LawnMowerEntity,
   MowerModel,
@@ -70,6 +77,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   @state() private _isMapLoading = false;
   @state() private _isMapImageLoading = false;
   @state() private _mapImageError = false;
+  @state() private _mapImageBgColor: string | null = null;
   private _imgScale = 1;
   private _imgTranslateX = 0;
   private _imgTranslateY = 0;
@@ -112,11 +120,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _imgPinchStartTranslateY = 0;
   private _imgActivePointers: Map<number, PointerEvent> = new Map();
   private _haMapShadowObserver?: MutationObserver;
+  private _mapBgDetectedFor?: string;
 
   connectedCallback() {
     super.connectedCallback();
     this._viewMode = this.config?.default_view ?? 'mower';
     this._restoreImgTransform();
+    this._restoreMapBackground();
     const useImage =
       this.config.map_source === 'image' ||
       (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
@@ -455,6 +465,13 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._imgTranslateX = 0;
           this._imgTranslateY = 0;
           this._restoreImgTransform();
+          this._mapBgDetectedFor = undefined;
+          this._restoreMapBackground();
+        }
+
+        if (this.config.map_image_bg_auto !== oldConfig.map_image_bg_auto) {
+          this._mapBgDetectedFor = undefined;
+          this._restoreMapBackground();
         }
 
         if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
@@ -570,6 +587,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       const img = this.shadowRoot?.querySelector('.map-image-entity') as HTMLImageElement | null;
       if (img?.complete && img.naturalWidth > 0) {
         this._isMapImageLoading = false;
+        this._detectMapBackground(img);
       }
     }
 
@@ -1335,6 +1353,45 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     } catch {}
   }
 
+  private _restoreMapBackground(): void {
+    if (!this.config?.map_image_entity) {
+      this._mapImageBgColor = null;
+      return;
+    }
+    this._mapImageBgColor = readCachedMapBackground(this.config.map_image_entity);
+  }
+
+  private _detectMapBackground(img: HTMLImageElement): void {
+    const entityId = this.config?.map_image_entity;
+
+    if (!entityId || this.config.map_image_bg_auto === false || this._mapBgDetectedFor === entityId) {
+      return;
+    }
+
+    this._mapBgDetectedFor = entityId;
+
+    const result = detectEdgeColor(img);
+
+    if (result.type === 'unknown') {
+      return;
+    }
+
+    if (result.type === 'transparent') {
+      this._mapImageBgColor = THEME_BACKGROUND;
+      return;
+    }
+
+    this._mapImageBgColor = result.value;
+    cacheMapBackground(entityId, result.value);
+  }
+
+  private _resolveMapBackground(): string | null {
+    if (this.config.map_image_bg_auto === false) {
+      return this._toCssColor(this.config.map_image_bg_color);
+    }
+    return this._mapImageBgColor;
+  }
+
   private _renderMowerModel() {
     const state = this.mowerState;
     const battery = Number(this.batteryLevel) || 0;
@@ -1388,21 +1445,18 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       );
     }
 
-    const entityPicture = imageEntity.attributes.entity_picture;
-    const isCamera = this.config.map_image_entity?.split('.')[0] === 'camera';
-    const fallbackUrl = isCamera
-      ? `/api/camera_proxy/${this.config.map_image_entity}`
-      : `/api/image_proxy/${this.config.map_image_entity}`;
-    const imageUrl = entityPicture ? entityPicture : fallbackUrl;
+    const imageUrl = buildImageUrl(this.config.map_image_entity as string, imageEntity.attributes.entity_picture);
 
     const cacheBustedUrl = imageUrl.includes('?')
       ? `${imageUrl}&_t=${imageEntity.last_updated}`
       : `${imageUrl}?_t=${imageEntity.last_updated}`;
 
+    const backgroundColor = this._resolveMapBackground();
+
     return html`
       <div
         class="map-container pannable ${this._isMapImageLoading ? 'is-loading' : ''}"
-        style="touch-action: none;"
+        style="touch-action: none;${backgroundColor ? ` --clm-map-bg: ${backgroundColor};` : ''}"
         @wheel=${this._handleImgWheel}
         @pointerdown=${this._handleImgPointerDown}
         @pointermove=${this._handleImgPointerMove}
@@ -1422,9 +1476,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             src="${cacheBustedUrl}"
             alt="Mowing Map"
             draggable="false"
-            @load=${() => {
+            @load=${(e: Event) => {
               this._isMapImageLoading = false;
               this._mapImageError = false;
+              this._detectMapBackground(e.target as HTMLImageElement);
             }}
             @error=${() => {
               this._isMapImageLoading = false;

@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.4.0';
+const CARD_VERSION = '1.5.0';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -295,6 +295,8 @@ var editor$7 = {
 			hybrid: "Hybrid"
 		},
 		default_map_zoom: "Default Map Zoom Level",
+		map_image_bg_auto: "Map Background: Detect Automatically",
+		map_image_bg_color: "Map Background Color",
 		map_options_title: "Map",
 		color_options_title: "Color",
 		model_options_title: "Model",
@@ -478,6 +480,8 @@ var editor$6 = {
 			hybrid: "Hybrid"
 		},
 		default_map_zoom: "Standard Zoom-Level der Karte",
+		map_image_bg_auto: "Kartenhintergrund automatisch erkennen",
+		map_image_bg_color: "Kartenhintergrundfarbe",
 		map_options_title: "Karte",
 		color_options_title: "Farben",
 		model_options_title: "Modell",
@@ -661,6 +665,8 @@ var editor$5 = {
 			hybrid: "Hybride"
 		},
 		default_map_zoom: "Niveau de zoom par défaut de la carte",
+		map_image_bg_auto: "Détecter automatiquement le fond de la carte",
+		map_image_bg_color: "Couleur de fond de la carte",
 		map_options_title: "Carte",
 		color_options_title: "Couleur",
 		model_options_title: "Modèle",
@@ -844,6 +850,8 @@ var editor$4 = {
 			hybrid: "Híbrido"
 		},
 		default_map_zoom: "Nivel de zoom predeterminado del mapa",
+		map_image_bg_auto: "Detectar automáticamente el fondo del mapa",
+		map_image_bg_color: "Color de fondo del mapa",
 		map_options_title: "Mapa",
 		color_options_title: "Color",
 		model_options_title: "Modelo",
@@ -1027,6 +1035,8 @@ var editor$3 = {
 			hybrid: "Ibrido"
 		},
 		default_map_zoom: "Livello di zoom predefinito della mappa",
+		map_image_bg_auto: "Rileva automaticamente lo sfondo della mappa",
+		map_image_bg_color: "Colore di sfondo della mappa",
 		map_options_title: "Mappa",
 		color_options_title: "Colore",
 		model_options_title: "Modello",
@@ -1210,6 +1220,8 @@ var editor$2 = {
 			hybrid: "Hybride"
 		},
 		default_map_zoom: "Standaard zoomniveau van de kaart",
+		map_image_bg_auto: "Kaartachtergrond automatisch detecteren",
+		map_image_bg_color: "Achtergrondkleur van de kaart",
 		map_options_title: "Kaart",
 		color_options_title: "Kleur",
 		model_options_title: "Model",
@@ -1393,6 +1405,8 @@ var editor$1 = {
 			hybrid: "Hybrydowa"
 		},
 		default_map_zoom: "Domyślny poziom powiększenia mapy",
+		map_image_bg_auto: "Automatyczne wykrywanie tła mapy",
+		map_image_bg_color: "Kolor tła mapy",
 		map_options_title: "Mapa",
 		color_options_title: "Kolor",
 		model_options_title: "Model",
@@ -1576,6 +1590,8 @@ var editor = {
 			hybrid: "Hybrid"
 		},
 		default_map_zoom: "Standard zoomnivå för kartan",
+		map_image_bg_auto: "Identifiera kartbakgrund automatiskt",
+		map_image_bg_color: "Kartans bakgrundsfärg",
 		map_options_title: "Karta",
 		color_options_title: "Färg",
 		model_options_title: "Modell",
@@ -1948,6 +1964,150 @@ const getAvailableMowerModels = (hass) => {
         return { value: key, label };
     });
 };
+
+const CACHE_PREFIX = 'clm_map_bg_';
+const SAMPLE_MAX_SIZE = 160;
+const BORDER_WIDTH = 2;
+const QUANTIZE_STEP = 8;
+const ALPHA_THRESHOLD = 16;
+const RGB_PATTERN = /^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$/i;
+const THEME_BACKGROUND = 'var(--card-background-color)';
+const buildImageUrl = (entityId, entityPicture) => {
+    if (entityPicture) {
+        return entityPicture;
+    }
+    const domain = entityId.split('.')[0];
+    return domain === 'camera' ? `/api/camera_proxy/${entityId}` : `/api/image_proxy/${entityId}`;
+};
+const readCachedMapBackground = (entityId) => {
+    try {
+        const stored = localStorage.getItem(`${CACHE_PREFIX}${entityId}`);
+        return stored && RGB_PATTERN.test(stored) ? stored : null;
+    }
+    catch {
+        return null;
+    }
+};
+const cacheMapBackground = (entityId, color) => {
+    try {
+        localStorage.setItem(`${CACHE_PREFIX}${entityId}`, color);
+    }
+    catch { }
+};
+const findOpaqueBounds = (data, width, height) => {
+    let left = width;
+    let top = height;
+    let right = -1;
+    let bottom = -1;
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            if (data[(y * width + x) * 4 + 3] < ALPHA_THRESHOLD) {
+                continue;
+            }
+            if (x < left)
+                left = x;
+            if (x > right)
+                right = x;
+            if (y < top)
+                top = y;
+            if (y > bottom)
+                bottom = y;
+        }
+    }
+    return right < left || bottom < top ? null : { left, top, right, bottom };
+};
+const detectEdgeColor = (img) => {
+    const naturalWidth = img.naturalWidth;
+    const naturalHeight = img.naturalHeight;
+    if (!naturalWidth || !naturalHeight) {
+        return { type: 'unknown' };
+    }
+    const scale = Math.min(1, SAMPLE_MAX_SIZE / Math.max(naturalWidth, naturalHeight));
+    const minSize = BORDER_WIDTH * 2 + 1;
+    const width = Math.max(minSize, Math.round(naturalWidth * scale));
+    const height = Math.max(minSize, Math.round(naturalHeight * scale));
+    let data;
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+            return { type: 'unknown' };
+        }
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, 0, 0, width, height);
+        data = ctx.getImageData(0, 0, width, height).data;
+    }
+    catch {
+        return { type: 'unknown' };
+    }
+    const bounds = findOpaqueBounds(data, width, height);
+    if (!bounds) {
+        return { type: 'transparent' };
+    }
+    const { left, top, right, bottom } = bounds;
+    const innerWidth = right - left + 1;
+    const innerHeight = bottom - top + 1;
+    const borderX = Math.min(BORDER_WIDTH, Math.ceil(innerWidth / 2));
+    const borderY = Math.min(BORDER_WIDTH, Math.ceil(innerHeight / 2));
+    const buckets = new Map();
+    let opaque = 0;
+    let transparent = 0;
+    for (let y = top; y <= bottom; y++) {
+        const onHorizontalBorder = y < top + borderY || y > bottom - borderY;
+        for (let x = left; x <= right; x++) {
+            if (!onHorizontalBorder && x >= left + borderX && x <= right - borderX) {
+                continue;
+            }
+            const index = (y * width + x) * 4;
+            if (data[index + 3] < ALPHA_THRESHOLD) {
+                transparent++;
+                continue;
+            }
+            opaque++;
+            const r = data[index];
+            const g = data[index + 1];
+            const b = data[index + 2];
+            const key = ((r / QUANTIZE_STEP) | 0) * 65536 + ((g / QUANTIZE_STEP) | 0) * 256 + ((b / QUANTIZE_STEP) | 0);
+            const bucket = buckets.get(key);
+            if (bucket) {
+                bucket.count++;
+                bucket.r += r;
+                bucket.g += g;
+                bucket.b += b;
+            }
+            else {
+                buckets.set(key, { count: 1, r, g, b });
+            }
+        }
+    }
+    if (transparent > opaque) {
+        return { type: 'transparent' };
+    }
+    if (!opaque) {
+        return { type: 'unknown' };
+    }
+    let best;
+    for (const bucket of buckets.values()) {
+        if (!best || bucket.count > best.count) {
+            best = bucket;
+        }
+    }
+    if (!best) {
+        return { type: 'unknown' };
+    }
+    const r = Math.round(best.r / best.count);
+    const g = Math.round(best.g / best.count);
+    const b = Math.round(best.b / best.count);
+    return { type: 'color', value: `rgb(${r}, ${g}, ${b})` };
+};
+const detectEdgeColorFromUrl = (url) => new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(detectEdgeColor(img));
+    img.onerror = () => resolve({ type: 'unknown' });
+    img.src = url;
+});
 
 /* =================== */
 /*    Popup Styles     */
@@ -2894,7 +3054,7 @@ const compactLawnMowerCardStyles = i$3 `
 
   .map-container.pannable {
     cursor: grab;
-    background-color: #1a1a1a;
+    background-color: var(--clm-map-bg, #1a1a1a);
   }
 
   .map-container.pannable:active {
@@ -2903,6 +3063,10 @@ const compactLawnMowerCardStyles = i$3 `
 
   .map-container.is-loading {
     background-color: #000;
+  }
+
+  .map-container.pannable.is-loading {
+    background-color: var(--clm-map-bg, #000);
   }
 
   .map-container > hui-map-card {
@@ -2937,7 +3101,7 @@ const compactLawnMowerCardStyles = i$3 `
 
   .map-image-entity {
     object-fit: contain;
-    background-color: #1a1a1a;
+    background-color: var(--clm-map-bg, #1a1a1a);
   }
 
   .map-image-transform-layer {
@@ -4649,6 +4813,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._targetMode = 'default';
         this._newActionNavigationPath = '';
         this._newActionUrlPath = '';
+        this._detectedMapBg = null;
         this._serviceTranslationsLoaded = false;
         this._boundComputeLabel = this._computeLabel.bind(this);
         this._boundComputePowerLabel = this._computePowerLabel.bind(this);
@@ -4715,6 +4880,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (changedProps.has('hass') && this.hass && !this._serviceTranslationsLoaded) {
             this._loadServiceTranslations();
         }
+        this._ensureMapBackgroundProbe();
     }
     async _loadServiceTranslations() {
         try {
@@ -4732,6 +4898,30 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this.config = config;
         this.requestUpdate();
     }
+    _ensureMapBackgroundProbe() {
+        const entityId = this.config?.map_image_entity;
+        if (!entityId || this._mapBgProbedFor === entityId) {
+            return;
+        }
+        const cached = readCachedMapBackground(entityId);
+        if (cached) {
+            this._mapBgProbedFor = entityId;
+            this._detectedMapBg = cached;
+            return;
+        }
+        const entityState = this.hass?.states[entityId];
+        if (!entityState) {
+            return;
+        }
+        this._mapBgProbedFor = entityId;
+        detectEdgeColorFromUrl(buildImageUrl(entityId, entityState.attributes.entity_picture)).then(result => {
+            if (result.type !== 'color' || this.config?.map_image_entity !== entityId) {
+                return;
+            }
+            cacheMapBackground(entityId, result.value);
+            this._detectedMapBg = result.value;
+        });
+    }
     _valueChanged(ev) {
         ev.stopPropagation();
         if (!this.config || !this.hass) {
@@ -4745,6 +4935,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             }
             else {
                 newConfig[key] = value;
+            }
+        }
+        if (this.config.map_image_bg_auto !== false && newConfig.map_image_bg_auto === false) {
+            const detected = this._parseColor(this._detectedMapBg ?? undefined);
+            if (detected) {
+                newConfig.map_image_bg_color = detected;
             }
         }
         const hadAnyMapSource = !!(this.config.map_entity || this.config.map_image_entity);
@@ -5641,6 +5837,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         const useGoogleMaps = !!this.config.use_google_maps;
         const effectiveSource = hasBothSources ? this.config.map_source || 'gps' : hasMapEntity ? 'gps' : 'image';
         const gpsActive = mapIsEnabled && effectiveSource === 'gps';
+        const imageActive = mapIsEnabled && effectiveSource === 'image';
         const mapSourceOptions = [];
         if (hasMapEntity) {
             mapSourceOptions.push({
@@ -5708,6 +5905,16 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 },
                 disabled: !gpsActive,
             },
+            {
+                name: 'map_image_bg_auto',
+                selector: { boolean: {} },
+                disabled: !imageActive,
+            },
+            {
+                name: 'map_image_bg_color',
+                selector: { color_rgb: {} },
+                disabled: !imageActive || this.config.map_image_bg_auto !== false,
+            },
         ];
         return schema;
     }
@@ -5754,6 +5961,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         this._primaryColorRgbCache = fallback;
         return fallback;
     }
+    _mapBackgroundSeed() {
+        return this._parseColor(this._detectedMapBg ?? undefined) || [26, 26, 26];
+    }
     get _mainData() {
         return {
             entity: this.config.entity || '',
@@ -5779,6 +5989,8 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             map_type: this.config.map_type || 'hybrid',
             use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
             default_map_zoom: this.config.default_map_zoom ?? DEFAULT_MAP_ZOOM,
+            map_image_bg_auto: this.config.map_image_bg_auto !== false,
+            map_image_bg_color: this._parseColor(this.config.map_image_bg_color) || this._mapBackgroundSeed(),
             mower_model: this.config.mower_model || 'default',
             sky_color_top: this._parseColor(this.config.sky_color_top) || [41, 128, 185],
             sky_color_bottom: this._parseColor(this.config.sky_color_bottom) || [109, 213, 250],
@@ -5989,6 +6201,9 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCardEditor.prototype, "_newActionUrlPath", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCardEditor.prototype, "_detectedMapBg", void 0);
 CompactLawnMowerCardEditor = __decorate([
     t('compact-lawn-mower-card-editor')
 ], CompactLawnMowerCardEditor);
@@ -6122,6 +6337,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._isMapLoading = false;
         this._isMapImageLoading = false;
         this._mapImageError = false;
+        this._mapImageBgColor = null;
         this._imgScale = 1;
         this._imgTranslateX = 0;
         this._imgTranslateY = 0;
@@ -6153,6 +6369,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         super.connectedCallback();
         this._viewMode = this.config?.default_view ?? 'mower';
         this._restoreImgTransform();
+        this._restoreMapBackground();
         const useImage = this.config.map_source === 'image' ||
             (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
         const useHaMap = !useImage && (!this.config.google_maps_api_key || this.config.use_google_maps === false);
@@ -6445,6 +6662,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._imgTranslateX = 0;
                     this._imgTranslateY = 0;
                     this._restoreImgTransform();
+                    this._mapBgDetectedFor = undefined;
+                    this._restoreMapBackground();
+                }
+                if (this.config.map_image_bg_auto !== oldConfig.map_image_bg_auto) {
+                    this._mapBgDetectedFor = undefined;
+                    this._restoreMapBackground();
                 }
                 if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
                     const newUseImage = this.config.map_source === 'image' ||
@@ -6545,6 +6768,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             const img = this.shadowRoot?.querySelector('.map-image-entity');
             if (img?.complete && img.naturalWidth > 0) {
                 this._isMapImageLoading = false;
+                this._detectMapBackground(img);
             }
         }
         this._setupBadgeResizeObserver();
@@ -7232,6 +7456,36 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         catch { }
     }
+    _restoreMapBackground() {
+        if (!this.config?.map_image_entity) {
+            this._mapImageBgColor = null;
+            return;
+        }
+        this._mapImageBgColor = readCachedMapBackground(this.config.map_image_entity);
+    }
+    _detectMapBackground(img) {
+        const entityId = this.config?.map_image_entity;
+        if (!entityId || this.config.map_image_bg_auto === false || this._mapBgDetectedFor === entityId) {
+            return;
+        }
+        this._mapBgDetectedFor = entityId;
+        const result = detectEdgeColor(img);
+        if (result.type === 'unknown') {
+            return;
+        }
+        if (result.type === 'transparent') {
+            this._mapImageBgColor = THEME_BACKGROUND;
+            return;
+        }
+        this._mapImageBgColor = result.value;
+        cacheMapBackground(entityId, result.value);
+    }
+    _resolveMapBackground() {
+        if (this.config.map_image_bg_auto === false) {
+            return this._toCssColor(this.config.map_image_bg_color);
+        }
+        return this._mapImageBgColor;
+    }
     _renderMowerModel() {
         const state = this.mowerState;
         const battery = Number(this.batteryLevel) || 0;
@@ -7254,19 +7508,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (this._mapImageError) {
             return this._renderErrorView('map-container', 'map-error', 'mdi:image-broken-variant', localize('map.image_load_error', { hass: this.hass }));
         }
-        const entityPicture = imageEntity.attributes.entity_picture;
-        const isCamera = this.config.map_image_entity?.split('.')[0] === 'camera';
-        const fallbackUrl = isCamera
-            ? `/api/camera_proxy/${this.config.map_image_entity}`
-            : `/api/image_proxy/${this.config.map_image_entity}`;
-        const imageUrl = entityPicture ? entityPicture : fallbackUrl;
+        const imageUrl = buildImageUrl(this.config.map_image_entity, imageEntity.attributes.entity_picture);
         const cacheBustedUrl = imageUrl.includes('?')
             ? `${imageUrl}&_t=${imageEntity.last_updated}`
             : `${imageUrl}?_t=${imageEntity.last_updated}`;
+        const backgroundColor = this._resolveMapBackground();
         return x `
       <div
         class="map-container pannable ${this._isMapImageLoading ? 'is-loading' : ''}"
-        style="touch-action: none;"
+        style="touch-action: none;${backgroundColor ? ` --clm-map-bg: ${backgroundColor};` : ''}"
         @wheel=${this._handleImgWheel}
         @pointerdown=${this._handleImgPointerDown}
         @pointermove=${this._handleImgPointerMove}
@@ -7284,9 +7534,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             src="${cacheBustedUrl}"
             alt="Mowing Map"
             draggable="false"
-            @load=${() => {
+            @load=${(e) => {
             this._isMapImageLoading = false;
             this._mapImageError = false;
+            this._detectMapBackground(e.target);
         }}
             @error=${() => {
             this._isMapImageLoading = false;
@@ -7834,6 +8085,9 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_mapImageError", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_mapImageBgColor", void 0);
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_areActionsExpanded", void 0);

@@ -16,7 +16,7 @@ A graphical view of your robotic lawn mower with a status LED indicating the cur
 * **Camera View:**
 A live video stream from your mower's camera
 * **Map View:**
-Track your mower's location on a map - choose between a GPS device tracker with HA Map or Google Maps or a static image / camera entity as your mower map with full pinch-to-zoom and drag-to-pan support
+Track your mower's location on a map - choose between a GPS device tracker with HA Map or Google Maps or a static image / camera entity as your mower map with full pinch-to-zoom and drag-to-pan support. The background color of an image map is detected automatically so the card blends in with your mower's own map - or pick your own color
 * **Custom Action Buttons:**
 Define up to 6 customizable action buttons - trigger services, toggle entities, navigate within HA, open URLs or show entity details
 * **Custom State Mapping:**
@@ -110,6 +110,11 @@ camera_fit_mode: contain
 map_entity: device_tracker.my_mower
 map_image_entity: image.my_mower_map
 map_source: gps
+map_image_bg_auto: false
+map_image_bg_color:
+  - 216
+  - 224
+  - 232
 progress_entity: sensor._my_mower_progress
 battery_entity: sensor.my_mower_battery
 charging_entity: binary_sensor.my_mower_charging
@@ -199,6 +204,8 @@ custom_actions:
 | `map_entity`         | string   | No           | Device tracker entity for the GPS map view                                                   |
 | `map_image_entity`   | string   | No           | Image or camera entity to display as a static map (supports zoom & pan)                      |
 | `map_source`         | string   | No           | Active map source when both `map_entity` and `map_image_entity` are set: `gps` or `image`    |
+| `map_image_bg_auto`  | boolean  | No           | Detect the background color of the map image automatically (Default: `true`)                 |
+| `map_image_bg_color` | list     | No           | RGB value for the map image background, used when `map_image_bg_auto` is `false`             |
 | `battery_entity`     | string   | No           | Optional sensor for battery level                                                            |
 | `progress_entity`    | string   | No           | Optional sensor for mowing progress                                                          |
 | `charging_entity`    | string   | No           | Optional binary sensor or sensor for charging status                                         |

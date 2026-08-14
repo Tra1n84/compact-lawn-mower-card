@@ -116,6 +116,8 @@ export interface CompactLawnMowerCardConfig extends LovelaceCardConfig {
   map_entity?: string;
   map_image_entity?: string;
   map_source?: 'gps' | 'image';
+  map_image_bg_auto?: boolean;
+  map_image_bg_color?: string | number[];
   google_maps_api_key?: string;
   mower_model?: MowerModel;
   use_google_maps?: boolean;

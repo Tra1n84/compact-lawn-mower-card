@@ -58,6 +58,8 @@
         "hybrid": "Hybrydowa"
       },
       "default_map_zoom": "Domyślny poziom powiększenia mapy",
+      "map_image_bg_auto": "Automatyczne wykrywanie tła mapy",
+      "map_image_bg_color": "Kolor tła mapy",
       "map_options_title": "Mapa",
       "color_options_title": "Kolor",
       "model_options_title": "Model",

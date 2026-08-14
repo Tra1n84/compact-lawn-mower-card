@@ -946,7 +946,7 @@ export const compactLawnMowerCardStyles = css`
 
   .map-container.pannable {
     cursor: grab;
-    background-color: #1a1a1a;
+    background-color: var(--clm-map-bg, #1a1a1a);
   }
 
   .map-container.pannable:active {
@@ -955,6 +955,10 @@ export const compactLawnMowerCardStyles = css`
 
   .map-container.is-loading {
     background-color: #000;
+  }
+
+  .map-container.pannable.is-loading {
+    background-color: var(--clm-map-bg, #000);
   }
 
   .map-container > hui-map-card {
@@ -989,7 +993,7 @@ export const compactLawnMowerCardStyles = css`
 
   .map-image-entity {
     object-fit: contain;
-    background-color: #1a1a1a;
+    background-color: var(--clm-map-bg, #1a1a1a);
   }
 
   .map-image-transform-layer {

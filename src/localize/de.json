@@ -58,6 +58,8 @@
         "hybrid": "Hybrid"
       },
       "default_map_zoom": "Standard Zoom-Level der Karte",
+      "map_image_bg_auto": "Kartenhintergrund automatisch erkennen",
+      "map_image_bg_color": "Kartenhintergrundfarbe",
       "map_options_title": "Karte",
       "color_options_title": "Farben",
       "model_options_title": "Modell",

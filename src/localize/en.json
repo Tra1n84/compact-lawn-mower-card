@@ -58,6 +58,8 @@
         "hybrid": "Hybrid"
       },
       "default_map_zoom": "Default Map Zoom Level",
+      "map_image_bg_auto": "Map Background: Detect Automatically",
+      "map_image_bg_color": "Map Background Color",
       "map_options_title": "Map",
       "color_options_title": "Color",
       "model_options_title": "Model",
