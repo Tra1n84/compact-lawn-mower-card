@@ -1383,6 +1383,7 @@ export const compactLawnMowerCardStyles = css`
     align-items: flex-start;
   }
 
+  /* Same look and behaviour as the view toggle buttons, only smaller */
   .map-control-button {
     width: 26px;
     height: 26px;
@@ -1390,17 +1391,45 @@ export const compactLawnMowerCardStyles = css`
     backdrop-filter: blur(10px) saturate(180%);
     border: none;
     border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
-    color: var(--primary-text-color);
-    cursor: pointer;
+    box-shadow: var(--badge-box-shadow);
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     transition:
-      background 0.2s,
-      transform 0.1s;
-    box-shadow: var(--badge-box-shadow);
+      background-color 0.2s ease-out,
+      transform 0.15s ease-out,
+      box-shadow 0.2s ease-out;
+    pointer-events: auto;
+    color: var(--primary-text-color);
     --mdc-icon-size: 16px;
     will-change: background-color, box-shadow;
+  }
+
+  /* Touch screens keep :hover on the last tapped element, so the hover look is for mice only */
+  @media (hover: hover) {
+    .map-control-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .map-control-button:active {
+    transform: scale(0.95);
+  }
+
+  .map-control-button ha-icon {
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+  }
+
+  .map-control-button.active {
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    backdrop-filter: blur(4px) saturate(120%);
+    color: white;
   }
 
   .vm-zone-dialog {
@@ -1449,19 +1478,6 @@ export const compactLawnMowerCardStyles = css`
   .vm-zone-dialog .vm-zone-cancel {
     background: color-mix(in srgb, var(--primary-text-color) 12%, transparent);
     color: inherit;
-  }
-
-  .map-control-button.active {
-    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
-    color: white;
-  }
-
-  .map-control-button:hover {
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .map-control-button:active {
-    transform: scale(0.9);
   }
 
   .map-zoom-control {
@@ -2497,6 +2513,7 @@ export const compactLawnMowerCardStyles = css`
   .mower-svg,
   .status-icon,
   .view-toggle-button,
+  .map-control-button,
   .sleep-z,
   .loader,
   .camera-overlay,

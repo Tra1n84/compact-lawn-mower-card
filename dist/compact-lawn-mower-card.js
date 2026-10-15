@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.6.0';
+const CARD_VERSION = '1.6.1';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -3553,6 +3553,7 @@ const compactLawnMowerCardStyles = i$3 `
     align-items: flex-start;
   }
 
+  /* Same look and behaviour as the view toggle buttons, only smaller */
   .map-control-button {
     width: 26px;
     height: 26px;
@@ -3560,17 +3561,45 @@ const compactLawnMowerCardStyles = i$3 `
     backdrop-filter: blur(10px) saturate(180%);
     border: none;
     border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
-    color: var(--primary-text-color);
-    cursor: pointer;
+    box-shadow: var(--badge-box-shadow);
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     transition:
-      background 0.2s,
-      transform 0.1s;
-    box-shadow: var(--badge-box-shadow);
+      background-color 0.2s ease-out,
+      transform 0.15s ease-out,
+      box-shadow 0.2s ease-out;
+    pointer-events: auto;
+    color: var(--primary-text-color);
     --mdc-icon-size: 16px;
     will-change: background-color, box-shadow;
+  }
+
+  /* Touch screens keep :hover on the last tapped element, so the hover look is for mice only */
+  @media (hover: hover) {
+    .map-control-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px) scale(1.02);
+      box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .map-control-button:active {
+    transform: scale(0.95);
+  }
+
+  .map-control-button ha-icon {
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+  }
+
+  .map-control-button.active {
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    backdrop-filter: blur(4px) saturate(120%);
+    color: white;
   }
 
   .vm-zone-dialog {
@@ -3619,19 +3648,6 @@ const compactLawnMowerCardStyles = i$3 `
   .vm-zone-dialog .vm-zone-cancel {
     background: color-mix(in srgb, var(--primary-text-color) 12%, transparent);
     color: inherit;
-  }
-
-  .map-control-button.active {
-    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
-    color: white;
-  }
-
-  .map-control-button:hover {
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .map-control-button:active {
-    transform: scale(0.9);
   }
 
   .map-zoom-control {
@@ -4667,6 +4683,7 @@ const compactLawnMowerCardStyles = i$3 `
   .mower-svg,
   .status-icon,
   .view-toggle-button,
+  .map-control-button,
   .sleep-z,
   .loader,
   .camera-overlay,
