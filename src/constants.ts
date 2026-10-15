@@ -1,5 +1,5 @@
 export const CARD_NAME = 'Compact Lawn Mower Card';
-export const CARD_VERSION = '1.5.0';
+export const CARD_VERSION = '1.6.0';
 
 export const DEFAULT_MAP_ZOOM = 18;
 export const MIN_MAP_ZOOM = 1;
@@ -30,6 +30,30 @@ export const CARD_TRANSLATED_STATES = new Set([
   'unavailable',
   'unknown',
 ]);
+
+/** Metres per degree, for projecting GPS positions onto a local plane */
+export const METERS_PER_DEG_LAT = 110574;
+export const METERS_PER_DEG_LON = 111320;
+
+/** The mown lanes are refreshed on this timer while the mower works, and on movement at most this often */
+export const VECTOR_MAP_TRAIL_INTERVAL = 60000;
+export const VECTOR_MAP_TRAIL_MIN_INTERVAL = 15000;
+/** The zones are reloaded when the map is opened after this time */
+export const VECTOR_MAP_BASE_TTL = 30 * 60 * 1000;
+/** get_geojson starts the integration's 5 minute report stream (a position every few seconds), renewed while mowing */
+export const VECTOR_MAP_STREAM_KEEPALIVE = 4 * 60 * 1000;
+/** Space in px covered by the badges and buttons, kept free when the map is fitted */
+export const VECTOR_MAP_INSETS = { top: 56, right: 8, bottom: 64, left: 8 };
+/** Positions closer than this in metres count as standing still (heading, "not moving" note) */
+export const VECTOR_MAP_HEADING_MIN_DISTANCE = 0.3;
+/** A mowing mower that has not moved for this long is flagged on the map */
+export const VECTOR_MAP_STUCK_MINUTES = 5;
+/** A position report older than this means the stream is off, so standing still cannot be judged */
+export const VECTOR_MAP_REPORT_MAX_AGE = 90000;
+/** States (after the user's state_map) in which a job is running or interrupted; idle and docked are not */
+export const VECTOR_MAP_WORKING_STATES = new Set(['mowing', 'paused', 'returning', 'error']);
+/** Position changes above this distance in metres are not animated (GPS jumps, dock, reconnect) */
+export const VECTOR_MAP_SMOOTH_MAX_DISTANCE = 3;
 
 export const IMG_ZOOM_MIN = 0.5;
 export const IMG_ZOOM_MAX = 8.0;

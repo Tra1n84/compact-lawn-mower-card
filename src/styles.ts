@@ -335,6 +335,94 @@ export const compactLawnMowerCardStyles = css`
     box-sizing: border-box;
   }
 
+  /* Progress: ring and a soft fill behind the badge, coloured from amber to green */
+  .progress-badge {
+    position: relative;
+    isolation: isolate;
+    --progress-color: hsl(var(--progress-hue, 90) 62% 45%);
+  }
+
+  .progress-fill {
+    position: absolute;
+    inset: 0;
+    width: var(--progress, 0%);
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--progress-hue, 90) 70% 55% / 0.1),
+      hsl(var(--progress-hue, 90) 70% 50% / 0.35)
+    );
+    transition:
+      width 0.8s ease,
+      background 0.8s ease;
+  }
+
+  .progress-badge.is-mowing .progress-fill {
+    background-image:
+      repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.18) 0 6px, transparent 6px 12px),
+      linear-gradient(90deg, hsl(var(--progress-hue, 90) 70% 55% / 0.1), hsl(var(--progress-hue, 90) 70% 50% / 0.35));
+    background-size:
+      17px 17px,
+      100% 100%;
+    animation: progress-stripes 1.2s linear infinite;
+  }
+
+  @keyframes progress-stripes {
+    from {
+      background-position:
+        0 0,
+        0 0;
+    }
+    to {
+      background-position:
+        17px 0,
+        0 0;
+    }
+  }
+
+  .progress-ring {
+    width: 22px;
+    height: 22px;
+    transform: rotate(-90deg);
+    flex: none;
+  }
+
+  .progress-ring circle {
+    fill: none;
+    stroke-width: 3;
+  }
+
+  .progress-ring-track {
+    stroke: rgba(0, 0, 0, 0.12);
+  }
+
+  .progress-ring-value {
+    stroke: var(--progress-color);
+    stroke-linecap: round;
+    transition:
+      stroke-dashoffset 0.8s ease,
+      stroke 0.8s ease;
+  }
+
+  .progress-ring-check {
+    fill: none;
+    stroke: var(--progress-color);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: rotate(90deg);
+    transform-origin: 11px 11px;
+  }
+
+  .progress-detail {
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  .progress-badge.is-done .progress-text {
+    color: var(--progress-color);
+  }
+
   .status-ring {
     flex: 0 1 auto;
     --status-ring-padding-x: 10px;
@@ -1004,6 +1092,257 @@ export const compactLawnMowerCardStyles = css`
     height: 100%;
   }
 
+  /* Vector map (Mammotion GeoJSON) */
+  .map-container.pannable.vector {
+    background-color: var(--clm-vm-bg, var(--secondary-background-color, #e7e9e4));
+  }
+
+  .vm-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    /* metres per screen pixel at the current zoom level */
+    --vm-px: calc(1 / (var(--clm-ppm, 20) * var(--clm-zoom, 1)));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .vm-svg path,
+  .vm-svg circle {
+    fill: none;
+  }
+
+  .vm-fixed {
+    transform: scale(var(--vm-px));
+  }
+
+  .vm-svg path.vm-area {
+    fill: var(--clm-vm-area, #46be62);
+  }
+
+  .vm-svg path.vm-area-edge {
+    stroke: var(--clm-vm-area-edge, #2e8b3e);
+    stroke-width: calc(2px * var(--vm-px));
+  }
+
+  /* No-go zones are cut out of the lawn like in the Mammotion app */
+  .vm-svg path.vm-obstacle {
+    fill: var(--clm-vm-obstacle, var(--card-background-color, #fff));
+    stroke: var(--clm-vm-area-edge, #2e8b3e);
+    stroke-width: calc(2px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-dump {
+    fill: rgba(18, 184, 134, 0.45);
+    stroke: #0ca678;
+    stroke-width: calc(1px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-other {
+    fill: rgba(134, 142, 150, 0.25);
+    stroke: #868e96;
+    stroke-width: calc(1px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-wall {
+    stroke: var(--clm-vm-wall, #f59f00);
+    stroke-width: calc(3.5px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-channel {
+    stroke: var(--clm-vm-channel, #a8cf92);
+    stroke-width: calc(6px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-channel-center {
+    stroke: var(--clm-vm-area-edge, #2e8b3e);
+    stroke-width: calc(1px * var(--vm-px));
+    stroke-dasharray: calc(3px * var(--vm-px)) calc(3px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-corridor {
+    stroke: #1c7ed6;
+    stroke-width: calc(3px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-pattern {
+    stroke: #7048e8;
+    stroke-width: calc(1.5px * var(--vm-px));
+  }
+
+  /* Mown lanes: the driven path, as wide as the cutting width (at least 2px on screen) */
+  .vm-svg path.vm-trail {
+    stroke: var(--clm-vm-mown, #8fe07f);
+    stroke-width: max(var(--vm-trail-width, 0.2px), calc(2px * var(--vm-px)));
+  }
+
+  .vm-svg circle.vm-dot {
+    fill: #1c7ed6;
+  }
+
+  .vm-svg circle.vm-station-body {
+    fill: #fff;
+    stroke: rgba(0, 0, 0, 0.25);
+    stroke-width: 1px;
+  }
+
+  .vm-svg path.vm-station-icon {
+    fill: #5a4eb5;
+  }
+
+  /* Zone label: name and size, the zone being mown gets a pill and its progress */
+  .vm-label text {
+    fill: #fff;
+    stroke: rgba(0, 0, 0, 0.55);
+    stroke-width: 3px;
+    paint-order: stroke;
+    text-anchor: middle;
+    font-family: var(--ha-font-family-body, var(--paper-font-body1_-_font-family, sans-serif));
+    pointer-events: none;
+  }
+
+  .vm-label .vm-label-name {
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .vm-label .vm-label-sub {
+    font-size: 9px;
+    opacity: 0.9;
+  }
+
+  /* The zone being mown */
+  .vm-label rect.vm-label-pill {
+    fill: rgba(255, 255, 255, 0.95);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  }
+
+  .vm-label.active .vm-label-name {
+    fill: #1f2328;
+    stroke: none;
+  }
+
+  .vm-label.active .vm-label-sub {
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  /* Smooth movement between position updates */
+  .vm-mower {
+    transition: transform 1.2s linear;
+  }
+
+  .vm-mower-rotate {
+    transition: transform 0.6s ease-out;
+  }
+
+  .vm-mower.jump,
+  .vm-mower.jump .vm-mower-rotate {
+    transition: none;
+  }
+
+  /* Pulse while mowing, faster and coloured when there is an alert */
+  .vm-svg circle.vm-mower-pulse {
+    fill: var(--primary-color);
+    opacity: 0;
+  }
+
+  .vm-mower.active circle.vm-mower-pulse {
+    animation: vm-pulse 2s ease-out infinite;
+  }
+
+  .vm-mower.alert-error circle.vm-mower-pulse,
+  .vm-mower.alert-warning circle.vm-mower-pulse {
+    animation: vm-pulse 1.4s ease-out infinite;
+  }
+
+  .vm-mower.alert-error circle.vm-mower-pulse {
+    fill: var(--error-color, #db4437);
+  }
+
+  .vm-mower.alert-warning circle.vm-mower-pulse {
+    fill: var(--warning-color, #ffa600);
+  }
+
+  .vm-svg circle.vm-mower-alert-ring {
+    stroke-width: 2.5px;
+  }
+
+  .alert-error circle.vm-mower-alert-ring {
+    stroke: var(--error-color, #db4437);
+  }
+
+  .alert-warning circle.vm-mower-alert-ring {
+    stroke: var(--warning-color, #ffa600);
+  }
+
+  .vm-alert-error rect {
+    fill: var(--error-color, #db4437);
+  }
+
+  .vm-alert-warning rect {
+    fill: var(--warning-color, #ffa600);
+  }
+
+  .vm-alert text {
+    fill: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    text-anchor: middle;
+    font-family: var(--ha-font-family-body, var(--paper-font-body1_-_font-family, sans-serif));
+  }
+
+  /* Mower seen from above, like in the Mammotion app */
+  .vm-svg rect.vm-mower-body {
+    fill: #fff;
+    stroke: #3a3f44;
+    stroke-width: 1.2px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  }
+
+  .vm-svg rect.vm-mower-shell {
+    fill: #3a3f44;
+  }
+
+  .vm-svg rect.vm-mower-wheel {
+    fill: #1f2328;
+  }
+
+  .vm-svg circle.vm-mower-front {
+    fill: #e03131;
+  }
+
+  .vm-svg path.vm-mower-arrow {
+    fill: #e03131;
+  }
+
+  /* Charging station like in the Mammotion app */
+  .vm-svg rect.vm-dock-body {
+    fill: #d4d8dc;
+    stroke: rgba(0, 0, 0, 0.25);
+    stroke-width: 1px;
+  }
+
+  .vm-svg circle.vm-dock-badge {
+    fill: #1f2328;
+  }
+
+  .vm-svg path.vm-dock-bolt {
+    fill: #fff;
+  }
+
+  @keyframes vm-pulse {
+    0% {
+      opacity: 0.45;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2.2);
+    }
+  }
+
   .mower-marker {
     position: absolute;
     top: 50%;
@@ -1031,6 +1370,7 @@ export const compactLawnMowerCardStyles = css`
     position: absolute;
     bottom: 8px;
     left: 8px;
+    z-index: 10;
     display: flex;
     align-items: flex-end;
     gap: 8px;
@@ -1060,6 +1400,60 @@ export const compactLawnMowerCardStyles = css`
       transform 0.1s;
     box-shadow: var(--badge-box-shadow);
     --mdc-icon-size: 16px;
+    will-change: background-color, box-shadow;
+  }
+
+  .vm-zone-dialog {
+    position: absolute;
+    left: 50%;
+    bottom: 56px;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 14px;
+    max-width: calc(100% - 24px);
+    box-sizing: border-box;
+    /* Card colour as frosted glass, so it works on light and dark themes */
+    background: color-mix(in srgb, var(--card-background-color, #fff) 85%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 14px;
+    box-shadow: var(--badge-box-shadow);
+    color: var(--primary-text-color);
+    font-size: 13px;
+  }
+
+  .vm-zone-dialog .vm-zone-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vm-zone-dialog button {
+    border: none;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .vm-zone-dialog .vm-zone-start {
+    background: var(--primary-color);
+    color: #fff;
+  }
+
+  .vm-zone-dialog .vm-zone-cancel {
+    background: color-mix(in srgb, var(--primary-text-color) 12%, transparent);
+    color: inherit;
+  }
+
+  .map-control-button.active {
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    color: white;
   }
 
   .map-control-button:hover {

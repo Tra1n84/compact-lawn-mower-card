@@ -16,7 +16,7 @@ A graphical view of your robotic lawn mower with a status LED indicating the cur
 * **Camera View:**
 A live video stream from your mower's camera
 * **Map View:**
-Track your mower's location on a map - choose between a GPS device tracker with HA Map or Google Maps or a static image / camera entity as your mower map with full pinch-to-zoom and drag-to-pan support. The background color of an image map is detected automatically so the card blends in with your mower's own map - or pick your own color
+Track your mower's location on a map - choose between a GPS device tracker with HA Map or Google Maps or a static image / camera entity as your mower map with full pinch-to-zoom and drag-to-pan support. The background color of an image map is detected automatically so the card blends in with your mower's own map - or pick your own color. For **Mammotion** mowers the card can draw a native vector map with mowing zones, obstacles, virtual walls, channels, dock / RTK station, live position and the mown lanes of the running job
 * **Custom Action Buttons:**
 Define up to 6 customizable action buttons - trigger services, toggle entities, navigate within HA, open URLs or show entity details
 * **Custom State Mapping:**
@@ -41,7 +41,7 @@ Ideas for future development - no guarantee, but candidates for upcoming feature
 * ~~Improved animations for the mower view~~ ✅ (implemented in v0.9.0)
 * **Additional Mower Models / Graphics** - technically prepared with a modular file structure for models including an model selection within the UI editor
 * **Support for more languages** if contributed by the community
-* **A more advanced map view** with mowing paths, mower maps, no-go zones etc. (Need to validated with individual lawn mower integrations)
+* **A more advanced map view** with mowing paths, mower maps, no-go zones etc. (Need to validated with individual lawn mower integrations) - available for Mammotion, see [Mammotion Vector Map](#mammotion-vector-map)
 * ~~More customization options like default map zoom levels and more~~ ✅ (implemented in v1.0.0)
 * **...and more Ideas to come!**
 
@@ -203,12 +203,23 @@ custom_actions:
 | `camera_fit_mode`    | string   | No           | How to fit the camera image: `cover` or `contain`                                            |
 | `map_entity`         | string   | No           | Device tracker entity for the GPS map view                                                   |
 | `map_image_entity`   | string   | No           | Image or camera entity to display as a static map (supports zoom & pan)                      |
-| `map_source`         | string   | No           | Active map source when both `map_entity` and `map_image_entity` are set: `gps` or `image`    |
+| `map_source`         | string   | No           | Active map source: `gps`, `image` or `mammotion` (vector map, Mammotion integration only)   |
 | `map_image_bg_auto`  | boolean  | No           | Detect the background color of the map image automatically (Default: `true`)                 |
 | `map_image_bg_color` | list     | No           | RGB value for the map image background, used when `map_image_bg_auto` is `false`             |
+| `map_show_labels`    | boolean  | No           | Mammotion map: show zone names and sizes (Default: `true`)                                    |
+| `map_show_path`      | boolean  | No           | Mammotion map: show the mown lanes while the mower is working (Default: `true`)              |
+| `map_path_width`     | number   | No           | Mammotion map: width of the mown lanes in metres, i.e. the cutting width (Default: `0.2`)     |
+| `map_rotation`       | number   | No           | Mammotion map: rotate the map clockwise in degrees, `-180` to `180` (Default: `0`)           |
+| `map_show_rtk`       | boolean  | No           | Mammotion map: show the RTK base station (Default: `true`)                                    |
+| `map_keep_view`      | boolean  | No           | Mammotion map: remember zoom and position, otherwise always start fitted (Default: `true`)   |
 | `battery_entity`     | string   | No           | Optional sensor for battery level                                                            |
 | `progress_entity`    | string   | No           | Optional sensor for mowing progress                                                          |
 | `charging_entity`    | string   | No           | Optional binary sensor or sensor for charging status                                         |
+| `task_area_entity`   | string   | No           | Sensor with the total area of the running job (m²); the progress badge shows the mown part of it; found on a Mammotion mower's device when empty |
+| `remaining_time_entity` | string | No          | Sensor with the remaining job time in minutes, shown in the progress badge; found on a Mammotion mower's device when empty |
+| `work_zone_entity`   | string   | No           | Sensor with the name of the zone being mown, used for the zone label and the tap-to-mow lock; found on a Mammotion mower's device when empty |
+| `error_entity`       | string   | No           | Sensor with the mower's error message, shown on the Mammotion map; found on a Mammotion mower's device when empty |
+| `zone_switches`      | list     | No           | Mammotion map: area switches the map may start a zone with; the switches on the mower's device when empty |
 | `default_view`       | string   | No           | Default view of the card: `mower`, `camera`, `map` (Default: `mower`)                        |
 | `enable_map`         | boolean  | No           | Enable or disable the map view (Default: `true` if `map_entity` is set)                      |
 | `use_google_maps`    | boolean  | No           | Use Google Maps instead of Home Assistant map (Google Maps API key is required)              |
@@ -223,6 +234,28 @@ custom_actions:
 | `grass_color_bottom` | list     | No           | RGB value for the bottom grass color                                                         |
 | `custom_actions`     | list     | No           | Define up to 6 custom action buttons (see action types below)                                |
 | `state_map`          | map      | No           | Map custom integration states to a standard visual behavior (see state mapping below)        |
+
+#### Mammotion Vector Map
+
+With the [Mammotion integration](https://github.com/mikey0000/Mammotion-HA) the card can render the mower's own map without any image entity or map provider. It uses the integration's GeoJSON services (`mammotion.get_geojson`, `mammotion.get_mow_progress_geojson`) and shows
+
+* mowing zones with name and size, obstacles / no-go zones, virtual walls and channels between zones
+* charging dock and RTK base station
+* the live mower position (the mower's `device_tracker` is detected automatically, or set `map_entity`)
+* the mown lanes of the running job, drawn from the positions Home Assistant recorded since the job started
+
+Tapping a zone offers to mow just that zone (through the integration's area switches), the crosshair button keeps the map centred on the mower, and the mower is flagged on the map when it reports an error or has not moved for a few minutes during a job. The progress badge shows the mown and total area of the job and the remaining time from the integration's sensors.
+
+```yaml
+type: custom:compact-lawn-mower-card
+entity: lawn_mower.luba_xxxxxxxx
+map_source: mammotion
+map_rotation: 0
+```
+
+The zones are loaded when the map view is opened (cached for 30 minutes). Position offsets set in the integration (`Map offset latitude / longitude`) apply to all layers. The map must be synced once in the Mammotion app.
+
+The mown lanes are the mower's recorded positions joined into lines, as wide as the cutting width (`map_path_width`). Two positions are only joined when they are a few seconds apart, so nothing is drawn where the mower was not seen. The integration reports a position every few seconds only while its report stream is running; the card keeps that stream alive while the map is open and the mower works, so the lanes come out complete when the map is watched. To get dense positions while the map is closed too, let an automation call `mammotion.get_geojson` for the mower every 4 minutes while it is mowing.
 
 #### Custom Action Structure
 

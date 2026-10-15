@@ -38,14 +38,14 @@ const t$2=globalThis,e$4=t$2.ShadowRoot&&(void 0===t$2.ShadyCSS||t$2.ShadyCSS.na
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const{is:i$2,defineProperty:e$3,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$3,getOwnPropertySymbols:o$3,getPrototypeOf:n$2}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$2(t,s),b={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$3(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$2(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$3(t),...o$3(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((t=>t(this)));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach((t=>t.hostConnected?.()));}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach((t=>t.hostDisconnected?.()));}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i){if(void 0!==t){const e=this.constructor,h=this[t];if(i??=e.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(e._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach((t=>t.hostUpdate?.())),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach((t=>t.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach((t=>this._$ET(t,this[t]))),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.1");
+ */const{is:i$2,defineProperty:e$3,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$3,getOwnPropertySymbols:o$3,getPrototypeOf:n$2}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$2(t,s),b$1={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b$1){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$3(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b$1}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$2(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$3(t),...o$3(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach((t=>t(this)));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach((t=>t.hostConnected?.()));}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach((t=>t.hostDisconnected?.()));}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i){if(void 0!==t){const e=this.constructor,h=this[t];if(i??=e.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(e._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach((t=>t.hostUpdate?.())),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach((t=>t.hostUpdated?.())),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach((t=>this._$ET(t,this[t]))),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.1");
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t$1=globalThis,i$1=t$1.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$2="?"+h,n$1=`<${o$2}>`,r$2=document,l=()=>r$2.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),T=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),A=new WeakMap,C=r$2.createTreeWalker(r$2,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$1?i$1.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$2)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$2.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$2).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$2,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E||null==t||""===t?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$2.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E?t=E:t!==E&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E);}}class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E)===T)return;const s=this._$AH,e=t===E&&s!==E||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E&&(s===E||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$1.litHtmlPolyfillSupport;j?.(N,R),(t$1.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
+const t$1=globalThis,i$1=t$1.trustedTypes,s$1=i$1?i$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,e$2="$lit$",h=`lit$${Math.random().toFixed(9).slice(2)}$`,o$2="?"+h,n$1=`<${o$2}>`,r$2=document,l=()=>r$2.createComment(""),c=t=>null===t||"object"!=typeof t&&"function"!=typeof t,a=Array.isArray,u=t=>a(t)||"function"==typeof t?.[Symbol.iterator],d="[ \t\n\f\r]",f=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,v=/-->/g,_=/>/g,m=RegExp(`>|${d}(?:([^\\s"'>=/]+)(${d}*=${d}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),p=/'/g,g=/"/g,$=/^(?:script|style|textarea|title)$/i,y=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=y(1),b=y(2),T=Symbol.for("lit-noChange"),E=Symbol.for("lit-nothing"),A=new WeakMap,C=r$2.createTreeWalker(r$2,129);function P(t,i){if(!a(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==s$1?s$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,o=[];let r,l=2===i?"<svg>":3===i?"<math>":"",c=f;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,y=0;for(;y<s.length&&(c.lastIndex=y,u=c.exec(s),null!==u);)y=c.lastIndex,c===f?"!--"===u[1]?c=v:void 0!==u[1]?c=_:void 0!==u[2]?($.test(u[2])&&(r=RegExp("</"+u[2],"g")),c=m):void 0!==u[3]&&(c=m):c===m?">"===u[0]?(c=r??f,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?m:'"'===u[3]?g:p):c===g||c===p?c=m:c===v||c===_?c=f:(c=m,r=void 0);const x=c===m&&t[i+1].startsWith("/>")?" ":"";l+=c===f?s+n$1:d>=0?(o.push(a),s.slice(0,d)+e$2+s.slice(d)+h+x):s+h+(-2===d?i:x);}return [P(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),o]};class N{constructor({strings:t,_$litType$:s},n){let r;this.parts=[];let c=0,a=0;const u=t.length-1,d=this.parts,[f,v]=V(t,s);if(this.el=N.createElement(f,n),C.currentNode=this.el.content,2===s||3===s){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=C.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(e$2)){const i=v[a++],s=r.getAttribute(t).split(h),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:c,name:e[2],strings:s,ctor:"."===e[1]?H:"?"===e[1]?I:"@"===e[1]?L:k}),r.removeAttribute(t);}else t.startsWith(h)&&(d.push({type:6,index:c}),r.removeAttribute(t));if($.test(r.tagName)){const t=r.textContent.split(h),s=t.length-1;if(s>0){r.textContent=i$1?i$1.emptyScript:"";for(let i=0;i<s;i++)r.append(t[i],l()),C.nextNode(),d.push({type:2,index:++c});r.append(t[s],l());}}}else if(8===r.nodeType)if(r.data===o$2)d.push({type:2,index:c});else {let t=-1;for(;-1!==(t=r.data.indexOf(h,t+1));)d.push({type:7,index:c}),t+=h.length-1;}c++;}}static createElement(t,i){const s=r$2.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){if(i===T)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=c(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=S(t,h._$AS(t,i.values),h,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??r$2).importNode(i,true);C.currentNode=e;let h=C.nextNode(),o=0,n=0,l=s[0];for(;void 0!==l;){if(o===l.index){let i;2===l.type?i=new R(h,h.nextSibling,this,t):1===l.type?i=new l.ctor(h,l.name,l.strings,this,t):6===l.type&&(i=new z(h,this,t)),this._$AV.push(i),l=s[++n];}o!==l?.index&&(h=C.nextNode(),o++);}return C.currentNode=r$2,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=E,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),c(t)?t===E||null==t||""===t?(this._$AH!==E&&this._$AR(),this._$AH=E):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):u(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==E&&c(this._$AH)?this._$AA.nextSibling.data=t:this.T(r$2.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(P(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new M(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=A.get(t.strings);return void 0===i&&A.set(t.strings,i=new N(t)),i}k(t){a(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new R(this.O(l()),this.O(l()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){for(this._$AP?.(false,true,i);t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class k{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=E,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=E;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=S(this,t,i,0),o=!c(t)||t!==this._$AH&&t!==T,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=S(this,e[s+n],i,n),r===T&&(r=this._$AH[n]),o||=!c(r)||r!==this._$AH[n],r===E?t=E:t!==E&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===E?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===E?void 0:t;}}class I extends k{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==E);}}class L extends k{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=S(this,t,i,0)??E)===T)return;const s=this._$AH,e=t===E&&s!==E||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==E&&(s===E||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const j=t$1.litHtmlPolyfillSupport;j?.(N,R),(t$1.litHtmlVersions??=[]).push("3.3.1");const B=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new R(i.insertBefore(l(),t),t,void 0,s??{});}return h._$AI(t),h};
 
 /**
  * @license
@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.5.0';
+const CARD_VERSION = '1.6.0';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -231,6 +231,28 @@ const CARD_TRANSLATED_STATES = new Set([
     'unavailable',
     'unknown',
 ]);
+/** Metres per degree, for projecting GPS positions onto a local plane */
+const METERS_PER_DEG_LAT = 110574;
+const METERS_PER_DEG_LON = 111320;
+/** The mown lanes are refreshed on this timer while the mower works, and on movement at most this often */
+const VECTOR_MAP_TRAIL_INTERVAL = 60000;
+const VECTOR_MAP_TRAIL_MIN_INTERVAL = 15000;
+/** The zones are reloaded when the map is opened after this time */
+const VECTOR_MAP_BASE_TTL = 30 * 60 * 1000;
+/** get_geojson starts the integration's 5 minute report stream (a position every few seconds), renewed while mowing */
+const VECTOR_MAP_STREAM_KEEPALIVE = 4 * 60 * 1000;
+/** Space in px covered by the badges and buttons, kept free when the map is fitted */
+const VECTOR_MAP_INSETS = { top: 56, right: 8, bottom: 64, left: 8 };
+/** Positions closer than this in metres count as standing still (heading, "not moving" note) */
+const VECTOR_MAP_HEADING_MIN_DISTANCE = 0.3;
+/** A mowing mower that has not moved for this long is flagged on the map */
+const VECTOR_MAP_STUCK_MINUTES = 5;
+/** A position report older than this means the stream is off, so standing still cannot be judged */
+const VECTOR_MAP_REPORT_MAX_AGE = 90000;
+/** States (after the user's state_map) in which a job is running or interrupted; idle and docked are not */
+const VECTOR_MAP_WORKING_STATES = new Set(['mowing', 'paused', 'returning', 'error']);
+/** Position changes above this distance in metres are not animated (GPS jumps, dock, reconnect) */
+const VECTOR_MAP_SMOOTH_MAX_DISTANCE = 3;
 const IMG_ZOOM_MIN = 0.5;
 const IMG_ZOOM_MAX = 8.0;
 const IMG_ZOOM_STEP_BUTTON = 0.25;
@@ -276,7 +298,11 @@ var editor$7 = {
 	power: {
 		battery_entity: "Battery Entity (Optional)",
 		charging_entity: "Charging Entity (Optional, Binary Sensor: On/Off)",
-		progress_entity: "Progress Entity (Optional)"
+		progress_entity: "Progress Entity (Optional)",
+		task_area_entity: "Job Area (Optional, detected if empty)",
+		remaining_time_entity: "Remaining Time in Minutes (Optional, detected if empty)",
+		work_zone_entity: "Current Zone (Optional, detected if empty)",
+		error_entity: "Error Message (Optional, detected if empty)"
 	},
 	options: {
 		default_view: "Default View",
@@ -286,7 +312,8 @@ var editor$7 = {
 		map_source: "Map Source",
 		map_source_label: {
 			gps: "GPS / Map (Device Tracker)",
-			image: "Map Image (Image or Camera Entity)"
+			image: "Map Image (Image or Camera Entity)",
+			mammotion: "Mammotion Map (Zones, Obstacles & Mown Lanes)"
 		},
 		map_type: "Map Type",
 		map_type_label: {
@@ -297,6 +324,13 @@ var editor$7 = {
 		default_map_zoom: "Default Map Zoom Level",
 		map_image_bg_auto: "Map Background: Detect Automatically",
 		map_image_bg_color: "Map Background Color",
+		map_show_labels: "Show Zone Names",
+		map_show_path: "Show mown lanes",
+		map_rotation: "Map Rotation",
+		map_path_width: "Width of the mown lanes (m)",
+		zone_switches: "Area Switches for Starting (Optional, detected if empty)",
+		map_show_rtk: "Show RTK Base Station",
+		map_keep_view: "Remember Zoom & Position",
 		map_options_title: "Map",
 		color_options_title: "Color",
 		model_options_title: "Model",
@@ -398,7 +432,15 @@ var map$7 = {
 	no_gps_coordinates: "No GPS data",
 	image_not_available: "Map image not available",
 	image_unavailable: "Map image unavailable",
-	image_load_error: "Failed to load map image"
+	image_load_error: "Failed to load map image",
+	vector_load_error: "Could not load the mower map",
+	area: "Area",
+	vector_empty: "No map data – sync the map in the Mammotion app",
+	follow: "Follow mower",
+	mow_zone: "Mow",
+	cancel: "Cancel",
+	zone_not_found: "Zone switch not found",
+	not_moving: "Not moving for {n} min"
 };
 var view$7 = {
 	mower: "Lawn Mower",
@@ -461,7 +503,11 @@ var editor$6 = {
 	power: {
 		battery_entity: "Batterieentität (Optional)",
 		charging_entity: "Ladestatus Entität (Optional, Binärsensor: An/Aus)",
-		progress_entity: "Fortschritt Entität (Optional)"
+		progress_entity: "Fortschritt Entität (Optional)",
+		task_area_entity: "Auftragsfläche (Optional, sonst automatisch)",
+		remaining_time_entity: "Restzeit in Minuten (Optional, sonst automatisch)",
+		work_zone_entity: "Aktueller Bereich (Optional, sonst automatisch)",
+		error_entity: "Fehlermeldung (Optional, sonst automatisch)"
 	},
 	options: {
 		default_view: "Standardansicht",
@@ -471,7 +517,8 @@ var editor$6 = {
 		map_source: "Kartenquelle",
 		map_source_label: {
 			gps: "GPS / Karte (Device Tracker)",
-			image: "Kartenbild (Bild- oder Kamera-Entität)"
+			image: "Kartenbild (Bild- oder Kamera-Entität)",
+			mammotion: "Mammotion-Karte (Zonen, Hindernisse & Mähspur)"
 		},
 		map_type: "Kartentyp",
 		map_type_label: {
@@ -482,6 +529,13 @@ var editor$6 = {
 		default_map_zoom: "Standard Zoom-Level der Karte",
 		map_image_bg_auto: "Kartenhintergrund automatisch erkennen",
 		map_image_bg_color: "Kartenhintergrundfarbe",
+		map_show_labels: "Zonennamen anzeigen",
+		map_show_path: "Mähspur anzeigen",
+		map_rotation: "Kartendrehung",
+		map_path_width: "Breite der Mähspur (m)",
+		zone_switches: "Bereichs-Schalter zum Starten (Optional, sonst automatisch)",
+		map_show_rtk: "RTK-Basisstation anzeigen",
+		map_keep_view: "Zoom & Position merken",
 		map_options_title: "Karte",
 		color_options_title: "Farben",
 		model_options_title: "Modell",
@@ -583,7 +637,15 @@ var map$6 = {
 	no_gps_coordinates: "Keine GPS-Daten",
 	image_not_available: "Kartenbild nicht verfügbar",
 	image_unavailable: "Kartenbild nicht erreichbar",
-	image_load_error: "Kartenbild konnte nicht geladen werden"
+	image_load_error: "Kartenbild konnte nicht geladen werden",
+	vector_load_error: "Mäherkarte konnte nicht geladen werden",
+	area: "Bereich",
+	vector_empty: "Keine Kartendaten – Karte in der Mammotion-App synchronisieren",
+	follow: "Mäher folgen",
+	mow_zone: "Mähen",
+	cancel: "Abbrechen",
+	zone_not_found: "Zonen-Schalter nicht gefunden",
+	not_moving: "Steht seit {n} min"
 };
 var view$6 = {
 	mower: "Mähroboter",
@@ -2443,6 +2505,94 @@ const compactLawnMowerCardStyles = i$3 `
     box-sizing: border-box;
   }
 
+  /* Progress: ring and a soft fill behind the badge, coloured from amber to green */
+  .progress-badge {
+    position: relative;
+    isolation: isolate;
+    --progress-color: hsl(var(--progress-hue, 90) 62% 45%);
+  }
+
+  .progress-fill {
+    position: absolute;
+    inset: 0;
+    width: var(--progress, 0%);
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--progress-hue, 90) 70% 55% / 0.1),
+      hsl(var(--progress-hue, 90) 70% 50% / 0.35)
+    );
+    transition:
+      width 0.8s ease,
+      background 0.8s ease;
+  }
+
+  .progress-badge.is-mowing .progress-fill {
+    background-image:
+      repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.18) 0 6px, transparent 6px 12px),
+      linear-gradient(90deg, hsl(var(--progress-hue, 90) 70% 55% / 0.1), hsl(var(--progress-hue, 90) 70% 50% / 0.35));
+    background-size:
+      17px 17px,
+      100% 100%;
+    animation: progress-stripes 1.2s linear infinite;
+  }
+
+  @keyframes progress-stripes {
+    from {
+      background-position:
+        0 0,
+        0 0;
+    }
+    to {
+      background-position:
+        17px 0,
+        0 0;
+    }
+  }
+
+  .progress-ring {
+    width: 22px;
+    height: 22px;
+    transform: rotate(-90deg);
+    flex: none;
+  }
+
+  .progress-ring circle {
+    fill: none;
+    stroke-width: 3;
+  }
+
+  .progress-ring-track {
+    stroke: rgba(0, 0, 0, 0.12);
+  }
+
+  .progress-ring-value {
+    stroke: var(--progress-color);
+    stroke-linecap: round;
+    transition:
+      stroke-dashoffset 0.8s ease,
+      stroke 0.8s ease;
+  }
+
+  .progress-ring-check {
+    fill: none;
+    stroke: var(--progress-color);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transform: rotate(90deg);
+    transform-origin: 11px 11px;
+  }
+
+  .progress-detail {
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  .progress-badge.is-done .progress-text {
+    color: var(--progress-color);
+  }
+
   .status-ring {
     flex: 0 1 auto;
     --status-ring-padding-x: 10px;
@@ -3112,6 +3262,257 @@ const compactLawnMowerCardStyles = i$3 `
     height: 100%;
   }
 
+  /* Vector map (Mammotion GeoJSON) */
+  .map-container.pannable.vector {
+    background-color: var(--clm-vm-bg, var(--secondary-background-color, #e7e9e4));
+  }
+
+  .vm-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    /* metres per screen pixel at the current zoom level */
+    --vm-px: calc(1 / (var(--clm-ppm, 20) * var(--clm-zoom, 1)));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .vm-svg path,
+  .vm-svg circle {
+    fill: none;
+  }
+
+  .vm-fixed {
+    transform: scale(var(--vm-px));
+  }
+
+  .vm-svg path.vm-area {
+    fill: var(--clm-vm-area, #46be62);
+  }
+
+  .vm-svg path.vm-area-edge {
+    stroke: var(--clm-vm-area-edge, #2e8b3e);
+    stroke-width: calc(2px * var(--vm-px));
+  }
+
+  /* No-go zones are cut out of the lawn like in the Mammotion app */
+  .vm-svg path.vm-obstacle {
+    fill: var(--clm-vm-obstacle, var(--card-background-color, #fff));
+    stroke: var(--clm-vm-area-edge, #2e8b3e);
+    stroke-width: calc(2px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-dump {
+    fill: rgba(18, 184, 134, 0.45);
+    stroke: #0ca678;
+    stroke-width: calc(1px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-other {
+    fill: rgba(134, 142, 150, 0.25);
+    stroke: #868e96;
+    stroke-width: calc(1px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-wall {
+    stroke: var(--clm-vm-wall, #f59f00);
+    stroke-width: calc(3.5px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-channel {
+    stroke: var(--clm-vm-channel, #a8cf92);
+    stroke-width: calc(6px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-channel-center {
+    stroke: var(--clm-vm-area-edge, #2e8b3e);
+    stroke-width: calc(1px * var(--vm-px));
+    stroke-dasharray: calc(3px * var(--vm-px)) calc(3px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-corridor {
+    stroke: #1c7ed6;
+    stroke-width: calc(3px * var(--vm-px));
+  }
+
+  .vm-svg path.vm-pattern {
+    stroke: #7048e8;
+    stroke-width: calc(1.5px * var(--vm-px));
+  }
+
+  /* Mown lanes: the driven path, as wide as the cutting width (at least 2px on screen) */
+  .vm-svg path.vm-trail {
+    stroke: var(--clm-vm-mown, #8fe07f);
+    stroke-width: max(var(--vm-trail-width, 0.2px), calc(2px * var(--vm-px)));
+  }
+
+  .vm-svg circle.vm-dot {
+    fill: #1c7ed6;
+  }
+
+  .vm-svg circle.vm-station-body {
+    fill: #fff;
+    stroke: rgba(0, 0, 0, 0.25);
+    stroke-width: 1px;
+  }
+
+  .vm-svg path.vm-station-icon {
+    fill: #5a4eb5;
+  }
+
+  /* Zone label: name and size, the zone being mown gets a pill and its progress */
+  .vm-label text {
+    fill: #fff;
+    stroke: rgba(0, 0, 0, 0.55);
+    stroke-width: 3px;
+    paint-order: stroke;
+    text-anchor: middle;
+    font-family: var(--ha-font-family-body, var(--paper-font-body1_-_font-family, sans-serif));
+    pointer-events: none;
+  }
+
+  .vm-label .vm-label-name {
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .vm-label .vm-label-sub {
+    font-size: 9px;
+    opacity: 0.9;
+  }
+
+  /* The zone being mown */
+  .vm-label rect.vm-label-pill {
+    fill: rgba(255, 255, 255, 0.95);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  }
+
+  .vm-label.active .vm-label-name {
+    fill: #1f2328;
+    stroke: none;
+  }
+
+  .vm-label.active .vm-label-sub {
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  /* Smooth movement between position updates */
+  .vm-mower {
+    transition: transform 1.2s linear;
+  }
+
+  .vm-mower-rotate {
+    transition: transform 0.6s ease-out;
+  }
+
+  .vm-mower.jump,
+  .vm-mower.jump .vm-mower-rotate {
+    transition: none;
+  }
+
+  /* Pulse while mowing, faster and coloured when there is an alert */
+  .vm-svg circle.vm-mower-pulse {
+    fill: var(--primary-color);
+    opacity: 0;
+  }
+
+  .vm-mower.active circle.vm-mower-pulse {
+    animation: vm-pulse 2s ease-out infinite;
+  }
+
+  .vm-mower.alert-error circle.vm-mower-pulse,
+  .vm-mower.alert-warning circle.vm-mower-pulse {
+    animation: vm-pulse 1.4s ease-out infinite;
+  }
+
+  .vm-mower.alert-error circle.vm-mower-pulse {
+    fill: var(--error-color, #db4437);
+  }
+
+  .vm-mower.alert-warning circle.vm-mower-pulse {
+    fill: var(--warning-color, #ffa600);
+  }
+
+  .vm-svg circle.vm-mower-alert-ring {
+    stroke-width: 2.5px;
+  }
+
+  .alert-error circle.vm-mower-alert-ring {
+    stroke: var(--error-color, #db4437);
+  }
+
+  .alert-warning circle.vm-mower-alert-ring {
+    stroke: var(--warning-color, #ffa600);
+  }
+
+  .vm-alert-error rect {
+    fill: var(--error-color, #db4437);
+  }
+
+  .vm-alert-warning rect {
+    fill: var(--warning-color, #ffa600);
+  }
+
+  .vm-alert text {
+    fill: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    text-anchor: middle;
+    font-family: var(--ha-font-family-body, var(--paper-font-body1_-_font-family, sans-serif));
+  }
+
+  /* Mower seen from above, like in the Mammotion app */
+  .vm-svg rect.vm-mower-body {
+    fill: #fff;
+    stroke: #3a3f44;
+    stroke-width: 1.2px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+  }
+
+  .vm-svg rect.vm-mower-shell {
+    fill: #3a3f44;
+  }
+
+  .vm-svg rect.vm-mower-wheel {
+    fill: #1f2328;
+  }
+
+  .vm-svg circle.vm-mower-front {
+    fill: #e03131;
+  }
+
+  .vm-svg path.vm-mower-arrow {
+    fill: #e03131;
+  }
+
+  /* Charging station like in the Mammotion app */
+  .vm-svg rect.vm-dock-body {
+    fill: #d4d8dc;
+    stroke: rgba(0, 0, 0, 0.25);
+    stroke-width: 1px;
+  }
+
+  .vm-svg circle.vm-dock-badge {
+    fill: #1f2328;
+  }
+
+  .vm-svg path.vm-dock-bolt {
+    fill: #fff;
+  }
+
+  @keyframes vm-pulse {
+    0% {
+      opacity: 0.45;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2.2);
+    }
+  }
+
   .mower-marker {
     position: absolute;
     top: 50%;
@@ -3139,6 +3540,7 @@ const compactLawnMowerCardStyles = i$3 `
     position: absolute;
     bottom: 8px;
     left: 8px;
+    z-index: 10;
     display: flex;
     align-items: flex-end;
     gap: 8px;
@@ -3168,6 +3570,60 @@ const compactLawnMowerCardStyles = i$3 `
       transform 0.1s;
     box-shadow: var(--badge-box-shadow);
     --mdc-icon-size: 16px;
+    will-change: background-color, box-shadow;
+  }
+
+  .vm-zone-dialog {
+    position: absolute;
+    left: 50%;
+    bottom: 56px;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 8px 14px;
+    max-width: calc(100% - 24px);
+    box-sizing: border-box;
+    /* Card colour as frosted glass, so it works on light and dark themes */
+    background: color-mix(in srgb, var(--card-background-color, #fff) 85%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 14px;
+    box-shadow: var(--badge-box-shadow);
+    color: var(--primary-text-color);
+    font-size: 13px;
+  }
+
+  .vm-zone-dialog .vm-zone-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vm-zone-dialog button {
+    border: none;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .vm-zone-dialog .vm-zone-start {
+    background: var(--primary-color);
+    color: #fff;
+  }
+
+  .vm-zone-dialog .vm-zone-cancel {
+    background: color-mix(in srgb, var(--primary-text-color) 12%, transparent);
+    color: inherit;
+  }
+
+  .map-control-button.active {
+    background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
+    color: white;
   }
 
   .map-control-button:hover {
@@ -4787,6 +5243,501 @@ const editorStyles = i$3 `
   }
 `;
 
+// Material Design Icons (Pictogrammers, Apache-2.0)
+const ICON_RTK = 'M4.93,4.93C3.12,6.74 2,9.24 2,12C2,14.76 3.12,17.26 4.93,19.07L6.34,17.66C4.89,16.22 4,14.22 4,12C4,9.79 4.89,7.78 6.34,6.34L4.93,4.93M19.07,4.93L17.66,6.34C19.11,7.78 20,9.79 20,12C20,14.22 19.11,16.22 17.66,17.66L19.07,19.07C20.88,17.26 22,14.76 22,12C22,9.24 20.88,6.74 19.07,4.93M7.76,7.76C6.67,8.85 6,10.35 6,12C6,13.65 6.67,15.15 7.76,16.24L9.17,14.83C8.45,14.11 8,13.11 8,12C8,10.89 8.45,9.89 9.17,9.17L7.76,7.76M16.24,7.76L14.83,9.17C15.55,9.89 16,10.89 16,12C16,13.11 15.55,14.11 14.83,14.83L16.24,16.24C17.33,15.15 18,13.65 18,12C18,10.35 17.33,8.85 16.24,7.76M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z';
+const VIEW_PADDING_RATIO = 0.03;
+const VIEW_PADDING_MIN = 0.4;
+const OBSTACLE_TYPES = new Set(['obstacle', 'visual_obstacle_zone', 'visual_safety_zone']);
+// ---------------------------------------------------------------------------
+// Data access
+// ---------------------------------------------------------------------------
+const MAMMOTION_DOMAIN = 'mammotion';
+/** Base map per mower, kept while the card is alive so switching views does not reload it */
+const baseCache = new Map();
+const getCachedBase = (entityId) => baseCache.get(entityId);
+const setCachedBase = (entityId, base) => {
+    baseCache.set(entityId, { base, at: Date.now() });
+};
+const normalizeCollection = (value) => {
+    if (!value || typeof value !== 'object')
+        return null;
+    const obj = value;
+    if (obj.type === 'FeatureCollection' && Array.isArray(obj.features)) {
+        return { type: 'FeatureCollection', features: obj.features.filter((f) => f && f.geometry) };
+    }
+    if (obj.type === 'Feature' && obj.geometry) {
+        return { type: 'FeatureCollection', features: [obj] };
+    }
+    return null;
+};
+const fetchGeoJson = async (hass, domain, service, entityId) => {
+    const result = await hass.callWS({
+        type: 'call_service',
+        domain,
+        service,
+        service_data: { entity_id: entityId },
+        return_response: true,
+    });
+    return normalizeCollection(result?.response);
+};
+const entityRegistry = (hass) => hass.entities;
+/** Entities of `domain` that belong to the same device as the mower entity, with their registry entries. */
+const siblingEntities = (hass, entityId, domain) => {
+    const registry = entityRegistry(hass);
+    const deviceId = registry?.[entityId]?.device_id;
+    if (!registry || !deviceId)
+        return [];
+    return Object.entries(registry).filter(([id, entry]) => id.startsWith(`${domain}.`) && entry.device_id === deviceId);
+};
+const isMammotionEntity = (hass, entityId) => !!hass && !!entityId && entityRegistry(hass)?.[entityId]?.platform === MAMMOTION_DOMAIN;
+/** Finds a sensor of the mower's device by its translation key, e.g. `left_time`. */
+const findSiblingSensor = (hass, entityId, key) => siblingEntities(hass, entityId, 'sensor').find(([, entry]) => entry.translation_key === key)?.[0];
+/** Finds the device_tracker belonging to the same device as the mower entity. */
+const findSiblingTracker = (hass, entityId) => siblingEntities(hass, entityId, 'device_tracker')[0]?.[0];
+// ---------------------------------------------------------------------------
+// Geometry
+// ---------------------------------------------------------------------------
+const fmt = (n) => (Math.round(n * 100) / 100).toString();
+const toPath = (points, closed) => {
+    if (points.length === 0)
+        return '';
+    let d = `M${fmt(points[0][0])} ${fmt(points[0][1])}`;
+    for (let i = 1; i < points.length; i++) {
+        d += `L${fmt(points[i][0])} ${fmt(points[i][1])}`;
+    }
+    return closed ? `${d}Z` : d;
+};
+/** Default zone names of the integration ("Area 1") in the user's language. */
+const displayZoneName = (name, areaWord) => {
+    const match = areaWord ? /^area\s*(\d+)$/i.exec(name.trim()) : null;
+    return match ? `${areaWord} ${match[1]}` : name;
+};
+const ringArea = (ring) => {
+    let a = 0;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        a += ring[j][0] * ring[i][1] - ring[i][0] * ring[j][1];
+    }
+    return a / 2;
+};
+const ringCentroid = (ring) => {
+    const a = ringArea(ring);
+    if (Math.abs(a) < 1e-9) {
+        const sx = ring.reduce((s, p) => s + p[0], 0);
+        const sy = ring.reduce((s, p) => s + p[1], 0);
+        return [sx / ring.length, sy / ring.length];
+    }
+    let cx = 0;
+    let cy = 0;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const f = ring[j][0] * ring[i][1] - ring[i][0] * ring[j][1];
+        cx += (ring[j][0] + ring[i][0]) * f;
+        cy += (ring[j][1] + ring[i][1]) * f;
+    }
+    return [cx / (6 * a), cy / (6 * a)];
+};
+const pointInRing = (p, ring) => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i];
+        const [xj, yj] = ring[j];
+        if (yi > p[1] !== yj > p[1] && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi) + xi) {
+            inside = !inside;
+        }
+    }
+    return inside;
+};
+/** Label anchor inside the polygon: centroid, or the middle of the widest horizontal span through it. */
+const labelPoint = (ring) => {
+    const c = ringCentroid(ring);
+    if (pointInRing(c, ring))
+        return c;
+    const y = c[1];
+    const xs = [];
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const [xi, yi] = ring[i];
+        const [xj, yj] = ring[j];
+        if (yi > y !== yj > y) {
+            xs.push(xi + ((y - yi) * (xj - xi)) / (yj - yi));
+        }
+    }
+    xs.sort((a, b) => a - b);
+    let best = c;
+    let bestWidth = -1;
+    for (let i = 0; i + 1 < xs.length; i += 2) {
+        const width = xs[i + 1] - xs[i];
+        if (width > bestWidth) {
+            bestWidth = width;
+            best = [(xs[i] + xs[i + 1]) / 2, y];
+        }
+    }
+    return best;
+};
+const extendBounds = (b, p) => {
+    if (!b)
+        return { minX: p[0], minY: p[1], maxX: p[0], maxY: p[1] };
+    return {
+        minX: Math.min(b.minX, p[0]),
+        minY: Math.min(b.minY, p[1]),
+        maxX: Math.max(b.maxX, p[0]),
+        maxY: Math.max(b.maxY, p[1]),
+    };
+};
+/** Splits a geometry into rings/lines/points, including Multi- and Collection geometries. */
+const explode = (geometry, out = { polygons: [], lines: [], points: [] }) => {
+    if (!geometry)
+        return out;
+    const c = geometry.coordinates;
+    switch (geometry.type) {
+        case 'Point':
+            out.points.push(c);
+            break;
+        case 'MultiPoint':
+            out.points.push(...c);
+            break;
+        case 'LineString':
+            out.lines.push(c);
+            break;
+        case 'MultiLineString':
+            out.lines.push(...c);
+            break;
+        case 'Polygon':
+            out.polygons.push(c);
+            break;
+        case 'MultiPolygon':
+            out.polygons.push(...c);
+            break;
+        case 'GeometryCollection':
+            (geometry.geometries ?? []).forEach(g => explode(g, out));
+            break;
+    }
+    return out;
+};
+const featureType = (f) => String(f.properties?.type_name ?? '').toLowerCase();
+const featureTitle = (f) => String(f.properties?.Name ?? f.properties?.title ?? f.properties?.name ?? '');
+// ---------------------------------------------------------------------------
+// Model: projects the GeoJSON once, rendering only places it in the view
+// ---------------------------------------------------------------------------
+class VectorMapModel {
+    constructor(layers, rotation) {
+        this.layers = layers;
+        this.rotation = rotation;
+        this.areas = [];
+        this.zones = [];
+        this.obstacles = [];
+        this.dumps = [];
+        this.patterns = [];
+        this.others = [];
+        this.channels = [];
+        this.corridors = [];
+        this.walls = [];
+        this.labels = [];
+        this.markers = [];
+        /** Mown lanes and the mower's own recent line, as SVG path data */
+        this.trail = '';
+        this.trailHead = '';
+        this.bounds = null;
+        this._clipId = `vm-clip-${Math.random().toString(36).slice(2, 9)}`;
+        const origin = VectorMapModel._origin(layers);
+        this._lat0 = origin[1];
+        this._lon0 = origin[0];
+        this._kx = METERS_PER_DEG_LON * Math.cos((this._lat0 * Math.PI) / 180);
+        const rad = ((rotation || 0) * Math.PI) / 180;
+        this._cos = Math.cos(rad);
+        this._sin = Math.sin(rad);
+        for (const f of layers.base?.features ?? [])
+            this._addBaseFeature(f);
+        this._addTrail(layers.trail);
+    }
+    /** [lon, lat] → local metres, x east / y south, rotated clockwise by `rotation`. */
+    project(lon, lat) {
+        const x = (lon - this._lon0) * this._kx;
+        const y = -(lat - this._lat0) * METERS_PER_DEG_LAT;
+        return [x * this._cos - y * this._sin, x * this._sin + y * this._cos];
+    }
+    static _origin(layers) {
+        let minLon = Infinity;
+        let minLat = Infinity;
+        let maxLon = -Infinity;
+        let maxLat = -Infinity;
+        const visit = (c) => {
+            if (typeof c?.[0] === 'number' && typeof c?.[1] === 'number') {
+                minLon = Math.min(minLon, c[0]);
+                maxLon = Math.max(maxLon, c[0]);
+                minLat = Math.min(minLat, c[1]);
+                maxLat = Math.max(maxLat, c[1]);
+            }
+            else if (Array.isArray(c)) {
+                c.forEach(visit);
+            }
+        };
+        for (const f of layers.base?.features ?? []) {
+            const parts = explode(f.geometry);
+            visit(parts.polygons);
+            visit(parts.lines);
+            visit(parts.points);
+        }
+        return Number.isFinite(minLon) ? [(minLon + maxLon) / 2, (minLat + maxLat) / 2] : [0, 0];
+    }
+    _projectAll(coords) {
+        return coords.filter(c => Number.isFinite(c?.[0]) && Number.isFinite(c?.[1])).map(c => this.project(c[0], c[1]));
+    }
+    _track(points) {
+        for (const p of points)
+            this.bounds = extendBounds(this.bounds, p);
+    }
+    _addBaseFeature(f) {
+        const type = featureType(f);
+        const title = featureTitle(f);
+        const parts = explode(f.geometry);
+        for (const polygon of parts.polygons) {
+            const rings = polygon.map(r => this._projectAll(r)).filter(r => r.length >= 3);
+            if (!rings.length)
+                continue;
+            this._track(rings[0]);
+            const d = rings.map(r => toPath(r, true)).join('');
+            if (type === 'area') {
+                this.areas.push({ d, title });
+                const area = Number(f.properties?.area);
+                const hash = Number(f.properties?.hash);
+                this.zones.push({ name: title, hash: Number.isFinite(hash) ? hash : null, area, rings });
+                const [x, y] = labelPoint(rings[0]);
+                this.labels.push({ x, y, name: title, sub: area > 0 ? `${Math.round(area)} m²` : '' });
+            }
+            else if (OBSTACLE_TYPES.has(type)) {
+                this.obstacles.push({ d, title });
+            }
+            else if (type === 'dump') {
+                this.dumps.push({ d, title });
+            }
+            else if (type === 'svg') {
+                this.patterns.push({ d, title });
+            }
+            else {
+                this.others.push({ d, title });
+            }
+        }
+        for (const line of parts.lines) {
+            const points = this._projectAll(line);
+            if (points.length < 2)
+                continue;
+            this._track(points);
+            const d = toPath(points, false);
+            if (type === 'virtual_wall')
+                this.walls.push(d);
+            else if (type === 'path')
+                this.channels.push(d);
+            else if (type === 'corridor_line')
+                this.corridors.push(d);
+            else if (type === 'svg')
+                this.patterns.push({ d, title });
+            else
+                this.others.push({ d, title });
+        }
+        for (const point of parts.points) {
+            if (!Number.isFinite(point?.[0]) || !Number.isFinite(point?.[1]))
+                continue;
+            const [x, y] = this.project(point[0], point[1]);
+            this._track([[x, y]]);
+            const icon = String(f.properties?.iconImage ?? '').toLowerCase();
+            const lower = title.toLowerCase();
+            let kind = 'dot';
+            if (lower.includes('rtk') || icon.includes('rtk'))
+                kind = 'rtk';
+            else if (lower === 'dock' || icon.includes('recharge'))
+                kind = 'dock';
+            this.markers.push({ kind, x, y, title });
+        }
+    }
+    _addTrail(trail) {
+        if (!trail)
+            return;
+        const toLine = (line) => {
+            const points = this._projectAll(line);
+            if (!points.length)
+                return '';
+            // A single position is drawn as a dot: zero-length segment with round caps
+            return toPath(points.length === 1 ? [points[0], points[0]] : points, false);
+        };
+        this.trail = trail.lines.map(toLine).join('');
+        this.trailHead = trail.head.length >= 2 ? toLine(trail.head) : '';
+    }
+    /** Visible area in local metres, padded and stretched to the container aspect ratio. */
+    viewBox(width, height, insets = { top: 0, right: 0, bottom: 0, left: 0 }) {
+        const b = this.bounds ?? { minX: -10, minY: -10, maxX: 10, maxY: 10 };
+        let w = Math.max(b.maxX - b.minX, 1);
+        let h = Math.max(b.maxY - b.minY, 1);
+        const pad = Math.max(VIEW_PADDING_MIN, Math.max(w, h) * VIEW_PADDING_RATIO);
+        w += pad * 2;
+        h += pad * 2;
+        const cx = (b.minX + b.maxX) / 2;
+        const cy = (b.minY + b.maxY) / 2;
+        if (!(width > 0 && height > 0)) {
+            return { x: cx - w / 2, y: cy - h / 2, w, h };
+        }
+        // Fit the map into the free area between badges and buttons, but never shrink it below half the card
+        const top = Math.min(insets.top, height * 0.25);
+        const bottom = Math.min(insets.bottom, height * 0.25);
+        const left = Math.min(insets.left, width * 0.25);
+        const right = Math.min(insets.right, width * 0.25);
+        const innerW = width - left - right;
+        const innerH = height - top - bottom;
+        const ppm = Math.min(innerW / w, innerH / h);
+        return {
+            x: cx - (left + innerW / 2) / ppm,
+            y: cy - (top + innerH / 2) / ppm,
+            w: width / ppm,
+            h: height / ppm,
+        };
+    }
+    /** Mower position in map units; while docked it is drawn on the dock. */
+    mowerPoint(mower, docked) {
+        const dock = docked ? this.markers.find(m => m.kind === 'dock') : undefined;
+        if (dock)
+            return [dock.x, dock.y];
+        return mower ? this.project(mower.lon, mower.lat) : null;
+    }
+    /** Zone under a point in map units, holes excluded. */
+    zoneAt(point) {
+        return this.zones.find(z => pointInRing(point, z.rings[0]) && !z.rings.slice(1).some(r => pointInRing(point, r)));
+    }
+    /** Pixels in the unzoomed view → map units. */
+    fromScreen(px, width, height, insets) {
+        const vb = this.viewBox(width, height, insets);
+        return [vb.x + (px[0] / width) * vb.w, vb.y + (px[1] / height) * vb.h];
+    }
+    /** Map units → pixels in the unzoomed view. */
+    toScreen(point, width, height, insets) {
+        const vb = this.viewBox(width, height, insets);
+        return [((point[0] - vb.x) / vb.w) * width, ((point[1] - vb.y) / vb.h) * height];
+    }
+    render(options) {
+        const vb = this.viewBox(options.width, options.height, options.insets);
+        const ppm = options.width > 0 ? options.width / vb.w : 20;
+        // While docked the mower is drawn on the dock instead of its last reported position
+        const dock = options.mowerDocked ? this.markers.find(m => m.kind === 'dock') : undefined;
+        const mower = this.mowerPoint(options.mower, options.mowerDocked);
+        // Heading is clockwise from north, the map itself may be rotated
+        const heading = (options.mowerHeading ?? 0) + (this.rotation || 0);
+        const activeZone = options.activeZone?.trim().toLowerCase();
+        const singleZone = this.labels.length === 1;
+        return b `
+      <svg
+        class="vm-svg"
+        viewBox="${fmt(vb.x)} ${fmt(vb.y)} ${fmt(vb.w)} ${fmt(vb.h)}"
+        preserveAspectRatio="xMidYMid meet"
+        style="--clm-ppm: ${ppm};"
+        role="img"
+      >
+        <defs>
+          <clipPath id=${this._clipId}>${this.areas.map(a => b `<path d=${a.d}></path>`)}</clipPath>
+        </defs>
+        ${this.areas.map(a => b `<path class="vm-area" d=${a.d}><title>${a.title}</title></path>`)}
+        ${this.dumps.map(a => b `<path class="vm-dump" d=${a.d}></path>`)}
+        ${this.others.map(a => b `<path class="vm-other" d=${a.d}></path>`)}
+        ${this.channels.length
+            ? b `<path class="vm-channel" d=${this.channels.join('')}></path>
+              <path class="vm-channel-center" d=${this.channels.join('')}></path>`
+            : E}
+        ${this.patterns.map(a => b `<path class="vm-pattern" d=${a.d}></path>`)}
+        ${this.corridors.length ? b `<path class="vm-corridor" d=${this.corridors.join('')}></path>` : E}
+        ${options.showPath && (this.trail || this.trailHead)
+            ? b `<g class="vm-trail-layer" clip-path="url(#${this._clipId})" style="--vm-trail-width: ${fmt(options.pathWidth ?? 0.2)}px">
+              ${this.trail ? b `<path class="vm-trail" d=${this.trail}></path>` : E}
+              ${this.trailHead ? b `<path class="vm-trail vm-trail-head" d=${this.trailHead}></path>` : E}
+            </g>`
+            : E}
+        ${this.areas.map(a => b `<path class="vm-area-edge" d=${a.d}></path>`)}
+        ${this.obstacles.map(o => b `<path class="vm-obstacle" d=${o.d}><title>${o.title}</title></path>`)}
+        ${this.walls.length ? b `<path class="vm-wall" d=${this.walls.join('')}></path>` : E}
+        ${this.markers.filter(m => m !== dock && (options.showRtk || m.kind !== 'rtk')).map(m => this._renderMarker(m))}
+        ${options.showLabels
+            ? this.labels
+                .filter(l => l.name)
+                .map(l => {
+                const active = options.activeProgress !== null &&
+                    options.activeProgress !== undefined &&
+                    (singleZone || (!!activeZone && l.name.trim().toLowerCase() === activeZone));
+                const sub = active ? [l.sub, `${options.activeProgress} %`].filter(Boolean).join(' · ') : l.sub;
+                const name = displayZoneName(l.name, options.areaWord);
+                // The zone being mown gets a pill like in the Mammotion app, the others plain text
+                const width = Math.round(16 + name.length * 6.6);
+                return b `
+                    <g class="vm-label ${active ? 'active' : ''}" transform="translate(${fmt(l.x)} ${fmt(l.y)})">
+                      <g class="vm-fixed">
+                        ${active
+                    ? b `<rect class="vm-label-pill" x=${-width / 2} y="-10" width=${width} height="20" rx="6"></rect>`
+                    : E}
+                        <text class="vm-label-name" y=${active ? 4 : sub ? -2 : 4}>${name}</text>
+                        ${sub ? b `<text class="vm-label-sub" y=${active ? 22 : 11}>${sub}</text>` : E}
+                      </g>
+                    </g>
+                  `;
+            })
+            : E}
+        ${mower
+            ? b `
+              <g
+                class="vm-mower ${options.mowerActive ? 'active' : ''} ${options.mowerJump ? 'jump' : ''} ${options.mowerAlert ? `alert-${options.mowerAlert.level}` : ''}"
+                style="transform: translate(${fmt(mower[0])}px, ${fmt(mower[1])}px)"
+              >
+                <g class="vm-fixed">
+                  <circle class="vm-mower-pulse" r="15"></circle>
+                  ${options.mowerAlert ? b `<circle class="vm-mower-alert-ring" r="17"></circle>` : E}
+                  <g class="vm-mower-rotate" style="transform: rotate(${fmt(heading)}deg)">
+                    <rect class="vm-mower-wheel" x="-11.5" y="-10" width="4" height="7" rx="1.5"></rect>
+                    <rect class="vm-mower-wheel" x="7.5" y="-10" width="4" height="7" rx="1.5"></rect>
+                    <rect class="vm-mower-wheel" x="-11.5" y="4" width="4" height="7" rx="1.5"></rect>
+                    <rect class="vm-mower-wheel" x="7.5" y="4" width="4" height="7" rx="1.5"></rect>
+                    <rect class="vm-mower-body" x="-8.5" y="-13" width="17" height="26" rx="6"></rect>
+                    <rect class="vm-mower-shell" x="-5" y="-5" width="10" height="13" rx="3"></rect>
+                    <circle class="vm-mower-front" cx="0" cy="-9.5" r="2"></circle>
+                    <path class="vm-mower-arrow" d="M0 -20L4.5 -15H-4.5Z"></path>
+                  </g>
+                  ${options.mowerAlert ? this._renderAlert(options.mowerAlert) : E}
+                </g>
+              </g>
+            `
+            : E}
+      </svg>
+    `;
+    }
+    _renderAlert(alert) {
+        const width = Math.min(220, alert.text.length * 6.2 + 16);
+        return b `
+      <g class="vm-alert vm-alert-${alert.level}" transform="translate(0 -26)">
+        <rect x=${-width / 2} y="-11" width=${width} height="20" rx="10"></rect>
+        <text y="3">${alert.text}</text>
+      </g>
+    `;
+    }
+    _renderMarker(m) {
+        if (m.kind === 'dot') {
+            return b `<g transform="translate(${fmt(m.x)} ${fmt(m.y)})"><circle class="vm-dot vm-fixed" r="3"></circle></g>`;
+        }
+        if (m.kind === 'dock') {
+            return b `
+        <g class="vm-station vm-dock" transform="translate(${fmt(m.x)} ${fmt(m.y)})">
+          <g class="vm-fixed">
+            <title>${m.title}</title>
+            <rect class="vm-dock-body" x="-9" y="-12" width="18" height="24" rx="4"></rect>
+            <circle class="vm-dock-badge" r="7"></circle>
+            <path class="vm-dock-bolt" d="M1 -5L-3.5 1H0L-1 5L3.5 -1H0Z"></path>
+          </g>
+        </g>
+      `;
+        }
+        return b `
+      <g class="vm-station vm-${m.kind}" transform="translate(${fmt(m.x)} ${fmt(m.y)})">
+        <g class="vm-fixed">
+          <title>${m.title}</title>
+          <circle class="vm-station-body" r="10"></circle>
+          <path class="vm-station-icon" transform="translate(-7 -7) scale(0.5833)" d=${ICON_RTK}></path>
+        </g>
+      </g>
+    `;
+    }
+}
+
 let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     constructor() {
         super(...arguments);
@@ -4841,6 +5792,10 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             { name: 'progress_entity', selector: { entity: { domain: 'sensor' } }, required: false },
             { name: 'battery_entity', selector: { entity: { domain: 'sensor', device_class: 'battery' } }, required: false },
             { name: 'charging_entity', selector: { entity: { domain: ['binary_sensor', 'sensor'] } }, required: false },
+            { name: 'task_area_entity', selector: { entity: { domain: 'sensor' } }, required: false },
+            { name: 'remaining_time_entity', selector: { entity: { domain: 'sensor' } }, required: false },
+            { name: 'work_zone_entity', selector: { entity: { domain: 'sensor' } }, required: false },
+            { name: 'error_entity', selector: { entity: { domain: 'sensor' } }, required: false },
         ];
         this._colorOptionsSchema = [
             { name: 'sky_color_top', selector: { color_rgb: {} } },
@@ -4943,8 +5898,15 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 newConfig.map_image_bg_color = detected;
             }
         }
-        const hadAnyMapSource = !!(this.config.map_entity || this.config.map_image_entity);
-        const hasAnyMapSourceNow = !!(newConfig.map_entity || newConfig.map_image_entity);
+        const hadAnyMapSource = !!(this.config.map_entity ||
+            this.config.map_image_entity ||
+            this.config.map_source === 'mammotion');
+        const hasAnyMapSourceNow = !!(newConfig.map_entity ||
+            newConfig.map_image_entity ||
+            newConfig.map_source === 'mammotion');
+        if (newConfig.map_source === 'mammotion' && !isMammotionEntity(this.hass, newConfig.entity)) {
+            delete newConfig.map_source;
+        }
         if (!hadAnyMapSource && hasAnyMapSourceNow) {
             newConfig.enable_map = true;
         }
@@ -4954,11 +5916,13 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 newConfig.default_view = 'mower';
             }
         }
-        if (this.config.map_entity && !newConfig.map_entity && newConfig.map_image_entity) {
-            newConfig.map_source = 'image';
-        }
-        if (this.config.map_image_entity && !newConfig.map_image_entity && newConfig.map_entity) {
-            newConfig.map_source = 'gps';
+        if (newConfig.map_source !== 'mammotion') {
+            if (this.config.map_entity && !newConfig.map_entity && newConfig.map_image_entity) {
+                newConfig.map_source = 'image';
+            }
+            if (this.config.map_image_entity && !newConfig.map_image_entity && newConfig.map_entity) {
+                newConfig.map_source = 'gps';
+            }
         }
         if (newConfig.enable_map === false && newConfig.default_view === 'map') {
             newConfig.default_view = 'mower';
@@ -5812,7 +6776,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         if (this.config.camera_entity) {
             defaultViewOptions.push({ value: 'camera', label: localize('view.camera', { hass: this.hass }) });
         }
-        if (this.config.map_entity || this.config.map_image_entity) {
+        if (this.config.map_entity || this.config.map_image_entity || this.config.map_source === 'mammotion') {
             defaultViewOptions.push({ value: 'map', label: localize('view.map', { hass: this.hass }) });
         }
         return [
@@ -5830,14 +6794,22 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
     get _mapOptionsSchema() {
         const hasMapEntity = !!this.config.map_entity;
         const hasImageEntity = !!this.config.map_image_entity;
-        const hasAnyMapSource = hasMapEntity || hasImageEntity;
+        const hasMammotion = isMammotionEntity(this.hass, this.config.entity);
+        const hasAnyMapSource = hasMapEntity || hasImageEntity || hasMammotion;
         const hasBothSources = hasMapEntity && hasImageEntity;
         const mapIsEnabled = hasAnyMapSource && this.config.enable_map !== false;
         const hasApiKey = !!this.config.google_maps_api_key;
         const useGoogleMaps = !!this.config.use_google_maps;
-        const effectiveSource = hasBothSources ? this.config.map_source || 'gps' : hasMapEntity ? 'gps' : 'image';
+        const effectiveSource = hasMammotion && this.config.map_source === 'mammotion'
+            ? 'mammotion'
+            : hasBothSources
+                ? this.config.map_source || 'gps'
+                : hasMapEntity
+                    ? 'gps'
+                    : 'image';
         const gpsActive = mapIsEnabled && effectiveSource === 'gps';
         const imageActive = mapIsEnabled && effectiveSource === 'image';
+        const vectorActive = mapIsEnabled && effectiveSource === 'mammotion';
         const mapSourceOptions = [];
         if (hasMapEntity) {
             mapSourceOptions.push({
@@ -5849,6 +6821,12 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             mapSourceOptions.push({
                 value: 'image',
                 label: localize('editor.options.map_source_label.image', { hass: this.hass }),
+            });
+        }
+        if (hasMammotion) {
+            mapSourceOptions.push({
+                value: 'mammotion',
+                label: localize('editor.options.map_source_label.mammotion', { hass: this.hass }),
             });
         }
         const schema = [
@@ -5916,6 +6894,37 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 disabled: !imageActive || this.config.map_image_bg_auto !== false,
             },
         ];
+        if (hasMammotion) {
+            schema.push({
+                name: 'map_show_labels',
+                selector: { boolean: {} },
+                disabled: !vectorActive,
+            }, {
+                name: 'map_show_path',
+                selector: { boolean: {} },
+                disabled: !vectorActive,
+            }, {
+                name: 'map_path_width',
+                selector: { number: { min: 0.1, max: 1, step: 0.05, mode: 'box', unit_of_measurement: 'm' } },
+                disabled: !vectorActive || this.config.map_show_path === false,
+            }, {
+                name: 'map_show_rtk',
+                selector: { boolean: {} },
+                disabled: !vectorActive,
+            }, {
+                name: 'map_keep_view',
+                selector: { boolean: {} },
+                disabled: !vectorActive,
+            }, {
+                name: 'map_rotation',
+                selector: { number: { min: -180, max: 180, step: 5, mode: 'slider', unit_of_measurement: '°' } },
+                disabled: !vectorActive,
+            }, {
+                name: 'zone_switches',
+                selector: { entity: { domain: 'switch', multiple: true } },
+                disabled: !vectorActive,
+            });
+        }
         return schema;
     }
     get _appearanceOptionsSchema() {
@@ -5978,13 +6987,31 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             progress_entity: this.config.progress_entity || '',
             battery_entity: this.config.battery_entity || '',
             charging_entity: this.config.charging_entity || '',
+            task_area_entity: this.config.task_area_entity || '',
+            remaining_time_entity: this.config.remaining_time_entity || '',
+            work_zone_entity: this.config.work_zone_entity || '',
+            error_entity: this.config.error_entity || '',
         };
     }
     get _optionsData() {
         return {
             default_view: this.config.default_view || 'mower',
             enable_map: this.config.enable_map !== false,
-            map_source: this.config.map_source || (this.config.map_image_entity && !this.config.map_entity ? 'image' : 'gps'),
+            map_source: this.config.map_source ||
+                (this.config.map_image_entity && !this.config.map_entity
+                    ? 'image'
+                    : this.config.map_entity
+                        ? 'gps'
+                        : isMammotionEntity(this.hass, this.config.entity)
+                            ? ''
+                            : 'gps'),
+            map_show_labels: this.config.map_show_labels !== false,
+            map_show_path: this.config.map_show_path !== false,
+            map_path_width: this.config.map_path_width ?? 0.2,
+            map_rotation: this.config.map_rotation ?? 0,
+            map_show_rtk: this.config.map_show_rtk !== false,
+            zone_switches: this.config.zone_switches ?? [],
+            map_keep_view: this.config.map_keep_view !== false,
             google_maps_api_key: this.config.google_maps_api_key || '',
             map_type: this.config.map_type || 'hybrid',
             use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
@@ -6322,7 +7349,154 @@ CameraPopup = __decorate([
     t('camera-popup')
 ], CameraPopup);
 
+/** Positions closer than this are the same spot (GPS jitter while standing) */
+const MIN_STEP = 0.05;
+/** Two positions further apart in time than this are not connected, the mower could have driven anywhere in between */
+const MAX_GAP_SECONDS = 20;
+/** Sanity limit for one segment, nothing drives faster than this between two reports */
+const MAX_SEGMENT_METERS = 10;
+/** How far back the start of the job is searched */
+const MAX_JOB_AGE = 12 * 60 * 60 * 1000;
+/** Overlap when fetching new history entries, so none is missed at the boundary */
+const FETCH_OVERLAP = 5000;
+/** Same report seen twice (live and from the history) when the times are this close */
+const SAME_REPORT_MS = 500;
+/** Offset from `a` to `b` in metres, x east and y north */
+const offsetMeters = (a, b) => [
+    (b.lon - a.lon) * METERS_PER_DEG_LON * Math.cos((b.lat * Math.PI) / 180),
+    (b.lat - a.lat) * METERS_PER_DEG_LAT,
+];
+const distanceMeters = (a, b) => Math.hypot(...offsetMeters(a, b));
+const stateTime = (st) => {
+    const seconds = st.lu ?? st.lc;
+    return seconds ? seconds * 1000 : undefined;
+};
+const historyDuring = async (hass, entityId, start, withAttributes) => {
+    const result = await hass.callWS({
+        type: 'history/history_during_period',
+        start_time: new Date(start).toISOString(),
+        entity_ids: [entityId],
+        minimal_response: !withAttributes,
+        no_attributes: !withAttributes,
+        significant_changes_only: false,
+    });
+    return result?.[entityId] ?? [];
+};
+/**
+ * Start of the running job: the first state after the mower was last not on a job (docked or idle).
+ * `unavailable` and `unknown` are skipped, a restart of the integration does not end a job.
+ */
+const findJobStart = async (hass, mowerEntity, isOnJob) => {
+    const earliest = Date.now() - MAX_JOB_AGE;
+    const states = await historyDuring(hass, mowerEntity, earliest, false);
+    for (let i = states.length - 1; i >= 0; i--) {
+        const state = states[i].s;
+        if (!isOnJob(state) && state !== 'unavailable' && state !== 'unknown') {
+            const next = states[i + 1];
+            return (next && stateTime(next)) || Date.now();
+        }
+    }
+    return earliest;
+};
+class MowTrail {
+    constructor(jobStart) {
+        this.jobStart = jobStart;
+        this.points = [];
+        /** The mower's own recent line from the integration, [lon, lat] pairs, drawn on top of the trail */
+        this.head = [];
+        this._fetchedUntil = 0;
+    }
+    /** Loads all positions of the job recorded so far, or only the ones since the last call. Returns true when the trail changed. */
+    async extend(hass, trackerEntity) {
+        const from = this._fetchedUntil ? this._fetchedUntil - FETCH_OVERLAP : this.jobStart;
+        const states = await historyDuring(hass, trackerEntity, from, true);
+        let changed = false;
+        for (const st of states) {
+            const t = stateTime(st);
+            const lat = Number(st.a?.latitude);
+            const lon = Number(st.a?.longitude);
+            if (!t || !Number.isFinite(lat) || !Number.isFinite(lon) || (lat === 0 && lon === 0))
+                continue;
+            if (this._push({ lon, lat, t }))
+                changed = true;
+            // Server time, so the next fetch does not depend on the browser clock
+            if (t > this._fetchedUntil)
+                this._fetchedUntil = t;
+        }
+        if (!this._fetchedUntil)
+            this._fetchedUntil = this.jobStart;
+        return changed;
+    }
+    /** Adds the position the card just saw in `hass`, so the trail follows the mower between history fetches. */
+    pushLive(lon, lat, lastUpdated) {
+        const t = Date.parse(lastUpdated);
+        if (!Number.isFinite(t) || (lat === 0 && lon === 0))
+            return false;
+        return this._push({ lon, lat, t });
+    }
+    /** Replaces the mower's own recent line. Returns true when it differs from the one before. */
+    setHead(line) {
+        const same = line.length === this.head.length && line.every((p, i) => p[0] === this.head[i][0] && p[1] === this.head[i][1]);
+        if (same)
+            return false;
+        this.head = line;
+        return true;
+    }
+    /**
+     * The trail as polylines of [lon, lat]: consecutive positions are joined when they are close in
+     * time and distance, a position without a neighbour becomes a single-point line (drawn as a dot).
+     */
+    lines() {
+        const out = [];
+        let current = [];
+        let prev;
+        for (const p of this.points) {
+            const joined = prev && p.t - prev.t <= MAX_GAP_SECONDS * 1000 && distanceMeters(prev, p) <= MAX_SEGMENT_METERS;
+            if (!joined && current.length) {
+                out.push(current);
+                current = [];
+            }
+            current.push([p.lon, p.lat]);
+            prev = p;
+        }
+        if (current.length)
+            out.push(current);
+        return out;
+    }
+    /** Inserts in time order, ignores duplicates and jitter. Returns true when the trail changed. */
+    _push(p) {
+        // Points arrive almost sorted (live pushes, history fetches with a small overlap), so search from the end
+        let index = this.points.length;
+        while (index > 0 && this.points[index - 1].t > p.t)
+            index--;
+        const before = this.points[index - 1];
+        const after = this.points[index];
+        if ((before && Math.abs(before.t - p.t) < SAME_REPORT_MS) || (after && Math.abs(after.t - p.t) < SAME_REPORT_MS)) {
+            return false;
+        }
+        if (before && distanceMeters(before, p) < MIN_STEP)
+            return false;
+        this.points.splice(index, 0, p);
+        return true;
+    }
+}
+/** One trail per mower, kept while the card is alive so switching views does not start over. */
+const trails = new Map();
+const getTrail = (entityId) => trails.get(entityId);
+const setTrail = (entityId, trail) => {
+    if (trail)
+        trails.set(entityId, trail);
+    else
+        trails.delete(entityId);
+};
+
 var CompactLawnMowerCard_1;
+/** Reported position of a device_tracker, null when it has none (0/0 is the integration's "no fix"). */
+const trackerPosition = (tracker) => {
+    const lat = Number(tracker?.attributes?.latitude);
+    const lon = Number(tracker?.attributes?.longitude);
+    return Number.isFinite(lat) && Number.isFinite(lon) && (lat !== 0 || lon !== 0) ? { lat, lon } : null;
+};
 console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
 console.log('Github:', 'https://github.com/Tra1n84/compact-lawn-mower-card');
 console.groupEnd();
@@ -6364,6 +7538,17 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._imgPinchStartTranslateX = 0;
         this._imgPinchStartTranslateY = 0;
         this._imgActivePointers = new Map();
+        this._vectorLayers = { base: null, trail: null };
+        this._vectorStatus = 'idle';
+        this._vectorBaseBusy = false;
+        this._vectorStreamAt = 0;
+        this._trailBusy = false;
+        this._trailRefreshedAt = 0;
+        this._mowerHeading = null;
+        this._vectorSize = { width: 0, height: 0 };
+        this._vectorFollow = false;
+        this._lastMovedAt = Date.now();
+        this._lastReportAt = 0;
     }
     connectedCallback() {
         super.connectedCallback();
@@ -6373,7 +7558,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const useImage = this.config.map_source === 'image' ||
             (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
         const useHaMap = !useImage && (!this.config.google_maps_api_key || this.config.use_google_maps === false);
-        if (this._viewMode === 'map' && useImage) {
+        if (this._viewMode === 'map' && this._isVectorMap) {
+            this._startVectorMap();
+        }
+        else if (this._viewMode === 'map' && useImage) {
             this._isMapImageLoading = true;
         }
         else if (this._viewMode === 'map' && useHaMap) {
@@ -6419,11 +7607,14 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._closePopup();
         this._haMapShadowObserver?.disconnect();
         this._haMapShadowObserver = undefined;
+        this._vectorResizeObserver?.disconnect();
+        this._vectorObserved = undefined;
         this._imgActivePointers.clear();
         this._imgIsDragging = false;
         this._imgIsPinching = false;
     }
     _clearAllTimers() {
+        this._stopVectorMap();
         if (this._mapUpdateInterval) {
             clearInterval(this._mapUpdateInterval);
             this._mapUpdateInterval = undefined;
@@ -6631,6 +7822,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (this._mapCardElement && changedProperties.has('hass')) {
             this._mapCardElement.hass = this.hass;
         }
+        if (this._viewMode === 'map' &&
+            this._isVectorMap &&
+            this._vectorStatus === 'loading' &&
+            !this._vectorLayers.base &&
+            !this._vectorBaseBusy) {
+            this._fetchVectorBase();
+        }
         if (changedProperties.has('config')) {
             this._setInitialAnimationState(this.mowerState);
             const oldConfig = changedProperties.get('config');
@@ -6650,9 +7848,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._setViewMode(this.config.default_view || 'mower');
                 }
                 if (this._viewMode === 'map' &&
+                    !this._isVectorMap &&
                     !this.config.map_entity &&
                     !this.config.map_image_entity &&
-                    (oldConfig.map_entity || oldConfig.map_image_entity)) {
+                    (oldConfig.map_entity || oldConfig.map_image_entity || oldConfig.map_source === 'mammotion')) {
                     this._setViewMode(this.config.default_view || 'mower');
                 }
                 if (this.config.map_image_entity !== oldConfig.map_image_entity) {
@@ -6669,7 +7868,22 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._mapBgDetectedFor = undefined;
                     this._restoreMapBackground();
                 }
-                if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
+                if (this.config.map_source !== oldConfig.map_source &&
+                    (this._isVectorMap || oldConfig.map_source === 'mammotion')) {
+                    this._imgScale = 1;
+                    this._imgTranslateX = 0;
+                    this._imgTranslateY = 0;
+                    this._restoreImgTransform();
+                    if (!this._isVectorMap) {
+                        this._stopVectorMap();
+                    }
+                }
+                if (this._viewMode === 'map' &&
+                    this._isVectorMap &&
+                    (this.config.map_source !== oldConfig.map_source || this.config.entity !== oldConfig.entity)) {
+                    this._startVectorMap();
+                }
+                else if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
                     const newUseImage = this.config.map_source === 'image' ||
                         (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
                         (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
@@ -6692,7 +7906,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 }
                 const useHaMapNow = !this.config.google_maps_api_key || this.config.use_google_maps === false;
                 const useHaMapBefore = !oldConfig.google_maps_api_key || oldConfig.use_google_maps === false;
-                if (this._viewMode === 'map' && useHaMapNow && !useHaMapBefore) {
+                if (this._viewMode === 'map' && !this._isVectorMap && useHaMapNow && !useHaMapBefore) {
                     this._mapCardElement = undefined;
                     this.updateComplete.then(() => this._loadMapElement());
                 }
@@ -6725,6 +7939,26 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         if (changedProperties.has('_viewMode')) {
             this._setInitialAnimationState(this.mowerState);
+        }
+        if (changedProperties.has('hass') && this._isVectorMap) {
+            this._trackMovement();
+            if (this._viewMode === 'map') {
+                this._onVectorHassUpdate(changedProperties.get('hass'));
+            }
+        }
+    }
+    /** A new mower state reloads the trail, a new position extends it at once. */
+    _onVectorHassUpdate(oldHass) {
+        const trackerId = this._vectorTrackerEntity();
+        const tracker = trackerId ? this.hass.states[trackerId] : undefined;
+        if (oldHass && oldHass.states[this.config.entity]?.state !== this.mowerState) {
+            this._refreshMowTrail();
+        }
+        else if (tracker && trackerId && oldHass?.states[trackerId] !== tracker) {
+            // The history is only read to fill in what was missed between two updates
+            this._pushLivePosition(tracker);
+            if (Date.now() - this._trailRefreshedAt > VECTOR_MAP_TRAIL_MIN_INTERVAL)
+                this._refreshMowTrail();
         }
     }
     async _checkCameraReachability() {
@@ -6773,6 +8007,184 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         this._setupBadgeResizeObserver();
         this._measureStatusLabelTier();
+        this._observeVectorContainer();
+    }
+    /** A tap on a zone offers to mow just that zone, unless the mower is working on it right now. */
+    _handleZoneTap(e) {
+        const model = this._vectorModel;
+        const container = this.shadowRoot?.querySelector('.map-container.vector');
+        if (!model || !container)
+            return;
+        const rect = container.getBoundingClientRect();
+        const px = [
+            (e.clientX - rect.left - this._imgTranslateX) / this._imgScale,
+            (e.clientY - rect.top - this._imgTranslateY) / this._imgScale,
+        ];
+        const { width, height } = this._vectorViewSize();
+        const zone = model.zoneAt(model.fromScreen(px, width, height, VECTOR_MAP_INSETS));
+        this._zoneDialog =
+            zone && !this._isZoneInWork(zone.name) ? { name: zone.name, hash: zone.hash, area: zone.area } : undefined;
+    }
+    /** Name of the zone the mower is working on, undefined when the integration does not know it. */
+    _workZone() {
+        if (!this._isMowerWorking)
+            return undefined;
+        const current = this._mowerSensor('work_area')?.trim();
+        // The sensor also reports "path", "unknown" and "Not working" (its state when the hash is 0)
+        return current && !['path', 'unknown', 'not working'].includes(current.toLowerCase()) ? current : undefined;
+    }
+    /** The zone of the running job; when the integration does not say which one, every zone counts as busy. */
+    _isZoneInWork(name) {
+        if (!this._isMowerWorking)
+            return false;
+        const current = this._workZone();
+        return !current || current.toLowerCase() === name.trim().toLowerCase();
+    }
+    /**
+     * The integration starts a job for selected zones via their area switches. They carry the zone's
+     * hash as an attribute; when that does not match (hashes above 2^53 lose precision on the way to
+     * the browser) the switch named after the zone is taken.
+     */
+    _zoneSwitch(zone) {
+        if (!this.hass)
+            return undefined;
+        // Configured switches first, then the ones on the mower's device, and without a usable
+        // entity registry every area switch in HA
+        const configured = this.config.zone_switches?.filter(Boolean) ?? [];
+        let ids = configured;
+        if (!ids.length)
+            ids = siblingEntities(this.hass, this.config.entity, 'switch').map(([id]) => id);
+        if (!ids.length)
+            ids = Object.keys(this.hass.states).filter(id => id.startsWith('switch.'));
+        const candidates = ids
+            .map(id => ({ id, state: this.hass.states[id] }))
+            .filter(c => c.state && c.state.attributes?.hash !== undefined);
+        const byHash = candidates.find(c => zone.hash !== null && Number(c.state.attributes.hash) === zone.hash);
+        if (byHash)
+            return byHash.id;
+        const name = zone.name.trim().toLowerCase();
+        const byName = candidates.find(c => {
+            const friendly = String(c.state.attributes.friendly_name ?? '')
+                .trim()
+                .toLowerCase();
+            return !!name && (friendly === name || friendly.endsWith(` ${name}`));
+        });
+        if (byName)
+            return byName.id;
+        // One zone on the map and one configured switch: no ambiguity
+        return configured.length === 1 && this._vectorModel?.zones.length === 1 ? configured[0] : undefined;
+    }
+    /** Sends the start and closes the dialog at once; errors from the integration show up as HA's own toast. */
+    _startZone(e) {
+        e.stopPropagation();
+        const dialog = this._zoneDialog;
+        this._zoneDialog = undefined;
+        if (!dialog)
+            return;
+        const area = this._zoneSwitch(dialog);
+        if (!area) {
+            fireEvent(this, 'hass-notification', { message: localize('map.zone_not_found', { hass: this.hass }) });
+            return;
+        }
+        this.hass
+            .callService(MAMMOTION_DOMAIN, 'start_mow', { areas: [area] }, { entity_id: this.config.entity })
+            .catch(() => undefined);
+    }
+    _renderZoneDialog() {
+        const dialog = this._zoneDialog;
+        if (!dialog || this._isZoneInWork(dialog.name))
+            return E;
+        const stop = (e) => e.stopPropagation();
+        return x `
+      <div class="vm-zone-dialog" @pointerdown=${stop} @pointerup=${stop} @dblclick=${stop}>
+        <span class="vm-zone-name"
+          >${displayZoneName(dialog.name, localize('map.area', { hass: this.hass }))}${dialog.area > 0 ? ` · ${Math.round(dialog.area)} m²` : ''}</span
+        >
+        <button class="vm-zone-start" @click=${this._startZone}>
+          ${localize('map.mow_zone', { hass: this.hass })}
+        </button>
+        <button
+          class="vm-zone-cancel"
+          @click=${(e) => {
+            e.stopPropagation();
+            this._zoneDialog = undefined;
+        }}
+        >
+          ${localize('map.cancel', { hass: this.hass })}
+        </button>
+      </div>
+    `;
+    }
+    /** Red when the mower reports an error, amber when it has not moved for a while during a job. */
+    _mowerAlert() {
+        if (this._resolveStateBehavior(this.mowerState) === 'error') {
+            const message = this._mowerSensor('error_1_message');
+            return { level: 'error', text: message || localize('status.error', { hass: this.hass }) };
+        }
+        // Standing still is only known while positions keep coming in (the report stream is running)
+        if (this._resolveStateBehavior(this.mowerState) === 'mowing' &&
+            Date.now() - this._lastReportAt < VECTOR_MAP_REPORT_MAX_AGE) {
+            const minutes = Math.floor((Date.now() - this._lastMovedAt) / 60000);
+            if (minutes >= VECTOR_MAP_STUCK_MINUTES) {
+                return {
+                    level: 'warning',
+                    text: localize('map.not_moving', { hass: this.hass }).replace('{n}', String(minutes)),
+                };
+            }
+        }
+        return null;
+    }
+    /** Keeps the rotation continuous (350° → 10° turns by 20°, not back by 340°) so the transition looks right. */
+    _continuousHeading(heading) {
+        const prev = this._displayHeading;
+        if (prev === undefined) {
+            this._displayHeading = heading;
+            return heading;
+        }
+        let delta = ((((heading - prev) % 360) + 540) % 360) - 180;
+        if (Math.abs(delta) < 0.01)
+            delta = 0;
+        this._displayHeading = prev + delta;
+        return this._displayHeading;
+    }
+    /** Keeps the mower in the middle of the free map area while "follow" is on. */
+    _followMower(model, mower, docked) {
+        if (!this._vectorFollow || !model || this._imgIsDragging || this._imgIsPinching)
+            return;
+        const point = model.mowerPoint(mower, docked);
+        const { width, height } = this._vectorViewSize();
+        if (!point || !width || !height)
+            return;
+        const [x, y] = model.toScreen(point, width, height, VECTOR_MAP_INSETS);
+        const centerY = (VECTOR_MAP_INSETS.top + height - VECTOR_MAP_INSETS.bottom) / 2;
+        this._imgTranslateX = width / 2 - this._imgScale * x;
+        this._imgTranslateY = centerY - this._imgScale * y;
+    }
+    _toggleFollow(e) {
+        e.stopPropagation();
+        this._vectorFollow = !this._vectorFollow;
+        if (this._vectorFollow && this._imgScale < 2) {
+            this._imgScale = 2.5;
+        }
+    }
+    /** The map is fitted to the size of its own container, which can differ from the display area. */
+    _observeVectorContainer() {
+        const el = this._viewMode === 'map' ? this.shadowRoot?.querySelector('.map-container.vector') : null;
+        if (el === this._vectorObserved)
+            return;
+        this._vectorResizeObserver?.disconnect();
+        this._vectorObserved = el ?? undefined;
+        if (!el)
+            return;
+        this._vectorResizeObserver ?? (this._vectorResizeObserver = new ResizeObserver(entries => {
+            const rect = entries[entries.length - 1].contentRect;
+            const width = Math.round(rect.width);
+            const height = Math.round(rect.height);
+            if (width > 0 && height > 0 && (width !== this._vectorSize.width || height !== this._vectorSize.height)) {
+                this._vectorSize = { width, height };
+            }
+        }));
+        this._vectorResizeObserver.observe(el);
     }
     _isCurrentlyDocked(state, isCharging) {
         if (isCharging) {
@@ -6844,9 +8256,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         return this._parsePercentage(rawValue);
     }
     get progressLevel() {
-        const progressEntity = this.config.progress_entity ? this.hass?.states[this.config.progress_entity] : undefined;
-        const rawValue = progressEntity?.state;
-        return this._parsePercentage(rawValue);
+        return this._parsePercentage(this._mowerSensor('progress'));
     }
     get chargingStatus() {
         return CompactLawnMowerCard_1._getChargingStatus(this.hass, this.mowerState, this.config.charging_entity);
@@ -6884,9 +8294,12 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 }
             }
             catch (error) {
-                console.error('Error executing custom action:', error);
-                this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
-                feedbackStatus = 'error';
+                // Some integrations (Mammotion) report only that the reply went missing; the command itself was sent
+                if (error?.translation_key !== 'command_unconfirmed') {
+                    console.error('Error executing custom action:', error);
+                    this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
+                    feedbackStatus = 'error';
+                }
             }
             this._pendingActionName = null;
             this._actionFeedback = { name: customAction.name, status: feedbackStatus };
@@ -7080,6 +8493,76 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
         if (tier !== this._statusLabelTier)
             this._statusLabelTier = tier;
+    }
+    /**
+     * Job sensors: the configured entity, otherwise the Mammotion sensor of the mower's device
+     * with that translation key.
+     */
+    _mowerSensor(key) {
+        if (!this.hass)
+            return undefined;
+        const configured = {
+            area: this.config.task_area_entity,
+            left_time: this.config.remaining_time_entity,
+            work_area: this.config.work_zone_entity,
+            error_1_message: this.config.error_entity,
+            progress: this.config.progress_entity,
+        }[key];
+        const entityId = configured ||
+            (isMammotionEntity(this.hass, this.config.entity)
+                ? findSiblingSensor(this.hass, this.config.entity, key)
+                : undefined);
+        const value = entityId ? this.hass.states[entityId]?.state : undefined;
+        return value === undefined || value === 'unknown' || value === 'unavailable' ? undefined : value;
+    }
+    /** "55 / 103 m² · 1 h 2 min" while a job is running: mown and total area of the job, time left. */
+    _jobDetail() {
+        if (!this._isMowerWorking)
+            return '';
+        const parts = [];
+        // The integration's area sensor is the total area of the job, the mown part follows from the progress
+        const total = Number(this._mowerSensor('area'));
+        const progress = Number(this.progressLevel);
+        if (total > 0) {
+            parts.push(Number.isFinite(progress)
+                ? `${Math.round((total * progress) / 100)} / ${Math.round(total)} m²`
+                : `${Math.round(total)} m²`);
+        }
+        const left = Number(this._mowerSensor('left_time'));
+        if (left > 0)
+            parts.push(left >= 60 ? `${Math.floor(left / 60)} h ${left % 60} min` : `${left} min`);
+        return parts.join(' · ');
+    }
+    _renderProgressBadge(progress, detail = '') {
+        const value = Math.max(0, Math.min(100, progress));
+        const radius = 8;
+        const circumference = 2 * Math.PI * radius;
+        const mowing = this._resolveStateBehavior(this.mowerState) === 'mowing';
+        // Hue runs from amber at the start to lawn green when the job is done
+        const hue = Math.round(35 + (value / 100) * 85);
+        return x `
+      <div
+        class="progress-badge ${mowing ? 'is-mowing' : ''} ${value >= 100 ? 'is-done' : ''}"
+        style="--progress: ${value}%; --progress-hue: ${hue};"
+      >
+        <div class="progress-fill"></div>
+        <svg class="badge-icon progress-ring" viewBox="0 0 22 22" aria-hidden="true">
+          <circle class="progress-ring-track" cx="11" cy="11" r=${radius}></circle>
+          <circle
+            class="progress-ring-value"
+            cx="11"
+            cy="11"
+            r=${radius}
+            stroke-dasharray=${circumference}
+            stroke-dashoffset=${circumference * (1 - value / 100)}
+          ></circle>
+          ${value >= 100 ? b `<path class="progress-ring-check" d="M7.2 11.3l2.5 2.5 5-5.2"></path>` : E}
+        </svg>
+        <span class="progress-text"
+          >${value}%${detail ? x `<span class="progress-detail"> · ${detail}</span>` : E}</span
+        >
+      </div>
+    `;
     }
     _badgeRowFixedWidth(row) {
         const style = getComputedStyle(row);
@@ -7306,6 +8789,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const layer = this.shadowRoot?.querySelector('.map-image-transform-layer');
         if (layer) {
             layer.style.transform = `translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this._imgScale})`;
+            layer.style.setProperty('--clm-zoom', String(this._imgScale));
         }
     }
     _constrainPan() {
@@ -7343,6 +8827,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._saveImgTransform();
     }
     _handleImgPointerDown(e) {
+        this._vectorFollow = false;
+        this._tapStart = this._imgActivePointers.size === 0 ? { x: e.clientX, y: e.clientY, t: Date.now() } : undefined;
         const container = e.currentTarget;
         this._imgContainer = container;
         container.setPointerCapture(e.pointerId);
@@ -7395,6 +8881,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
     }
     _handleImgPointerUp(e) {
+        const tap = this._tapStart;
+        this._tapStart = undefined;
+        if (tap &&
+            e.type === 'pointerup' &&
+            this._isVectorMap &&
+            Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 6 &&
+            Date.now() - tap.t < 500) {
+            this._handleZoneTap(e);
+        }
         this._imgActivePointers.delete(e.pointerId);
         if (this._imgActivePointers.size === 0) {
             this._imgIsDragging = false;
@@ -7417,6 +8912,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _handleImgReset(e) {
         e.stopPropagation();
+        this._vectorFollow = false;
         this._imgScale = 1;
         this._imgTranslateX = 0;
         this._imgTranslateY = 0;
@@ -7431,19 +8927,27 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._applyImgTransformDirect();
         this._saveImgTransform();
     }
+    get _imgTransformKey() {
+        if (this._isVectorMap) {
+            return this.config?.entity ? `clm_vec_${this.config.entity}` : undefined;
+        }
+        return this.config?.map_image_entity ? `clm_img_${this.config.map_image_entity}` : undefined;
+    }
     _saveImgTransform() {
-        if (!this.config?.map_image_entity)
+        const key = this._imgTransformKey;
+        if (!key || (this._isVectorMap && this.config.map_keep_view === false))
             return;
         try {
-            localStorage.setItem(`clm_img_${this.config.map_image_entity}`, JSON.stringify({ scale: this._imgScale, x: this._imgTranslateX, y: this._imgTranslateY }));
+            localStorage.setItem(key, JSON.stringify({ scale: this._imgScale, x: this._imgTranslateX, y: this._imgTranslateY }));
         }
         catch { }
     }
     _restoreImgTransform() {
-        if (!this.config?.map_image_entity)
+        const key = this._imgTransformKey;
+        if (!key || (this._isVectorMap && this.config.map_keep_view === false))
             return;
         try {
-            const stored = localStorage.getItem(`clm_img_${this.config.map_image_entity}`);
+            const stored = localStorage.getItem(key);
             if (stored) {
                 const { scale, x, y } = JSON.parse(stored);
                 if (typeof scale === 'number')
@@ -7546,40 +9050,320 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             style="opacity: ${this._isMapImageLoading ? 0 : 1};"
           />
         </div>
-        ${!this._isMapImageLoading
-            ? x `<div class="map-controls-wrapper">
-                <div class="map-controls">
-                  <button
-                    class="map-control-button"
-                    @pointerdown=${(e) => e.stopPropagation()}
-                    @dblclick=${(e) => e.stopPropagation()}
-                    @click=${(e) => this._handleImgZoomButton(e, 'in')}
-                  >
-                    <ha-icon icon="mdi:plus"></ha-icon>
-                  </button>
-                  <button
-                    class="map-control-button"
-                    @pointerdown=${(e) => e.stopPropagation()}
-                    @dblclick=${(e) => e.stopPropagation()}
-                    @click=${(e) => this._handleImgZoomButton(e, 'out')}
-                  >
-                    <ha-icon icon="mdi:minus"></ha-icon>
-                  </button>
-                  <button
-                    class="map-control-button"
-                    @pointerdown=${(e) => e.stopPropagation()}
-                    @dblclick=${(e) => e.stopPropagation()}
-                    @click=${(e) => this._handleImgReset(e)}
-                  >
-                    <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
-                  </button>
+        ${!this._isMapImageLoading ? this._renderImgControls() : E}
+      </div>
+    `;
+    }
+    _renderImgControls() {
+        return x `<div class="map-controls-wrapper">
+      <div class="map-controls">
+        <button
+          class="map-control-button"
+          @pointerdown=${(e) => e.stopPropagation()}
+          @dblclick=${(e) => e.stopPropagation()}
+          @click=${(e) => this._handleImgZoomButton(e, 'in')}
+        >
+          <ha-icon icon="mdi:plus"></ha-icon>
+        </button>
+        <button
+          class="map-control-button"
+          @pointerdown=${(e) => e.stopPropagation()}
+          @dblclick=${(e) => e.stopPropagation()}
+          @click=${(e) => this._handleImgZoomButton(e, 'out')}
+        >
+          <ha-icon icon="mdi:minus"></ha-icon>
+        </button>
+        <button
+          class="map-control-button"
+          @pointerdown=${(e) => e.stopPropagation()}
+          @dblclick=${(e) => e.stopPropagation()}
+          @click=${(e) => this._handleImgReset(e)}
+        >
+          <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
+        </button>
+        ${this._isVectorMap
+            ? x `<button
+                class="map-control-button ${this._vectorFollow ? 'active' : ''}"
+                aria-label=${localize('map.follow', { hass: this.hass })}
+                @pointerdown=${(e) => e.stopPropagation()}
+                @dblclick=${(e) => e.stopPropagation()}
+                @click=${(e) => this._toggleFollow(e)}
+              >
+                <ha-icon icon="mdi:crosshairs-gps"></ha-icon>
+              </button>`
+            : E}
+      </div>
+    </div>`;
+    }
+    // ---------------------------------------------------------------------------
+    // Vector map (Mammotion GeoJSON)
+    // ---------------------------------------------------------------------------
+    get _isVectorMap() {
+        return this.config?.map_source === 'mammotion';
+    }
+    /** Size the map is fitted to: its own container, before the first measurement the display area. */
+    _vectorViewSize() {
+        return {
+            width: this._vectorSize.width || this._mapWidth,
+            height: this._vectorSize.height || this._mapHeight,
+        };
+    }
+    /** A job is running or interrupted: not docked, not idle after a finished job, not charging. */
+    get _isMowerWorking() {
+        return !this.chargingStatus && VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(this.mowerState));
+    }
+    _vectorTrackerEntity() {
+        if (this.config.map_entity) {
+            return this.config.map_entity;
+        }
+        if (!this.hass || !this.config.entity) {
+            return undefined;
+        }
+        if (this._vectorTrackerLookup?.entity !== this.config.entity || !this._vectorTrackerLookup.tracker) {
+            this._vectorTrackerLookup = {
+                entity: this.config.entity,
+                tracker: findSiblingTracker(this.hass, this.config.entity),
+            };
+        }
+        return this._vectorTrackerLookup.tracker;
+    }
+    _startVectorMap() {
+        const entityId = this.config?.entity;
+        if (!entityId)
+            return;
+        this._stopVectorMap();
+        const cached = getCachedBase(entityId);
+        const trail = getTrail(entityId);
+        if (cached?.base) {
+            this._vectorLayers = { base: cached.base, trail: trail ? this._trailLayer(trail) : null };
+            this._vectorStatus = cached.base.features.length ? 'ready' : 'empty';
+        }
+        else {
+            this._vectorLayers = { base: null, trail: null };
+            this._vectorStatus = 'loading';
+        }
+        if (!cached?.base || Date.now() - cached.at > VECTOR_MAP_BASE_TTL) {
+            this._fetchVectorBase();
+        }
+        // A trail kept from an earlier visit may belong to a finished job, so its start is checked again
+        this._refreshMowTrail(true);
+        this._vectorTimer = window.setInterval(() => this._refreshMowTrail(), VECTOR_MAP_TRAIL_INTERVAL);
+    }
+    _stopVectorMap() {
+        if (this._vectorTimer) {
+            clearInterval(this._vectorTimer);
+            this._vectorTimer = undefined;
+        }
+    }
+    async _fetchVectorBase() {
+        const entityId = this.config?.entity;
+        if (!this.hass || !entityId || this._vectorBaseBusy)
+            return;
+        this._vectorBaseBusy = true;
+        try {
+            const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId);
+            setCachedBase(entityId, base);
+            this._vectorStreamAt = Date.now();
+            if (entityId !== this.config.entity)
+                return;
+            this._vectorLayers = { ...this._vectorLayers, base };
+            this._vectorStatus = base?.features.length ? 'ready' : 'empty';
+        }
+        catch (err) {
+            console.warn('Compact Lawn Mower Card: Failed to load Mammotion map.', err);
+            if (!this._vectorLayers.base) {
+                this._vectorStatus = 'error';
+            }
+        }
+        finally {
+            this._vectorBaseBusy = false;
+        }
+    }
+    /**
+     * The integration reports the mower's position every few seconds only while its report stream is
+     * running, and `get_geojson` is the service that starts it (for five minutes). Renewed while the
+     * mower works and the map is open, so the recorded trail is dense enough for the mown lanes.
+     */
+    async _keepReportStream(entityId) {
+        if (Date.now() - this._vectorStreamAt < VECTOR_MAP_STREAM_KEEPALIVE)
+            return;
+        this._vectorStreamAt = Date.now();
+        await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId).catch(() => undefined);
+    }
+    _trailLayer(trail) {
+        return { lines: trail.lines(), head: trail.head };
+    }
+    /** Adds a position the card just received to the trail without waiting for the next history fetch. */
+    _pushLivePosition(tracker) {
+        const trail = getTrail(this.config.entity);
+        const pos = trackerPosition(tracker);
+        if (!trail || !pos || !this._isMowerWorking)
+            return;
+        if (trail.pushLive(pos.lon, pos.lat, tracker.last_updated)) {
+            this._vectorLayers = { ...this._vectorLayers, trail: this._trailLayer(trail) };
+        }
+    }
+    /**
+     * Keeps the driven path of the running job up to date: positions from the recorder history since
+     * the job started, and the mower's own recent line from the integration on top.
+     */
+    async _refreshMowTrail(verifyStart = false) {
+        const entityId = this.config?.entity;
+        if (!this.hass || !entityId || this._trailBusy || this.config.map_show_path === false)
+            return;
+        if (!this._isMowerWorking) {
+            setTrail(entityId, undefined);
+            if (this._vectorLayers.trail)
+                this._vectorLayers = { ...this._vectorLayers, trail: null };
+            return;
+        }
+        this._trailBusy = true;
+        this._trailRefreshedAt = Date.now();
+        try {
+            let trail = getTrail(entityId);
+            if (!trail || verifyStart) {
+                const start = await findJobStart(this.hass, entityId, state => VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(state)));
+                if (!trail || Math.abs(trail.jobStart - start) > 1000) {
+                    trail = new MowTrail(start);
+                    setTrail(entityId, trail);
+                }
+            }
+            const trackerId = this._vectorTrackerEntity();
+            const [head, extended] = await Promise.all([
+                fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_mow_progress_geojson', entityId).catch(() => null),
+                trackerId ? trail.extend(this.hass, trackerId).catch(() => false) : false,
+                this._keepReportStream(entityId),
+            ]);
+            const line = head?.features.find(f => f.properties?.type_name === 'dynamics_line');
+            const headChanged = trail.setHead(line?.geometry?.type === 'LineString' ? line.geometry.coordinates : []);
+            if (entityId !== this.config.entity || !this._isMowerWorking)
+                return;
+            if (extended || headChanged || !this._vectorLayers.trail) {
+                this._vectorLayers = { ...this._vectorLayers, trail: this._trailLayer(trail) };
+            }
+        }
+        finally {
+            this._trailBusy = false;
+        }
+    }
+    /** Large position changes are drawn at once, only small steps are animated. */
+    _isMowerJump(pos, docked) {
+        const prev = this._drawnMower;
+        this._drawnMower = pos ? { ...pos, docked } : undefined;
+        if (!prev || !pos || prev.docked !== docked)
+            return true;
+        return !docked && Math.hypot(...offsetMeters(prev, pos)) > VECTOR_MAP_SMOOTH_MAX_DISTANCE;
+    }
+    /** Remembers when the mower last reported and last moved, for the "not moving" note on the map. */
+    _trackMovement() {
+        const trackerId = this._vectorTrackerEntity();
+        const tracker = trackerId ? this.hass.states[trackerId] : undefined;
+        const pos = trackerPosition(tracker);
+        const reportAt = tracker ? Date.parse(tracker.last_updated) : NaN;
+        if (!pos || !Number.isFinite(reportAt) || reportAt === this._lastReportAt)
+            return;
+        this._lastReportAt = reportAt;
+        const prev = this._lastReportPos;
+        const moved = !prev || Math.hypot(...offsetMeters(prev, pos)) >= VECTOR_MAP_HEADING_MIN_DISTANCE;
+        if (moved || this._resolveStateBehavior(this.mowerState) !== 'mowing') {
+            this._lastMovedAt = reportAt;
+            this._lastReportPos = pos;
+        }
+    }
+    /** Direction of travel from the last two positions that are far enough apart. */
+    _updateMowerHeading(pos, docked) {
+        if (!pos || docked) {
+            this._mowerHeading = null;
+            this._headingFrom = pos ?? undefined;
+            return;
+        }
+        const from = this._headingFrom;
+        if (!from) {
+            this._headingFrom = pos;
+            return;
+        }
+        const [dx, dy] = offsetMeters(from, pos);
+        if (Math.hypot(dx, dy) < VECTOR_MAP_HEADING_MIN_DISTANCE)
+            return;
+        this._mowerHeading = (Math.atan2(dx, dy) * 180) / Math.PI;
+        this._headingFrom = pos;
+    }
+    _getVectorModel() {
+        const layers = this._vectorLayers;
+        const rotation = Number(this.config.map_rotation) || 0;
+        const model = this._vectorModel;
+        if (!model ||
+            model.rotation !== rotation ||
+            model.layers.base !== layers.base ||
+            model.layers.trail !== layers.trail) {
+            this._vectorModel = new VectorMapModel(layers, rotation);
+        }
+        return this._vectorModel;
+    }
+    _renderVectorMapView() {
+        if (this._vectorStatus === 'error') {
+            return this._renderErrorView('map-container', 'map-error', 'mdi:map-marker-alert-outline', localize('map.vector_load_error', { hass: this.hass }));
+        }
+        if (this._vectorStatus === 'empty') {
+            return this._renderErrorView('map-container', 'map-error', 'mdi:map-outline', localize('map.vector_empty', { hass: this.hass }));
+        }
+        const isLoading = this._vectorStatus !== 'ready';
+        const model = isLoading ? undefined : this._getVectorModel();
+        const trackerId = this._vectorTrackerEntity();
+        const tracker = trackerId ? this.hass.states[trackerId] : undefined;
+        const mower = trackerPosition(tracker);
+        const docked = this._isCurrentlyDocked(this.mowerState, this.chargingStatus);
+        this._updateMowerHeading(mower, docked);
+        this._followMower(model, mower, docked);
+        const mowerJump = this._isMowerJump(mower, docked);
+        // Mammotion reports the heading in degrees clockwise from north (east = 90).
+        // Fall back to the direction of travel when the attribute is missing.
+        const direction = Number(tracker?.attributes?.direction);
+        const heading = Number.isFinite(direction) ? direction : this._mowerHeading;
+        return x `
+      <div
+        class="map-container pannable vector ${isLoading ? 'is-loading' : ''}"
+        style="touch-action: none;"
+        @wheel=${this._handleImgWheel}
+        @pointerdown=${this._handleImgPointerDown}
+        @pointermove=${this._handleImgPointerMove}
+        @pointerup=${this._handleImgPointerUp}
+        @pointercancel=${this._handleImgPointerUp}
+        @dblclick=${this._handleImgDblClick}
+      >
+        ${isLoading ? x `<div class="loading-indicator"><div class="loader"></div></div>` : E}
+        ${model
+            ? x `<div
+                  class="map-image-transform-layer"
+                  style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this._imgScale}); transform-origin: 0 0; --clm-zoom: ${this._imgScale};"
+                >
+                  ${model.render({
+                ...this._vectorViewSize(),
+                showLabels: this.config.map_show_labels !== false,
+                showPath: this.config.map_show_path !== false,
+                mower,
+                mowerActive: this._resolveStateBehavior(this.mowerState) === 'mowing',
+                mowerDocked: docked,
+                mowerJump,
+                mowerHeading: heading === null ? null : this._continuousHeading(heading),
+                mowerAlert: this._mowerAlert(),
+                areaWord: localize('map.area', { hass: this.hass }),
+                showRtk: this.config.map_show_rtk !== false,
+                pathWidth: Number(this.config.map_path_width) > 0 ? Number(this.config.map_path_width) : undefined,
+                activeZone: this._workZone() ?? null,
+                activeProgress: this._isMowerWorking && this.progressLevel !== '-' ? Number(this.progressLevel) : null,
+                insets: VECTOR_MAP_INSETS,
+            })}
                 </div>
-              </div>`
+                ${this._renderImgControls()} ${this._renderZoneDialog()}`
             : E}
       </div>
     `;
     }
     _renderMapView() {
+        if (this._isVectorMap) {
+            return this._renderVectorMapView();
+        }
         const useImage = this.config.map_source === 'image' ||
             (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
             (this.config.map_source === 'gps' && !this.config.map_entity && !!this.config.map_image_entity);
@@ -7716,8 +9500,10 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         </button>
       `);
         }
-        if ((this.config.map_entity || this.config.map_image_entity) && this.config.enable_map !== false) {
-            const useImage = this.config.map_source === 'image' ||
+        if ((this.config.map_entity || this.config.map_image_entity || this._isVectorMap) &&
+            this.config.enable_map !== false) {
+            const useImage = this._isVectorMap ||
+                this.config.map_source === 'image' ||
                 (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
             buttons.push(x `
         <button
@@ -7740,10 +9526,14 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             clearInterval(this._mapUpdateInterval);
             this._mapUpdateInterval = undefined;
         }
+        this._stopVectorMap();
         this._viewMode = mode;
         if (mode === 'camera') {
             this._isPopupOpen = false;
             this._updateCameraState(true);
+        }
+        else if (mode === 'map' && this._isVectorMap) {
+            this._startVectorMap();
         }
         else if (mode === 'map') {
             const useImage = this.config.map_source === 'image' ||
@@ -8004,12 +9794,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
 
             <div class="badge-row">
               ${this.progressLevel !== '-'
-            ? x `
-                      <div class="progress-badge">
-                        <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                        <span class="progress-text">${this.progressLevel}%</span>
-                      </div>
-                    `
+            ? this._renderProgressBadge(Number(this.progressLevel), this._jobDetail())
             : x `<div class="badge-spacer"></div>`}
               ${(() => {
             const displayStatus = this._getDisplayStatus(this.mowerState);
@@ -8124,6 +9909,21 @@ __decorate([
 __decorate([
     r()
 ], CompactLawnMowerCard.prototype, "_mapCardElement", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_vectorLayers", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_vectorStatus", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_vectorSize", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_vectorFollow", void 0);
+__decorate([
+    r()
+], CompactLawnMowerCard.prototype, "_zoneDialog", void 0);
 CompactLawnMowerCard = CompactLawnMowerCard_1 = __decorate([
     t('compact-lawn-mower-card')
 ], CompactLawnMowerCard);

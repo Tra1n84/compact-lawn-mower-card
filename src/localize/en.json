@@ -39,7 +39,11 @@
     "power": {
       "battery_entity": "Battery Entity (Optional)",
       "charging_entity": "Charging Entity (Optional, Binary Sensor: On/Off)",
-      "progress_entity": "Progress Entity (Optional)"
+      "progress_entity": "Progress Entity (Optional)",
+      "task_area_entity": "Job Area (Optional, detected if empty)",
+      "remaining_time_entity": "Remaining Time in Minutes (Optional, detected if empty)",
+      "work_zone_entity": "Current Zone (Optional, detected if empty)",
+      "error_entity": "Error Message (Optional, detected if empty)"
     },
     "options": {
       "default_view": "Default View",
@@ -49,7 +53,8 @@
       "map_source": "Map Source",
       "map_source_label": {
         "gps": "GPS / Map (Device Tracker)",
-        "image": "Map Image (Image or Camera Entity)"
+        "image": "Map Image (Image or Camera Entity)",
+        "mammotion": "Mammotion Map (Zones, Obstacles & Mown Lanes)"
       },
       "map_type": "Map Type",
       "map_type_label": {
@@ -60,6 +65,13 @@
       "default_map_zoom": "Default Map Zoom Level",
       "map_image_bg_auto": "Map Background: Detect Automatically",
       "map_image_bg_color": "Map Background Color",
+      "map_show_labels": "Show Zone Names",
+      "map_show_path": "Show mown lanes",
+      "map_rotation": "Map Rotation",
+      "map_path_width": "Width of the mown lanes (m)",
+      "zone_switches": "Area Switches for Starting (Optional, detected if empty)",
+      "map_show_rtk": "Show RTK Base Station",
+      "map_keep_view": "Remember Zoom & Position",
       "map_options_title": "Map",
       "color_options_title": "Color",
       "model_options_title": "Model",
@@ -161,7 +173,15 @@
     "no_gps_coordinates": "No GPS data",
     "image_not_available": "Map image not available",
     "image_unavailable": "Map image unavailable",
-    "image_load_error": "Failed to load map image"
+    "image_load_error": "Failed to load map image",
+    "vector_load_error": "Could not load the mower map",
+    "area": "Area",
+    "vector_empty": "No map data – sync the map in the Mammotion app",
+    "follow": "Follow mower",
+    "mow_zone": "Mow",
+    "cancel": "Cancel",
+    "zone_not_found": "Zone switch not found",
+    "not_moving": "Not moving for {n} min"
   },
   "view": {
     "mower": "Lawn Mower",

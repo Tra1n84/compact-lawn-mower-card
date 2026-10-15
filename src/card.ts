@@ -1,6 +1,7 @@
-import { LitElement, html, nothing, PropertyValues, TemplateResult } from 'lit';
+import { LitElement, html, svg, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCard, fireEvent, forwardHaptic, navigate, toggleEntity } from 'custom-card-helpers';
+import type { HassEntity } from 'home-assistant-js-websocket';
 import './editor';
 import './camera-popup';
 import { CameraPopup } from './camera-popup';
@@ -28,6 +29,16 @@ import {
   IMG_ZOOM_STEP_BUTTON,
   IMG_ZOOM_STEP_WHEEL,
   CARD_TRANSLATED_STATES,
+  VECTOR_MAP_BASE_TTL,
+  VECTOR_MAP_HEADING_MIN_DISTANCE,
+  VECTOR_MAP_INSETS,
+  VECTOR_MAP_REPORT_MAX_AGE,
+  VECTOR_MAP_SMOOTH_MAX_DISTANCE,
+  VECTOR_MAP_STREAM_KEEPALIVE,
+  VECTOR_MAP_STUCK_MINUTES,
+  VECTOR_MAP_TRAIL_INTERVAL,
+  VECTOR_MAP_TRAIL_MIN_INTERVAL,
+  VECTOR_MAP_WORKING_STATES,
 } from './constants';
 import { getGraphics } from './graphics';
 import { localize } from './localize';
@@ -50,6 +61,27 @@ import {
   MoreInfoActionConfig,
 } from './types';
 import { compactLawnMowerCardStyles } from './styles';
+import {
+  MAMMOTION_DOMAIN,
+  VectorMapLayers,
+  VectorMapModel,
+  displayZoneName,
+  fetchGeoJson,
+  findSiblingSensor,
+  findSiblingTracker,
+  getCachedBase,
+  isMammotionEntity,
+  setCachedBase,
+  siblingEntities,
+} from './vector-map';
+import { LonLat, MowTrail, findJobStart, getTrail, offsetMeters, setTrail } from './mow-trail';
+
+/** Reported position of a device_tracker, null when it has none (0/0 is the integration's "no fix"). */
+const trackerPosition = (tracker: HassEntity | undefined): LonLat | null => {
+  const lat = Number(tracker?.attributes?.latitude);
+  const lon = Number(tracker?.attributes?.longitude);
+  return Number.isFinite(lat) && Number.isFinite(lon) && (lat !== 0 || lon !== 0) ? { lat, lon } : null;
+};
 
 interface HassWithEntities extends HomeAssistant {
   entities: Record<string, { platform?: string; translation_key?: string }>;
@@ -121,6 +153,28 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _imgActivePointers: Map<number, PointerEvent> = new Map();
   private _haMapShadowObserver?: MutationObserver;
   private _mapBgDetectedFor?: string;
+  private _drawnMower?: LonLat & { docked: boolean };
+  @state() private _vectorLayers: VectorMapLayers = { base: null, trail: null };
+  @state() private _vectorStatus: 'idle' | 'loading' | 'ready' | 'empty' | 'error' = 'idle';
+  private _vectorModel?: VectorMapModel;
+  private _vectorTimer?: number;
+  private _vectorBaseBusy = false;
+  private _vectorStreamAt = 0;
+  private _vectorTrackerLookup?: { entity: string; tracker?: string };
+  private _trailBusy = false;
+  private _trailRefreshedAt = 0;
+  private _mowerHeading: number | null = null;
+  private _headingFrom?: LonLat;
+  @state() private _vectorSize = { width: 0, height: 0 };
+  @state() private _vectorFollow = false;
+  @state() private _zoneDialog?: { name: string; hash: number | null; area: number };
+  private _tapStart?: { x: number; y: number; t: number };
+  private _lastMovedAt = Date.now();
+  private _lastReportAt = 0;
+  private _lastReportPos?: LonLat;
+  private _displayHeading?: number;
+  private _vectorResizeObserver?: ResizeObserver;
+  private _vectorObserved?: Element;
 
   connectedCallback() {
     super.connectedCallback();
@@ -132,7 +186,9 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
     const useHaMap = !useImage && (!this.config.google_maps_api_key || this.config.use_google_maps === false);
 
-    if (this._viewMode === 'map' && useImage) {
+    if (this._viewMode === 'map' && this._isVectorMap) {
+      this._startVectorMap();
+    } else if (this._viewMode === 'map' && useImage) {
       this._isMapImageLoading = true;
     } else if (this._viewMode === 'map' && useHaMap) {
       this._loadMapElement();
@@ -186,12 +242,15 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._closePopup();
     this._haMapShadowObserver?.disconnect();
     this._haMapShadowObserver = undefined;
+    this._vectorResizeObserver?.disconnect();
+    this._vectorObserved = undefined;
     this._imgActivePointers.clear();
     this._imgIsDragging = false;
     this._imgIsPinching = false;
   }
 
   private _clearAllTimers(): void {
+    this._stopVectorMap();
     if (this._mapUpdateInterval) {
       clearInterval(this._mapUpdateInterval);
       this._mapUpdateInterval = undefined;
@@ -429,6 +488,16 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       (this._mapCardElement as any).hass = this.hass;
     }
 
+    if (
+      this._viewMode === 'map' &&
+      this._isVectorMap &&
+      this._vectorStatus === 'loading' &&
+      !this._vectorLayers.base &&
+      !this._vectorBaseBusy
+    ) {
+      this._fetchVectorBase();
+    }
+
     if (changedProperties.has('config')) {
       this._setInitialAnimationState(this.mowerState);
       const oldConfig = changedProperties.get('config') as CompactLawnMowerCardConfig | undefined;
@@ -451,9 +520,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
         if (
           this._viewMode === 'map' &&
+          !this._isVectorMap &&
           !this.config.map_entity &&
           !this.config.map_image_entity &&
-          (oldConfig.map_entity || oldConfig.map_image_entity)
+          (oldConfig.map_entity || oldConfig.map_image_entity || oldConfig.map_source === 'mammotion')
         ) {
           this._setViewMode(this.config.default_view || 'mower');
         }
@@ -474,7 +544,26 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._restoreMapBackground();
         }
 
-        if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
+        if (
+          this.config.map_source !== oldConfig.map_source &&
+          (this._isVectorMap || oldConfig.map_source === 'mammotion')
+        ) {
+          this._imgScale = 1;
+          this._imgTranslateX = 0;
+          this._imgTranslateY = 0;
+          this._restoreImgTransform();
+          if (!this._isVectorMap) {
+            this._stopVectorMap();
+          }
+        }
+
+        if (
+          this._viewMode === 'map' &&
+          this._isVectorMap &&
+          (this.config.map_source !== oldConfig.map_source || this.config.entity !== oldConfig.entity)
+        ) {
+          this._startVectorMap();
+        } else if (this._viewMode === 'map' && this.config.map_source !== oldConfig.map_source) {
           const newUseImage =
             this.config.map_source === 'image' ||
             (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
@@ -499,7 +588,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         const useHaMapNow = !this.config.google_maps_api_key || this.config.use_google_maps === false;
         const useHaMapBefore = !oldConfig.google_maps_api_key || oldConfig.use_google_maps === false;
 
-        if (this._viewMode === 'map' && useHaMapNow && !useHaMapBefore) {
+        if (this._viewMode === 'map' && !this._isVectorMap && useHaMapNow && !useHaMapBefore) {
           this._mapCardElement = undefined;
           this.updateComplete.then(() => this._loadMapElement());
         }
@@ -540,6 +629,26 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     if ((changedProperties as any).has('_viewMode')) {
       this._setInitialAnimationState(this.mowerState);
+    }
+
+    if (changedProperties.has('hass') && this._isVectorMap) {
+      this._trackMovement();
+      if (this._viewMode === 'map') {
+        this._onVectorHassUpdate(changedProperties.get('hass') as HomeAssistant | undefined);
+      }
+    }
+  }
+
+  /** A new mower state reloads the trail, a new position extends it at once. */
+  private _onVectorHassUpdate(oldHass: HomeAssistant | undefined): void {
+    const trackerId = this._vectorTrackerEntity();
+    const tracker = trackerId ? this.hass.states[trackerId] : undefined;
+    if (oldHass && oldHass.states[this.config.entity]?.state !== this.mowerState) {
+      this._refreshMowTrail();
+    } else if (tracker && trackerId && oldHass?.states[trackerId] !== tracker) {
+      // The history is only read to fill in what was missed between two updates
+      this._pushLivePosition(tracker);
+      if (Date.now() - this._trailRefreshedAt > VECTOR_MAP_TRAIL_MIN_INTERVAL) this._refreshMowTrail();
     }
   }
 
@@ -593,6 +702,182 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     this._setupBadgeResizeObserver();
     this._measureStatusLabelTier();
+    this._observeVectorContainer();
+  }
+
+  /** A tap on a zone offers to mow just that zone, unless the mower is working on it right now. */
+  private _handleZoneTap(e: PointerEvent): void {
+    const model = this._vectorModel;
+    const container = this.shadowRoot?.querySelector('.map-container.vector') as HTMLElement | null;
+    if (!model || !container) return;
+    const rect = container.getBoundingClientRect();
+    const px: [number, number] = [
+      (e.clientX - rect.left - this._imgTranslateX) / this._imgScale,
+      (e.clientY - rect.top - this._imgTranslateY) / this._imgScale,
+    ];
+    const { width, height } = this._vectorViewSize();
+    const zone = model.zoneAt(model.fromScreen(px, width, height, VECTOR_MAP_INSETS));
+    this._zoneDialog =
+      zone && !this._isZoneInWork(zone.name) ? { name: zone.name, hash: zone.hash, area: zone.area } : undefined;
+  }
+
+  /** Name of the zone the mower is working on, undefined when the integration does not know it. */
+  private _workZone(): string | undefined {
+    if (!this._isMowerWorking) return undefined;
+    const current = this._mowerSensor('work_area')?.trim();
+    // The sensor also reports "path", "unknown" and "Not working" (its state when the hash is 0)
+    return current && !['path', 'unknown', 'not working'].includes(current.toLowerCase()) ? current : undefined;
+  }
+
+  /** The zone of the running job; when the integration does not say which one, every zone counts as busy. */
+  private _isZoneInWork(name: string): boolean {
+    if (!this._isMowerWorking) return false;
+    const current = this._workZone();
+    return !current || current.toLowerCase() === name.trim().toLowerCase();
+  }
+
+  /**
+   * The integration starts a job for selected zones via their area switches. They carry the zone's
+   * hash as an attribute; when that does not match (hashes above 2^53 lose precision on the way to
+   * the browser) the switch named after the zone is taken.
+   */
+  private _zoneSwitch(zone: { name: string; hash: number | null }): string | undefined {
+    if (!this.hass) return undefined;
+    // Configured switches first, then the ones on the mower's device, and without a usable
+    // entity registry every area switch in HA
+    const configured = this.config.zone_switches?.filter(Boolean) ?? [];
+    let ids = configured;
+    if (!ids.length) ids = siblingEntities(this.hass, this.config.entity, 'switch').map(([id]) => id);
+    if (!ids.length) ids = Object.keys(this.hass.states).filter(id => id.startsWith('switch.'));
+    const candidates = ids
+      .map(id => ({ id, state: this.hass.states[id] }))
+      .filter(c => c.state && c.state.attributes?.hash !== undefined);
+    const byHash = candidates.find(c => zone.hash !== null && Number(c.state.attributes.hash) === zone.hash);
+    if (byHash) return byHash.id;
+    const name = zone.name.trim().toLowerCase();
+    const byName = candidates.find(c => {
+      const friendly = String(c.state.attributes.friendly_name ?? '')
+        .trim()
+        .toLowerCase();
+      return !!name && (friendly === name || friendly.endsWith(` ${name}`));
+    });
+    if (byName) return byName.id;
+    // One zone on the map and one configured switch: no ambiguity
+    return configured.length === 1 && this._vectorModel?.zones.length === 1 ? configured[0] : undefined;
+  }
+
+  /** Sends the start and closes the dialog at once; errors from the integration show up as HA's own toast. */
+  private _startZone(e: Event): void {
+    e.stopPropagation();
+    const dialog = this._zoneDialog;
+    this._zoneDialog = undefined;
+    if (!dialog) return;
+    const area = this._zoneSwitch(dialog);
+    if (!area) {
+      fireEvent(this, 'hass-notification' as any, { message: localize('map.zone_not_found', { hass: this.hass }) });
+      return;
+    }
+    this.hass
+      .callService(MAMMOTION_DOMAIN, 'start_mow', { areas: [area] }, { entity_id: this.config.entity })
+      .catch(() => undefined);
+  }
+
+  private _renderZoneDialog() {
+    const dialog = this._zoneDialog;
+    if (!dialog || this._isZoneInWork(dialog.name)) return nothing;
+    const stop = (e: Event) => e.stopPropagation();
+    return html`
+      <div class="vm-zone-dialog" @pointerdown=${stop} @pointerup=${stop} @dblclick=${stop}>
+        <span class="vm-zone-name"
+          >${displayZoneName(dialog.name, localize('map.area', { hass: this.hass }))}${dialog.area > 0 ? ` · ${Math.round(dialog.area)} m²` : ''}</span
+        >
+        <button class="vm-zone-start" @click=${this._startZone}>
+          ${localize('map.mow_zone', { hass: this.hass })}
+        </button>
+        <button
+          class="vm-zone-cancel"
+          @click=${(e: Event) => {
+            e.stopPropagation();
+            this._zoneDialog = undefined;
+          }}
+        >
+          ${localize('map.cancel', { hass: this.hass })}
+        </button>
+      </div>
+    `;
+  }
+
+  /** Red when the mower reports an error, amber when it has not moved for a while during a job. */
+  private _mowerAlert(): { level: 'error' | 'warning'; text: string } | null {
+    if (this._resolveStateBehavior(this.mowerState) === 'error') {
+      const message = this._mowerSensor('error_1_message');
+      return { level: 'error', text: message || localize('status.error', { hass: this.hass }) };
+    }
+    // Standing still is only known while positions keep coming in (the report stream is running)
+    if (
+      this._resolveStateBehavior(this.mowerState) === 'mowing' &&
+      Date.now() - this._lastReportAt < VECTOR_MAP_REPORT_MAX_AGE
+    ) {
+      const minutes = Math.floor((Date.now() - this._lastMovedAt) / 60000);
+      if (minutes >= VECTOR_MAP_STUCK_MINUTES) {
+        return {
+          level: 'warning',
+          text: localize('map.not_moving', { hass: this.hass }).replace('{n}', String(minutes)),
+        };
+      }
+    }
+    return null;
+  }
+
+  /** Keeps the rotation continuous (350° → 10° turns by 20°, not back by 340°) so the transition looks right. */
+  private _continuousHeading(heading: number): number {
+    const prev = this._displayHeading;
+    if (prev === undefined) {
+      this._displayHeading = heading;
+      return heading;
+    }
+    let delta = ((((heading - prev) % 360) + 540) % 360) - 180;
+    if (Math.abs(delta) < 0.01) delta = 0;
+    this._displayHeading = prev + delta;
+    return this._displayHeading;
+  }
+
+  /** Keeps the mower in the middle of the free map area while "follow" is on. */
+  private _followMower(model: VectorMapModel | undefined, mower: LonLat | null, docked: boolean): void {
+    if (!this._vectorFollow || !model || this._imgIsDragging || this._imgIsPinching) return;
+    const point = model.mowerPoint(mower, docked);
+    const { width, height } = this._vectorViewSize();
+    if (!point || !width || !height) return;
+    const [x, y] = model.toScreen(point, width, height, VECTOR_MAP_INSETS);
+    const centerY = (VECTOR_MAP_INSETS.top + height - VECTOR_MAP_INSETS.bottom) / 2;
+    this._imgTranslateX = width / 2 - this._imgScale * x;
+    this._imgTranslateY = centerY - this._imgScale * y;
+  }
+
+  private _toggleFollow(e: Event): void {
+    e.stopPropagation();
+    this._vectorFollow = !this._vectorFollow;
+    if (this._vectorFollow && this._imgScale < 2) {
+      this._imgScale = 2.5;
+    }
+  }
+
+  /** The map is fitted to the size of its own container, which can differ from the display area. */
+  private _observeVectorContainer(): void {
+    const el = this._viewMode === 'map' ? this.shadowRoot?.querySelector('.map-container.vector') : null;
+    if (el === this._vectorObserved) return;
+    this._vectorResizeObserver?.disconnect();
+    this._vectorObserved = el ?? undefined;
+    if (!el) return;
+    this._vectorResizeObserver ??= new ResizeObserver(entries => {
+      const rect = entries[entries.length - 1].contentRect;
+      const width = Math.round(rect.width);
+      const height = Math.round(rect.height);
+      if (width > 0 && height > 0 && (width !== this._vectorSize.width || height !== this._vectorSize.height)) {
+        this._vectorSize = { width, height };
+      }
+    });
+    this._vectorResizeObserver.observe(el);
   }
 
   private _isCurrentlyDocked(state: string, isCharging: boolean): boolean {
@@ -685,9 +970,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   get progressLevel(): number | string {
-    const progressEntity = this.config.progress_entity ? this.hass?.states[this.config.progress_entity] : undefined;
-    const rawValue = progressEntity?.state;
-    return this._parsePercentage(rawValue);
+    return this._parsePercentage(this._mowerSensor('progress'));
   }
 
   get chargingStatus(): boolean {
@@ -729,9 +1012,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           await toggleEntity(this.hass, (action as ToggleActionConfig).entity || this.config.entity);
         }
       } catch (error) {
-        console.error('Error executing custom action:', error);
-        this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
-        feedbackStatus = 'error';
+        // Some integrations (Mammotion) report only that the reply went missing; the command itself was sent
+        if ((error as { translation_key?: string })?.translation_key !== 'command_unconfirmed') {
+          console.error('Error executing custom action:', error);
+          this._showError(localize('error.action_failed', { hass: this.hass }) + ': ' + customAction.name);
+          feedbackStatus = 'error';
+        }
       }
 
       this._pendingActionName = null;
@@ -935,6 +1221,80 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     }
 
     if (tier !== this._statusLabelTier) this._statusLabelTier = tier;
+  }
+
+  /**
+   * Job sensors: the configured entity, otherwise the Mammotion sensor of the mower's device
+   * with that translation key.
+   */
+  private _mowerSensor(key: 'area' | 'left_time' | 'work_area' | 'error_1_message' | 'progress'): string | undefined {
+    if (!this.hass) return undefined;
+    const configured = {
+      area: this.config.task_area_entity,
+      left_time: this.config.remaining_time_entity,
+      work_area: this.config.work_zone_entity,
+      error_1_message: this.config.error_entity,
+      progress: this.config.progress_entity,
+    }[key];
+    const entityId =
+      configured ||
+      (isMammotionEntity(this.hass, this.config.entity)
+        ? findSiblingSensor(this.hass, this.config.entity, key)
+        : undefined);
+    const value = entityId ? this.hass.states[entityId]?.state : undefined;
+    return value === undefined || value === 'unknown' || value === 'unavailable' ? undefined : value;
+  }
+
+  /** "55 / 103 m² · 1 h 2 min" while a job is running: mown and total area of the job, time left. */
+  private _jobDetail(): string {
+    if (!this._isMowerWorking) return '';
+    const parts: string[] = [];
+    // The integration's area sensor is the total area of the job, the mown part follows from the progress
+    const total = Number(this._mowerSensor('area'));
+    const progress = Number(this.progressLevel);
+    if (total > 0) {
+      parts.push(
+        Number.isFinite(progress)
+          ? `${Math.round((total * progress) / 100)} / ${Math.round(total)} m²`
+          : `${Math.round(total)} m²`
+      );
+    }
+    const left = Number(this._mowerSensor('left_time'));
+    if (left > 0) parts.push(left >= 60 ? `${Math.floor(left / 60)} h ${left % 60} min` : `${left} min`);
+    return parts.join(' · ');
+  }
+
+  private _renderProgressBadge(progress: number, detail = ''): TemplateResult {
+    const value = Math.max(0, Math.min(100, progress));
+    const radius = 8;
+    const circumference = 2 * Math.PI * radius;
+    const mowing = this._resolveStateBehavior(this.mowerState) === 'mowing';
+    // Hue runs from amber at the start to lawn green when the job is done
+    const hue = Math.round(35 + (value / 100) * 85);
+
+    return html`
+      <div
+        class="progress-badge ${mowing ? 'is-mowing' : ''} ${value >= 100 ? 'is-done' : ''}"
+        style="--progress: ${value}%; --progress-hue: ${hue};"
+      >
+        <div class="progress-fill"></div>
+        <svg class="badge-icon progress-ring" viewBox="0 0 22 22" aria-hidden="true">
+          <circle class="progress-ring-track" cx="11" cy="11" r=${radius}></circle>
+          <circle
+            class="progress-ring-value"
+            cx="11"
+            cy="11"
+            r=${radius}
+            stroke-dasharray=${circumference}
+            stroke-dashoffset=${circumference * (1 - value / 100)}
+          ></circle>
+          ${value >= 100 ? svg`<path class="progress-ring-check" d="M7.2 11.3l2.5 2.5 5-5.2"></path>` : nothing}
+        </svg>
+        <span class="progress-text"
+          >${value}%${detail ? html`<span class="progress-detail"> · ${detail}</span>` : nothing}</span
+        >
+      </div>
+    `;
   }
 
   private _badgeRowFixedWidth(row: HTMLElement): number {
@@ -1194,6 +1554,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const layer = this.shadowRoot?.querySelector('.map-image-transform-layer') as HTMLElement | null;
     if (layer) {
       layer.style.transform = `translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${this._imgScale})`;
+      layer.style.setProperty('--clm-zoom', String(this._imgScale));
     }
   }
 
@@ -1233,6 +1594,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _handleImgPointerDown(e: PointerEvent): void {
+    this._vectorFollow = false;
+    this._tapStart = this._imgActivePointers.size === 0 ? { x: e.clientX, y: e.clientY, t: Date.now() } : undefined;
     const container = e.currentTarget as HTMLElement;
     this._imgContainer = container;
     container.setPointerCapture(e.pointerId);
@@ -1288,6 +1651,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _handleImgPointerUp(e: PointerEvent): void {
+    const tap = this._tapStart;
+    this._tapStart = undefined;
+    if (
+      tap &&
+      e.type === 'pointerup' &&
+      this._isVectorMap &&
+      Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 6 &&
+      Date.now() - tap.t < 500
+    ) {
+      this._handleZoneTap(e);
+    }
     this._imgActivePointers.delete(e.pointerId);
     if (this._imgActivePointers.size === 0) {
       this._imgIsDragging = false;
@@ -1314,6 +1688,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   private _handleImgReset(e: Event): void {
     e.stopPropagation();
+    this._vectorFollow = false;
     this._imgScale = 1;
     this._imgTranslateX = 0;
     this._imgTranslateY = 0;
@@ -1330,20 +1705,29 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     this._saveImgTransform();
   }
 
+  private get _imgTransformKey(): string | undefined {
+    if (this._isVectorMap) {
+      return this.config?.entity ? `clm_vec_${this.config.entity}` : undefined;
+    }
+    return this.config?.map_image_entity ? `clm_img_${this.config.map_image_entity}` : undefined;
+  }
+
   private _saveImgTransform(): void {
-    if (!this.config?.map_image_entity) return;
+    const key = this._imgTransformKey;
+    if (!key || (this._isVectorMap && this.config.map_keep_view === false)) return;
     try {
       localStorage.setItem(
-        `clm_img_${this.config.map_image_entity}`,
+        key,
         JSON.stringify({ scale: this._imgScale, x: this._imgTranslateX, y: this._imgTranslateY })
       );
     } catch {}
   }
 
   private _restoreImgTransform(): void {
-    if (!this.config?.map_image_entity) return;
+    const key = this._imgTransformKey;
+    if (!key || (this._isVectorMap && this.config.map_keep_view === false)) return;
     try {
-      const stored = localStorage.getItem(`clm_img_${this.config.map_image_entity}`);
+      const stored = localStorage.getItem(key);
       if (stored) {
         const { scale, x, y } = JSON.parse(stored);
         if (typeof scale === 'number') this._imgScale = Math.max(IMG_ZOOM_MIN, Math.min(IMG_ZOOM_MAX, scale));
@@ -1488,36 +1872,347 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             style="opacity: ${this._isMapImageLoading ? 0 : 1};"
           />
         </div>
+        ${!this._isMapImageLoading ? this._renderImgControls() : nothing}
+      </div>
+    `;
+  }
+
+  private _renderImgControls(): TemplateResult {
+    return html`<div class="map-controls-wrapper">
+      <div class="map-controls">
+        <button
+          class="map-control-button"
+          @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+          @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+          @click=${(e: Event) => this._handleImgZoomButton(e, 'in')}
+        >
+          <ha-icon icon="mdi:plus"></ha-icon>
+        </button>
+        <button
+          class="map-control-button"
+          @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+          @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+          @click=${(e: Event) => this._handleImgZoomButton(e, 'out')}
+        >
+          <ha-icon icon="mdi:minus"></ha-icon>
+        </button>
+        <button
+          class="map-control-button"
+          @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+          @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+          @click=${(e: Event) => this._handleImgReset(e)}
+        >
+          <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
+        </button>
         ${
-          !this._isMapImageLoading
-            ? html`<div class="map-controls-wrapper">
-                <div class="map-controls">
-                  <button
-                    class="map-control-button"
-                    @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
-                    @dblclick=${(e: MouseEvent) => e.stopPropagation()}
-                    @click=${(e: Event) => this._handleImgZoomButton(e, 'in')}
-                  >
-                    <ha-icon icon="mdi:plus"></ha-icon>
-                  </button>
-                  <button
-                    class="map-control-button"
-                    @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
-                    @dblclick=${(e: MouseEvent) => e.stopPropagation()}
-                    @click=${(e: Event) => this._handleImgZoomButton(e, 'out')}
-                  >
-                    <ha-icon icon="mdi:minus"></ha-icon>
-                  </button>
-                  <button
-                    class="map-control-button"
-                    @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
-                    @dblclick=${(e: MouseEvent) => e.stopPropagation()}
-                    @click=${(e: Event) => this._handleImgReset(e)}
-                  >
-                    <ha-icon icon="mdi:fit-to-screen-outline"></ha-icon>
-                  </button>
+          this._isVectorMap
+            ? html`<button
+                class="map-control-button ${this._vectorFollow ? 'active' : ''}"
+                aria-label=${localize('map.follow', { hass: this.hass })}
+                @pointerdown=${(e: PointerEvent) => e.stopPropagation()}
+                @dblclick=${(e: MouseEvent) => e.stopPropagation()}
+                @click=${(e: Event) => this._toggleFollow(e)}
+              >
+                <ha-icon icon="mdi:crosshairs-gps"></ha-icon>
+              </button>`
+            : nothing
+        }
+      </div>
+    </div>`;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Vector map (Mammotion GeoJSON)
+  // ---------------------------------------------------------------------------
+
+  private get _isVectorMap(): boolean {
+    return this.config?.map_source === 'mammotion';
+  }
+
+  /** Size the map is fitted to: its own container, before the first measurement the display area. */
+  private _vectorViewSize(): { width: number; height: number } {
+    return {
+      width: this._vectorSize.width || this._mapWidth,
+      height: this._vectorSize.height || this._mapHeight,
+    };
+  }
+
+  /** A job is running or interrupted: not docked, not idle after a finished job, not charging. */
+  private get _isMowerWorking(): boolean {
+    return !this.chargingStatus && VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(this.mowerState));
+  }
+
+  private _vectorTrackerEntity(): string | undefined {
+    if (this.config.map_entity) {
+      return this.config.map_entity;
+    }
+    if (!this.hass || !this.config.entity) {
+      return undefined;
+    }
+    if (this._vectorTrackerLookup?.entity !== this.config.entity || !this._vectorTrackerLookup.tracker) {
+      this._vectorTrackerLookup = {
+        entity: this.config.entity,
+        tracker: findSiblingTracker(this.hass, this.config.entity),
+      };
+    }
+    return this._vectorTrackerLookup.tracker;
+  }
+
+  private _startVectorMap(): void {
+    const entityId = this.config?.entity;
+    if (!entityId) return;
+
+    this._stopVectorMap();
+    const cached = getCachedBase(entityId);
+    const trail = getTrail(entityId);
+
+    if (cached?.base) {
+      this._vectorLayers = { base: cached.base, trail: trail ? this._trailLayer(trail) : null };
+      this._vectorStatus = cached.base.features.length ? 'ready' : 'empty';
+    } else {
+      this._vectorLayers = { base: null, trail: null };
+      this._vectorStatus = 'loading';
+    }
+
+    if (!cached?.base || Date.now() - cached.at > VECTOR_MAP_BASE_TTL) {
+      this._fetchVectorBase();
+    }
+    // A trail kept from an earlier visit may belong to a finished job, so its start is checked again
+    this._refreshMowTrail(true);
+    this._vectorTimer = window.setInterval(() => this._refreshMowTrail(), VECTOR_MAP_TRAIL_INTERVAL);
+  }
+
+  private _stopVectorMap(): void {
+    if (this._vectorTimer) {
+      clearInterval(this._vectorTimer);
+      this._vectorTimer = undefined;
+    }
+  }
+
+  private async _fetchVectorBase(): Promise<void> {
+    const entityId = this.config?.entity;
+    if (!this.hass || !entityId || this._vectorBaseBusy) return;
+
+    this._vectorBaseBusy = true;
+    try {
+      const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId);
+      setCachedBase(entityId, base);
+      this._vectorStreamAt = Date.now();
+      if (entityId !== this.config.entity) return;
+      this._vectorLayers = { ...this._vectorLayers, base };
+      this._vectorStatus = base?.features.length ? 'ready' : 'empty';
+    } catch (err) {
+      console.warn('Compact Lawn Mower Card: Failed to load Mammotion map.', err);
+      if (!this._vectorLayers.base) {
+        this._vectorStatus = 'error';
+      }
+    } finally {
+      this._vectorBaseBusy = false;
+    }
+  }
+
+  /**
+   * The integration reports the mower's position every few seconds only while its report stream is
+   * running, and `get_geojson` is the service that starts it (for five minutes). Renewed while the
+   * mower works and the map is open, so the recorded trail is dense enough for the mown lanes.
+   */
+  private async _keepReportStream(entityId: string): Promise<void> {
+    if (Date.now() - this._vectorStreamAt < VECTOR_MAP_STREAM_KEEPALIVE) return;
+    this._vectorStreamAt = Date.now();
+    await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId).catch(() => undefined);
+  }
+
+  private _trailLayer(trail: MowTrail): VectorMapLayers['trail'] {
+    return { lines: trail.lines(), head: trail.head };
+  }
+
+  /** Adds a position the card just received to the trail without waiting for the next history fetch. */
+  private _pushLivePosition(tracker: HassEntity): void {
+    const trail = getTrail(this.config.entity);
+    const pos = trackerPosition(tracker);
+    if (!trail || !pos || !this._isMowerWorking) return;
+    if (trail.pushLive(pos.lon, pos.lat, tracker.last_updated)) {
+      this._vectorLayers = { ...this._vectorLayers, trail: this._trailLayer(trail) };
+    }
+  }
+
+  /**
+   * Keeps the driven path of the running job up to date: positions from the recorder history since
+   * the job started, and the mower's own recent line from the integration on top.
+   */
+  private async _refreshMowTrail(verifyStart = false): Promise<void> {
+    const entityId = this.config?.entity;
+    if (!this.hass || !entityId || this._trailBusy || this.config.map_show_path === false) return;
+
+    if (!this._isMowerWorking) {
+      setTrail(entityId, undefined);
+      if (this._vectorLayers.trail) this._vectorLayers = { ...this._vectorLayers, trail: null };
+      return;
+    }
+
+    this._trailBusy = true;
+    this._trailRefreshedAt = Date.now();
+    try {
+      let trail = getTrail(entityId);
+      if (!trail || verifyStart) {
+        const start = await findJobStart(this.hass, entityId, state =>
+          VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(state))
+        );
+        if (!trail || Math.abs(trail.jobStart - start) > 1000) {
+          trail = new MowTrail(start);
+          setTrail(entityId, trail);
+        }
+      }
+
+      const trackerId = this._vectorTrackerEntity();
+      const [head, extended] = await Promise.all([
+        fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_mow_progress_geojson', entityId).catch(() => null),
+        trackerId ? trail.extend(this.hass, trackerId).catch(() => false) : false,
+        this._keepReportStream(entityId),
+      ]);
+      const line = head?.features.find(f => f.properties?.type_name === 'dynamics_line');
+      const headChanged = trail.setHead(line?.geometry?.type === 'LineString' ? line.geometry.coordinates : []);
+
+      if (entityId !== this.config.entity || !this._isMowerWorking) return;
+      if (extended || headChanged || !this._vectorLayers.trail) {
+        this._vectorLayers = { ...this._vectorLayers, trail: this._trailLayer(trail) };
+      }
+    } finally {
+      this._trailBusy = false;
+    }
+  }
+
+  /** Large position changes are drawn at once, only small steps are animated. */
+  private _isMowerJump(pos: LonLat | null, docked: boolean): boolean {
+    const prev = this._drawnMower;
+    this._drawnMower = pos ? { ...pos, docked } : undefined;
+    if (!prev || !pos || prev.docked !== docked) return true;
+    return !docked && Math.hypot(...offsetMeters(prev, pos)) > VECTOR_MAP_SMOOTH_MAX_DISTANCE;
+  }
+
+  /** Remembers when the mower last reported and last moved, for the "not moving" note on the map. */
+  private _trackMovement(): void {
+    const trackerId = this._vectorTrackerEntity();
+    const tracker = trackerId ? this.hass.states[trackerId] : undefined;
+    const pos = trackerPosition(tracker);
+    const reportAt = tracker ? Date.parse(tracker.last_updated) : NaN;
+    if (!pos || !Number.isFinite(reportAt) || reportAt === this._lastReportAt) return;
+    this._lastReportAt = reportAt;
+    const prev = this._lastReportPos;
+    const moved = !prev || Math.hypot(...offsetMeters(prev, pos)) >= VECTOR_MAP_HEADING_MIN_DISTANCE;
+    if (moved || this._resolveStateBehavior(this.mowerState) !== 'mowing') {
+      this._lastMovedAt = reportAt;
+      this._lastReportPos = pos;
+    }
+  }
+
+  /** Direction of travel from the last two positions that are far enough apart. */
+  private _updateMowerHeading(pos: LonLat | null, docked: boolean): void {
+    if (!pos || docked) {
+      this._mowerHeading = null;
+      this._headingFrom = pos ?? undefined;
+      return;
+    }
+    const from = this._headingFrom;
+    if (!from) {
+      this._headingFrom = pos;
+      return;
+    }
+    const [dx, dy] = offsetMeters(from, pos);
+    if (Math.hypot(dx, dy) < VECTOR_MAP_HEADING_MIN_DISTANCE) return;
+    this._mowerHeading = (Math.atan2(dx, dy) * 180) / Math.PI;
+    this._headingFrom = pos;
+  }
+
+  private _getVectorModel(): VectorMapModel {
+    const layers = this._vectorLayers;
+    const rotation = Number(this.config.map_rotation) || 0;
+    const model = this._vectorModel;
+    if (
+      !model ||
+      model.rotation !== rotation ||
+      model.layers.base !== layers.base ||
+      model.layers.trail !== layers.trail
+    ) {
+      this._vectorModel = new VectorMapModel(layers, rotation);
+    }
+    return this._vectorModel as VectorMapModel;
+  }
+
+  private _renderVectorMapView() {
+    if (this._vectorStatus === 'error') {
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:map-marker-alert-outline',
+        localize('map.vector_load_error', { hass: this.hass })
+      );
+    }
+
+    if (this._vectorStatus === 'empty') {
+      return this._renderErrorView(
+        'map-container',
+        'map-error',
+        'mdi:map-outline',
+        localize('map.vector_empty', { hass: this.hass })
+      );
+    }
+
+    const isLoading = this._vectorStatus !== 'ready';
+    const model = isLoading ? undefined : this._getVectorModel();
+
+    const trackerId = this._vectorTrackerEntity();
+    const tracker = trackerId ? this.hass.states[trackerId] : undefined;
+    const mower = trackerPosition(tracker);
+    const docked = this._isCurrentlyDocked(this.mowerState, this.chargingStatus);
+    this._updateMowerHeading(mower, docked);
+    this._followMower(model, mower, docked);
+    const mowerJump = this._isMowerJump(mower, docked);
+    // Mammotion reports the heading in degrees clockwise from north (east = 90).
+    // Fall back to the direction of travel when the attribute is missing.
+    const direction = Number(tracker?.attributes?.direction);
+    const heading = Number.isFinite(direction) ? direction : this._mowerHeading;
+
+    return html`
+      <div
+        class="map-container pannable vector ${isLoading ? 'is-loading' : ''}"
+        style="touch-action: none;"
+        @wheel=${this._handleImgWheel}
+        @pointerdown=${this._handleImgPointerDown}
+        @pointermove=${this._handleImgPointerMove}
+        @pointerup=${this._handleImgPointerUp}
+        @pointercancel=${this._handleImgPointerUp}
+        @dblclick=${this._handleImgDblClick}
+      >
+        ${isLoading ? html`<div class="loading-indicator"><div class="loader"></div></div>` : nothing}
+        ${
+          model
+            ? html`<div
+                  class="map-image-transform-layer"
+                  style="transform: translate(${this._imgTranslateX}px, ${this._imgTranslateY}px) scale(${
+                    this._imgScale
+                  }); transform-origin: 0 0; --clm-zoom: ${this._imgScale};"
+                >
+                  ${model.render({
+                    ...this._vectorViewSize(),
+                    showLabels: this.config.map_show_labels !== false,
+                    showPath: this.config.map_show_path !== false,
+                    mower,
+                    mowerActive: this._resolveStateBehavior(this.mowerState) === 'mowing',
+                    mowerDocked: docked,
+                    mowerJump,
+                    mowerHeading: heading === null ? null : this._continuousHeading(heading),
+                    mowerAlert: this._mowerAlert(),
+                    areaWord: localize('map.area', { hass: this.hass }),
+                    showRtk: this.config.map_show_rtk !== false,
+                    pathWidth: Number(this.config.map_path_width) > 0 ? Number(this.config.map_path_width) : undefined,
+                    activeZone: this._workZone() ?? null,
+                    activeProgress:
+                      this._isMowerWorking && this.progressLevel !== '-' ? Number(this.progressLevel) : null,
+                    insets: VECTOR_MAP_INSETS,
+                  })}
                 </div>
-              </div>`
+                ${this._renderImgControls()} ${this._renderZoneDialog()}`
             : nothing
         }
       </div>
@@ -1525,6 +2220,10 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   }
 
   private _renderMapView() {
+    if (this._isVectorMap) {
+      return this._renderVectorMapView();
+    }
+
     const useImage =
       this.config.map_source === 'image' ||
       (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity) ||
@@ -1692,8 +2391,12 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       `);
     }
 
-    if ((this.config.map_entity || this.config.map_image_entity) && this.config.enable_map !== false) {
+    if (
+      (this.config.map_entity || this.config.map_image_entity || this._isVectorMap) &&
+      this.config.enable_map !== false
+    ) {
       const useImage =
+        this._isVectorMap ||
         this.config.map_source === 'image' ||
         (!this.config.map_source && !this.config.map_entity && !!this.config.map_image_entity);
       buttons.push(html`
@@ -1720,11 +2423,14 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._mapUpdateInterval = undefined;
     }
 
+    this._stopVectorMap();
     this._viewMode = mode;
 
     if (mode === 'camera') {
       this._isPopupOpen = false;
       this._updateCameraState(true);
+    } else if (mode === 'map' && this._isVectorMap) {
+      this._startVectorMap();
     } else if (mode === 'map') {
       const useImage =
         this.config.map_source === 'image' ||
@@ -2009,12 +2715,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
             <div class="badge-row">
               ${
                 this.progressLevel !== '-'
-                  ? html`
-                      <div class="progress-badge">
-                        <ha-icon class="badge-icon" icon="mdi:progress-helper"></ha-icon>
-                        <span class="progress-text">${this.progressLevel}%</span>
-                      </div>
-                    `
+                  ? this._renderProgressBadge(Number(this.progressLevel), this._jobDetail())
                   : html`<div class="badge-spacer"></div>`
               }
               ${(() => {
