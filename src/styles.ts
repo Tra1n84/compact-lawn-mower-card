@@ -1424,11 +1424,6 @@ export const compactLawnMowerCardStyles = css`
     transform: scale(0.95);
   }
 
-  .map-control-button ha-icon {
-    transition: transform 0.15s ease-out;
-    will-change: transform;
-  }
-
   .map-control-button.active {
     background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
     color: white;

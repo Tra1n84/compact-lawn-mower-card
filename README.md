@@ -256,7 +256,7 @@ map_rotation: 0
 
 The zones are loaded when the map view is opened (cached for 30 minutes). Position offsets set in the integration (`Map offset latitude / longitude`) apply to all layers. The map must be synced once in the Mammotion app.
 
-The mown lanes are the mower's recorded positions joined into lines, as wide as the cutting width (`map_path_width`). Two positions are only joined when they are a few seconds apart, so nothing is drawn where the mower was not seen. The integration reports a position every few seconds only while its report stream is running, so the lanes come out complete while the card is watched. To get dense positions while no dashboard is open too, let an automation call `mammotion.get_geojson` for the mower every 4 minutes while it is mowing.
+The mown lanes are the mower's recorded positions joined into lines, as wide as the cutting width (`map_path_width`). Two positions are only joined when they are a few seconds apart, so nothing is drawn where the mower was not seen. The integration reports a position every few seconds only while its report stream is running, so the lanes come out complete while the card is watched (with `live_updates` on). To get dense positions while no dashboard is open too, let an automation call `mammotion.get_geojson` for the mower every 4 minutes while it is mowing.
 
 #### Live Status (Mammotion)
 

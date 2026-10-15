@@ -31,16 +31,17 @@ import {
   CARD_TRANSLATED_STATES,
   LIVE_UPDATES_CHECK_INTERVAL,
   LIVE_UPDATES_FOLLOW_UP,
+  JOB_STATES,
+  REPORT_REQUEST_MIN_GAP,
+  REPORT_STREAM_KEEPALIVE,
   VECTOR_MAP_BASE_TTL,
   VECTOR_MAP_HEADING_MIN_DISTANCE,
   VECTOR_MAP_INSETS,
   VECTOR_MAP_REPORT_MAX_AGE,
   VECTOR_MAP_SMOOTH_MAX_DISTANCE,
-  VECTOR_MAP_STREAM_KEEPALIVE,
   VECTOR_MAP_STUCK_MINUTES,
   VECTOR_MAP_TRAIL_INTERVAL,
   VECTOR_MAP_TRAIL_MIN_INTERVAL,
-  VECTOR_MAP_WORKING_STATES,
 } from './constants';
 import { getGraphics } from './graphics';
 import { localize } from './localize';
@@ -64,6 +65,7 @@ import {
 } from './types';
 import { compactLawnMowerCardStyles } from './styles';
 import {
+  GeoJsonCollection,
   MAMMOTION_DOMAIN,
   VectorMapLayers,
   VectorMapModel,
@@ -76,7 +78,7 @@ import {
   setCachedBase,
   siblingEntities,
 } from './vector-map';
-import { LonLat, MowTrail, findJobStart, getTrail, offsetMeters, setTrail } from './mow-trail';
+import { LonLat, MowTrail, distanceMeters, findJobStart, getTrail, offsetMeters, setTrail } from './mow-trail';
 
 /** Reported position of a device_tracker, null when it has none (0/0 is the integration's "no fix"). */
 const trackerPosition = (tracker: HassEntity | undefined): LonLat | null => {
@@ -166,7 +168,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   private _vectorBaseBusy = false;
   private _liveTimer?: number;
   private _followUpTimers: number[] = [];
-  private _vectorTrackerLookup?: { entity: string; tracker?: string };
   private _trailBusy = false;
   private _trailRefreshedAt = 0;
   private _mowerHeading: number | null = null;
@@ -639,15 +640,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       this._setInitialAnimationState(this.mowerState);
     }
 
-    if (changedProperties.has('hass')) {
-      const oldState = (changedProperties.get('hass') as HomeAssistant | undefined)?.states[this.config.entity]?.state;
-      // A job started elsewhere (schedule, app, automation): its stream is started at once
-      if (oldState && oldState !== this.mowerState && this._hasLiveUpdates) {
-        const resolved = this._resolveStateBehavior(this.mowerState);
-        if (resolved === 'mowing' || resolved === 'returning') this._keepReportStream(this.config.entity, true);
-      }
-    }
-
     if (changedProperties.has('hass') && this._isVectorMap) {
       this._trackMovement();
       if (this._viewMode === 'map') {
@@ -691,6 +683,17 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   updated(changedProperties: PropertyValues<this>) {
     super.updated(changedProperties);
+
+    if (changedProperties.has('hass')) {
+      const oldState = (changedProperties.get('hass') as HomeAssistant | undefined)?.states[this.config.entity]?.state;
+      // A job started elsewhere (schedule, app, automation): its stream is started at once
+      if (oldState && oldState !== this.mowerState && this._hasLiveUpdates) {
+        const resolved = this._resolveStateBehavior(this.mowerState);
+        if (resolved === 'mowing' || resolved === 'returning') {
+          this._keepReportStream(this.config.entity, REPORT_REQUEST_MIN_GAP);
+        }
+      }
+    }
 
     if ((changedProperties as any).has('_viewMode') && this._viewMode === 'mower') {
       this._updateMowerPosition();
@@ -1965,23 +1968,14 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
   /** A job is running or interrupted: not docked, not idle after a finished job, not charging. */
   private get _isMowerWorking(): boolean {
-    return !this.chargingStatus && VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(this.mowerState));
+    return !this.chargingStatus && JOB_STATES.has(this._resolveStateBehavior(this.mowerState));
   }
 
   private _vectorTrackerEntity(): string | undefined {
     if (this.config.map_entity) {
       return this.config.map_entity;
     }
-    if (!this.hass || !this.config.entity) {
-      return undefined;
-    }
-    if (this._vectorTrackerLookup?.entity !== this.config.entity || !this._vectorTrackerLookup.tracker) {
-      this._vectorTrackerLookup = {
-        entity: this.config.entity,
-        tracker: findSiblingTracker(this.hass, this.config.entity),
-      };
-    }
-    return this._vectorTrackerLookup.tracker;
+    return this.hass && this.config.entity ? findSiblingTracker(this.hass, this.config.entity) : undefined;
   }
 
   private _startVectorMap(): void {
@@ -2021,9 +2015,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     this._vectorBaseBusy = true;
     try {
-      const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId);
-      setCachedBase(entityId, base);
-      reportStreamStartedAt.set(entityId, Date.now());
+      const base = await this._requestReport(entityId);
       if (entityId !== this.config.entity) return;
       this._vectorLayers = { ...this._vectorLayers, base };
       this._vectorStatus = base?.features.length ? 'ready' : 'empty';
@@ -2040,15 +2032,20 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
   /**
    * The integration reports status and position every few seconds only while its report stream is
    * running, and `get_geojson` is the service that starts it (for five minutes). Without it a change
-   * of state shows up late, unless the Mammotion app happens to be open.
+   * of state shows up late, unless the Mammotion app happens to be open. It answers with the zones,
+   * which are cached for the map view.
    */
-  private async _keepReportStream(entityId: string, force = false): Promise<void> {
-    if (!this.hass) return;
-    if (!force && Date.now() - (reportStreamStartedAt.get(entityId) ?? 0) < VECTOR_MAP_STREAM_KEEPALIVE) return;
+  private async _requestReport(entityId: string): Promise<GeoJsonCollection | null> {
     reportStreamStartedAt.set(entityId, Date.now());
-    const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId).catch(() => undefined);
-    // The zones come along anyway, so the map view does not have to load them again
-    if (base) setCachedBase(entityId, base);
+    const base = await fetchGeoJson(this.hass, 'get_geojson', entityId);
+    setCachedBase(entityId, base);
+    return base;
+  }
+
+  /** Renews the report stream when the last request is older than `renewAfter`. */
+  private _keepReportStream(entityId: string, renewAfter = REPORT_STREAM_KEEPALIVE): void {
+    if (!this.hass || Date.now() - (reportStreamStartedAt.get(entityId) ?? 0) < renewAfter) return;
+    this._requestReport(entityId).catch(() => undefined);
   }
 
   /** Keeps the report stream running while the card is visible, in every view and mower state. */
@@ -2090,7 +2087,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const entityId = this.config.entity;
     this._followUpTimers.forEach(timer => clearTimeout(timer));
     this._followUpTimers = LIVE_UPDATES_FOLLOW_UP.map(delay =>
-      window.setTimeout(() => this._keepReportStream(entityId, true), delay)
+      window.setTimeout(() => this._keepReportStream(entityId, REPORT_REQUEST_MIN_GAP), delay)
     );
   }
 
@@ -2128,7 +2125,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       let trail = getTrail(entityId);
       if (!trail || verifyStart) {
         const start = await findJobStart(this.hass, entityId, state =>
-          VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(state))
+          JOB_STATES.has(this._resolveStateBehavior(state))
         );
         if (!trail || Math.abs(trail.jobStart - start) > 1000) {
           trail = new MowTrail(start);
@@ -2138,9 +2135,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
       const trackerId = this._vectorTrackerEntity();
       const [head, extended] = await Promise.all([
-        fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_mow_progress_geojson', entityId).catch(() => null),
+        fetchGeoJson(this.hass, 'get_mow_progress_geojson', entityId).catch(() => null),
         trackerId ? trail.extend(this.hass, trackerId).catch(() => false) : false,
-        this._keepReportStream(entityId),
       ]);
       const line = head?.features.find(f => f.properties?.type_name === 'dynamics_line');
       const headChanged = trail.setHead(line?.geometry?.type === 'LineString' ? line.geometry.coordinates : []);
@@ -2159,7 +2155,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const prev = this._drawnMower;
     this._drawnMower = pos ? { ...pos, docked } : undefined;
     if (!prev || !pos || prev.docked !== docked) return true;
-    return !docked && Math.hypot(...offsetMeters(prev, pos)) > VECTOR_MAP_SMOOTH_MAX_DISTANCE;
+    return !docked && distanceMeters(prev, pos) > VECTOR_MAP_SMOOTH_MAX_DISTANCE;
   }
 
   /** Remembers when the mower last reported and last moved, for the "not moving" note on the map. */
@@ -2171,7 +2167,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (!pos || !Number.isFinite(reportAt) || reportAt === this._lastReportAt) return;
     this._lastReportAt = reportAt;
     const prev = this._lastReportPos;
-    const moved = !prev || Math.hypot(...offsetMeters(prev, pos)) >= VECTOR_MAP_HEADING_MIN_DISTANCE;
+    const moved = !prev || distanceMeters(prev, pos) >= VECTOR_MAP_HEADING_MIN_DISTANCE;
     if (moved || this._resolveStateBehavior(this.mowerState) !== 'mowing') {
       this._lastMovedAt = reportAt;
       this._lastReportPos = pos;

@@ -189,6 +189,10 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       }
     }
 
+    if (newConfig.map_source === 'mammotion' && !isMammotionEntity(this.hass, newConfig.entity)) {
+      delete newConfig.map_source;
+    }
+
     const hadAnyMapSource = !!(
       this.config.map_entity ||
       this.config.map_image_entity ||
@@ -199,10 +203,6 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       newConfig.map_image_entity ||
       newConfig.map_source === 'mammotion'
     );
-
-    if (newConfig.map_source === 'mammotion' && !isMammotionEntity(this.hass, newConfig.entity)) {
-      delete newConfig.map_source;
-    }
 
     if (!hadAnyMapSource && hasAnyMapSourceNow) {
       newConfig.enable_map = true;

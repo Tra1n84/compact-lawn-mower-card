@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.6.3';
+const CARD_VERSION = '1.6.4';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -234,7 +234,7 @@ const CARD_TRANSLATED_STATES = new Set([
 /** Metres per degree, for projecting GPS positions onto a local plane */
 const METERS_PER_DEG_LAT = 110574;
 const METERS_PER_DEG_LON = 111320;
-/** The mown lanes are refreshed on this timer while the mower works, and on movement at most this often */
+/** The mown lanes are refreshed on this timer while the map is open, and on movement at most this often */
 const VECTOR_MAP_TRAIL_INTERVAL = 60000;
 const VECTOR_MAP_TRAIL_MIN_INTERVAL = 15000;
 /** The zones are reloaded when the map is opened after this time */
@@ -244,7 +244,9 @@ const VECTOR_MAP_BASE_TTL = 30 * 60 * 1000;
  * Renewed well within 2 minutes: before a command the integration first waits for a fresh report when
  * the last one is older than that.
  */
-const VECTOR_MAP_STREAM_KEEPALIVE = 90 * 1000;
+const REPORT_STREAM_KEEPALIVE = 90 * 1000;
+/** Requests closer together than this are skipped, so several cards for one mower ask only once */
+const REPORT_REQUEST_MIN_GAP = 3000;
 /** How often a visible card checks whether the report stream needs renewing */
 const LIVE_UPDATES_CHECK_INTERVAL = 10000;
 /** After a command the card asks for a report again at these delays, until the mower has switched */
@@ -258,7 +260,7 @@ const VECTOR_MAP_STUCK_MINUTES = 5;
 /** A position report older than this means the stream is off, so standing still cannot be judged */
 const VECTOR_MAP_REPORT_MAX_AGE = 90000;
 /** States (after the user's state_map) in which a job is running or interrupted; idle and docked are not */
-const VECTOR_MAP_WORKING_STATES = new Set(['mowing', 'paused', 'returning', 'error']);
+const JOB_STATES = new Set(['mowing', 'paused', 'returning', 'error']);
 /** Position changes above this distance in metres are not animated (GPS jumps, dock, reconnect) */
 const VECTOR_MAP_SMOOTH_MAX_DISTANCE = 3;
 const IMG_ZOOM_MIN = 0.5;
@@ -3604,11 +3606,6 @@ const compactLawnMowerCardStyles = i$3 `
     transform: scale(0.95);
   }
 
-  .map-control-button ha-icon {
-    transition: transform 0.15s ease-out;
-    will-change: transform;
-  }
-
   .map-control-button.active {
     background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
     color: white;
@@ -5299,10 +5296,11 @@ const normalizeCollection = (value) => {
     }
     return null;
 };
-const fetchGeoJson = async (hass, domain, service, entityId) => {
+/** Calls one of the Mammotion GeoJSON services for the mower. */
+const fetchGeoJson = async (hass, service, entityId) => {
     const result = await hass.callWS({
         type: 'call_service',
-        domain,
+        domain: MAMMOTION_DOMAIN,
         service,
         service_data: { entity_id: entityId },
         return_response: true,
@@ -5310,13 +5308,24 @@ const fetchGeoJson = async (hass, domain, service, entityId) => {
     return normalizeCollection(result?.response);
 };
 const entityRegistry = (hass) => hass.entities;
+// The registry object is replaced when it changes, so results are kept per registry object
+const siblingCache = new WeakMap();
 /** Entities of `domain` that belong to the same device as the mower entity, with their registry entries. */
 const siblingEntities = (hass, entityId, domain) => {
     const registry = entityRegistry(hass);
     const deviceId = registry?.[entityId]?.device_id;
     if (!registry || !deviceId)
         return [];
-    return Object.entries(registry).filter(([id, entry]) => id.startsWith(`${domain}.`) && entry.device_id === deviceId);
+    let cache = siblingCache.get(registry);
+    if (!cache)
+        siblingCache.set(registry, (cache = new Map()));
+    const key = `${deviceId}|${domain}`;
+    let found = cache.get(key);
+    if (!found) {
+        found = Object.entries(registry).filter(([id, entry]) => id.startsWith(`${domain}.`) && entry.device_id === deviceId);
+        cache.set(key, found);
+    }
+    return found;
 };
 const isMammotionEntity = (hass, entityId) => !!hass && !!entityId && entityRegistry(hass)?.[entityId]?.platform === MAMMOTION_DOMAIN;
 /** Finds a sensor of the mower's device by its translation key, e.g. `left_time`. */
@@ -5927,15 +5936,15 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
                 newConfig.map_image_bg_color = detected;
             }
         }
+        if (newConfig.map_source === 'mammotion' && !isMammotionEntity(this.hass, newConfig.entity)) {
+            delete newConfig.map_source;
+        }
         const hadAnyMapSource = !!(this.config.map_entity ||
             this.config.map_image_entity ||
             this.config.map_source === 'mammotion');
         const hasAnyMapSourceNow = !!(newConfig.map_entity ||
             newConfig.map_image_entity ||
             newConfig.map_source === 'mammotion');
-        if (newConfig.map_source === 'mammotion' && !isMammotionEntity(this.hass, newConfig.entity)) {
-            delete newConfig.map_source;
-        }
         if (!hadAnyMapSource && hasAnyMapSourceNow) {
             newConfig.enable_map = true;
         }
@@ -7982,15 +7991,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (changedProperties.has('_viewMode')) {
             this._setInitialAnimationState(this.mowerState);
         }
-        if (changedProperties.has('hass')) {
-            const oldState = changedProperties.get('hass')?.states[this.config.entity]?.state;
-            // A job started elsewhere (schedule, app, automation): its stream is started at once
-            if (oldState && oldState !== this.mowerState && this._hasLiveUpdates) {
-                const resolved = this._resolveStateBehavior(this.mowerState);
-                if (resolved === 'mowing' || resolved === 'returning')
-                    this._keepReportStream(this.config.entity, true);
-            }
-        }
         if (changedProperties.has('hass') && this._isVectorMap) {
             this._trackMovement();
             if (this._viewMode === 'map') {
@@ -8034,6 +8034,16 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     updated(changedProperties) {
         super.updated(changedProperties);
+        if (changedProperties.has('hass')) {
+            const oldState = changedProperties.get('hass')?.states[this.config.entity]?.state;
+            // A job started elsewhere (schedule, app, automation): its stream is started at once
+            if (oldState && oldState !== this.mowerState && this._hasLiveUpdates) {
+                const resolved = this._resolveStateBehavior(this.mowerState);
+                if (resolved === 'mowing' || resolved === 'returning') {
+                    this._keepReportStream(this.config.entity, REPORT_REQUEST_MIN_GAP);
+                }
+            }
+        }
         if (changedProperties.has('_viewMode') && this._viewMode === 'mower') {
             this._updateMowerPosition();
             this._setupMowerResizeObserver();
@@ -9171,22 +9181,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     /** A job is running or interrupted: not docked, not idle after a finished job, not charging. */
     get _isMowerWorking() {
-        return !this.chargingStatus && VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(this.mowerState));
+        return !this.chargingStatus && JOB_STATES.has(this._resolveStateBehavior(this.mowerState));
     }
     _vectorTrackerEntity() {
         if (this.config.map_entity) {
             return this.config.map_entity;
         }
-        if (!this.hass || !this.config.entity) {
-            return undefined;
-        }
-        if (this._vectorTrackerLookup?.entity !== this.config.entity || !this._vectorTrackerLookup.tracker) {
-            this._vectorTrackerLookup = {
-                entity: this.config.entity,
-                tracker: findSiblingTracker(this.hass, this.config.entity),
-            };
-        }
-        return this._vectorTrackerLookup.tracker;
+        return this.hass && this.config.entity ? findSiblingTracker(this.hass, this.config.entity) : undefined;
     }
     _startVectorMap() {
         const entityId = this.config?.entity;
@@ -9222,9 +9223,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         this._vectorBaseBusy = true;
         try {
-            const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId);
-            setCachedBase(entityId, base);
-            reportStreamStartedAt.set(entityId, Date.now());
+            const base = await this._requestReport(entityId);
             if (entityId !== this.config.entity)
                 return;
             this._vectorLayers = { ...this._vectorLayers, base };
@@ -9243,18 +9242,20 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     /**
      * The integration reports status and position every few seconds only while its report stream is
      * running, and `get_geojson` is the service that starts it (for five minutes). Without it a change
-     * of state shows up late, unless the Mammotion app happens to be open.
+     * of state shows up late, unless the Mammotion app happens to be open. It answers with the zones,
+     * which are cached for the map view.
      */
-    async _keepReportStream(entityId, force = false) {
-        if (!this.hass)
-            return;
-        if (!force && Date.now() - (reportStreamStartedAt.get(entityId) ?? 0) < VECTOR_MAP_STREAM_KEEPALIVE)
-            return;
+    async _requestReport(entityId) {
         reportStreamStartedAt.set(entityId, Date.now());
-        const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId).catch(() => undefined);
-        // The zones come along anyway, so the map view does not have to load them again
-        if (base)
-            setCachedBase(entityId, base);
+        const base = await fetchGeoJson(this.hass, 'get_geojson', entityId);
+        setCachedBase(entityId, base);
+        return base;
+    }
+    /** Renews the report stream when the last request is older than `renewAfter`. */
+    _keepReportStream(entityId, renewAfter = REPORT_STREAM_KEEPALIVE) {
+        if (!this.hass || Date.now() - (reportStreamStartedAt.get(entityId) ?? 0) < renewAfter)
+            return;
+        this._requestReport(entityId).catch(() => undefined);
     }
     /** Keeps the report stream running while the card is visible, in every view and mower state. */
     _startLiveUpdates() {
@@ -9285,7 +9286,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         const entityId = this.config.entity;
         this._followUpTimers.forEach(timer => clearTimeout(timer));
-        this._followUpTimers = LIVE_UPDATES_FOLLOW_UP.map(delay => window.setTimeout(() => this._keepReportStream(entityId, true), delay));
+        this._followUpTimers = LIVE_UPDATES_FOLLOW_UP.map(delay => window.setTimeout(() => this._keepReportStream(entityId, REPORT_REQUEST_MIN_GAP), delay));
     }
     _trailLayer(trail) {
         return { lines: trail.lines(), head: trail.head };
@@ -9319,7 +9320,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         try {
             let trail = getTrail(entityId);
             if (!trail || verifyStart) {
-                const start = await findJobStart(this.hass, entityId, state => VECTOR_MAP_WORKING_STATES.has(this._resolveStateBehavior(state)));
+                const start = await findJobStart(this.hass, entityId, state => JOB_STATES.has(this._resolveStateBehavior(state)));
                 if (!trail || Math.abs(trail.jobStart - start) > 1000) {
                     trail = new MowTrail(start);
                     setTrail(entityId, trail);
@@ -9327,9 +9328,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             }
             const trackerId = this._vectorTrackerEntity();
             const [head, extended] = await Promise.all([
-                fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_mow_progress_geojson', entityId).catch(() => null),
+                fetchGeoJson(this.hass, 'get_mow_progress_geojson', entityId).catch(() => null),
                 trackerId ? trail.extend(this.hass, trackerId).catch(() => false) : false,
-                this._keepReportStream(entityId),
             ]);
             const line = head?.features.find(f => f.properties?.type_name === 'dynamics_line');
             const headChanged = trail.setHead(line?.geometry?.type === 'LineString' ? line.geometry.coordinates : []);
@@ -9349,7 +9349,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._drawnMower = pos ? { ...pos, docked } : undefined;
         if (!prev || !pos || prev.docked !== docked)
             return true;
-        return !docked && Math.hypot(...offsetMeters(prev, pos)) > VECTOR_MAP_SMOOTH_MAX_DISTANCE;
+        return !docked && distanceMeters(prev, pos) > VECTOR_MAP_SMOOTH_MAX_DISTANCE;
     }
     /** Remembers when the mower last reported and last moved, for the "not moving" note on the map. */
     _trackMovement() {
@@ -9361,7 +9361,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         this._lastReportAt = reportAt;
         const prev = this._lastReportPos;
-        const moved = !prev || Math.hypot(...offsetMeters(prev, pos)) >= VECTOR_MAP_HEADING_MIN_DISTANCE;
+        const moved = !prev || distanceMeters(prev, pos) >= VECTOR_MAP_HEADING_MIN_DISTANCE;
         if (moved || this._resolveStateBehavior(this.mowerState) !== 'mowing') {
             this._lastMovedAt = reportAt;
             this._lastReportPos = pos;

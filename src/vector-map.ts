@@ -146,15 +146,15 @@ const normalizeCollection = (value: unknown): GeoJsonCollection | null => {
   return null;
 };
 
+/** Calls one of the Mammotion GeoJSON services for the mower. */
 export const fetchGeoJson = async (
   hass: HomeAssistant,
-  domain: string,
   service: string,
   entityId: string
 ): Promise<GeoJsonCollection | null> => {
   const result = await hass.callWS<{ response?: unknown }>({
     type: 'call_service',
-    domain,
+    domain: MAMMOTION_DOMAIN,
     service,
     service_data: { entity_id: entityId },
     return_response: true,
@@ -171,12 +171,25 @@ interface RegistryEntry {
 const entityRegistry = (hass: HomeAssistant): Record<string, RegistryEntry> | undefined =>
   (hass as HomeAssistant & { entities?: Record<string, RegistryEntry> }).entities;
 
+// The registry object is replaced when it changes, so results are kept per registry object
+const siblingCache = new WeakMap<object, Map<string, [string, RegistryEntry][]>>();
+
 /** Entities of `domain` that belong to the same device as the mower entity, with their registry entries. */
 export const siblingEntities = (hass: HomeAssistant, entityId: string, domain: string): [string, RegistryEntry][] => {
   const registry = entityRegistry(hass);
   const deviceId = registry?.[entityId]?.device_id;
   if (!registry || !deviceId) return [];
-  return Object.entries(registry).filter(([id, entry]) => id.startsWith(`${domain}.`) && entry.device_id === deviceId);
+  let cache = siblingCache.get(registry);
+  if (!cache) siblingCache.set(registry, (cache = new Map()));
+  const key = `${deviceId}|${domain}`;
+  let found = cache.get(key);
+  if (!found) {
+    found = Object.entries(registry).filter(
+      ([id, entry]) => id.startsWith(`${domain}.`) && entry.device_id === deviceId
+    );
+    cache.set(key, found);
+  }
+  return found;
 };
 
 export const isMammotionEntity = (hass: HomeAssistant | undefined, entityId: string | undefined): boolean =>
