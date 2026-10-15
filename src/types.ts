@@ -113,11 +113,26 @@ export interface CompactLawnMowerCardConfig extends LovelaceCardConfig {
   charging_entity?: string;
   camera_entity?: string;
   progress_entity?: string;
+  /** Optional sensors for the job info; found on the mower's device when left empty (Mammotion) */
+  task_area_entity?: string;
+  remaining_time_entity?: string;
+  work_zone_entity?: string;
+  error_entity?: string;
+  /** Area switches the map may start a zone with; found on the mower's device when left empty (Mammotion) */
+  zone_switches?: string[];
   map_entity?: string;
   map_image_entity?: string;
-  map_source?: 'gps' | 'image';
+  map_source?: 'gps' | 'image' | 'mammotion';
   map_image_bg_auto?: boolean;
   map_image_bg_color?: string | number[];
+  map_show_labels?: boolean;
+  map_show_path?: boolean;
+  map_path_width?: number;
+  map_rotation?: number;
+  map_show_rtk?: boolean;
+  map_keep_view?: boolean;
+  /** Mammotion: keep the integration's report stream running while the card is visible (Default: true) */
+  live_updates?: boolean;
   google_maps_api_key?: string;
   mower_model?: MowerModel;
   use_google_maps?: boolean;
