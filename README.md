@@ -260,7 +260,7 @@ The mown lanes are the mower's recorded positions joined into lines, as wide as 
 
 #### Live Status (Mammotion)
 
-Without its report stream the Mammotion integration only polls now and then, so a new state can take a while to show up in Home Assistant, unless the Mammotion app is open. While the card is visible it keeps the stream running (`mammotion.get_geojson` every 4 minutes) in every view. The integration streams only while a job runs; otherwise each call brings a single report. After a command from the card it asks again after 5, 15, 30 and 60 seconds, and a job started elsewhere gets its stream at once, so the new state shows up within seconds. It stops when the dashboard is left or the app goes to the background. Set `live_updates: false` to turn it off, e.g. on a wall tablet that shows the dashboard all day.
+Without its report stream the Mammotion integration only polls now and then, so a new state can take a while to show up in Home Assistant, unless the Mammotion app is open. While the card is visible it keeps the stream running (`mammotion.get_geojson` every 90 seconds, so the state is never older than two minutes when a command is sent) in every view. The integration streams only while a job runs; otherwise each call brings a single report. After a command from the card it asks again after 5, 15, 30 and 60 seconds, and a job started elsewhere gets its stream at once, so the new state shows up within seconds. It stops when the dashboard is left or the app goes to the background. Set `live_updates: false` to turn it off, e.g. on a wall tablet that shows the dashboard all day.
 
 #### Custom Action Structure
 

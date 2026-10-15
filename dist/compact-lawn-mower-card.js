@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.6.2';
+const CARD_VERSION = '1.6.3';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -239,10 +239,14 @@ const VECTOR_MAP_TRAIL_INTERVAL = 60000;
 const VECTOR_MAP_TRAIL_MIN_INTERVAL = 15000;
 /** The zones are reloaded when the map is opened after this time */
 const VECTOR_MAP_BASE_TTL = 30 * 60 * 1000;
-/** get_geojson starts the integration's 5 minute report stream (status and position every few seconds), renewed after this */
-const VECTOR_MAP_STREAM_KEEPALIVE = 4 * 60 * 1000;
+/**
+ * get_geojson starts the integration's 5 minute report stream (status and position every few seconds).
+ * Renewed well within 2 minutes: before a command the integration first waits for a fresh report when
+ * the last one is older than that.
+ */
+const VECTOR_MAP_STREAM_KEEPALIVE = 90 * 1000;
 /** How often a visible card checks whether the report stream needs renewing */
-const LIVE_UPDATES_CHECK_INTERVAL = 30000;
+const LIVE_UPDATES_CHECK_INTERVAL = 10000;
 /** After a command the card asks for a report again at these delays, until the mower has switched */
 const LIVE_UPDATES_FOLLOW_UP = [5000, 15000, 30000, 60000];
 /** Space in px covered by the badges and buttons, kept free when the map is fitted */
