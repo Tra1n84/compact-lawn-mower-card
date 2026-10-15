@@ -1383,12 +1383,15 @@ export const compactLawnMowerCardStyles = css`
     align-items: flex-start;
   }
 
-  /* Same look and behaviour as the view toggle buttons, only smaller */
+  /*
+   * Same look and behaviour as the view toggle buttons, only smaller and without the backdrop blur.
+   * Over the moving map the blur would be redrawn every frame; mobile WebKit either skips that inside
+   * the clipped map (the blur goes stale) or slows down every button on the card.
+   */
   .map-control-button {
     width: 26px;
     height: 26px;
     background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px) saturate(180%);
     border: none;
     border-radius: var(--ha-card-features-border-radius, var(--ha-border-radius-lg));
     box-shadow: var(--badge-box-shadow);
@@ -1428,7 +1431,6 @@ export const compactLawnMowerCardStyles = css`
 
   .map-control-button.active {
     background: color-mix(in srgb, var(--toggle-active-color, var(--primary-color)) 88%, transparent);
-    backdrop-filter: blur(4px) saturate(120%);
     color: white;
   }
 
