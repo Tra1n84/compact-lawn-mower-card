@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.6.1';
+const CARD_VERSION = '1.6.2';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -239,8 +239,12 @@ const VECTOR_MAP_TRAIL_INTERVAL = 60000;
 const VECTOR_MAP_TRAIL_MIN_INTERVAL = 15000;
 /** The zones are reloaded when the map is opened after this time */
 const VECTOR_MAP_BASE_TTL = 30 * 60 * 1000;
-/** get_geojson starts the integration's 5 minute report stream (a position every few seconds), renewed while mowing */
+/** get_geojson starts the integration's 5 minute report stream (status and position every few seconds), renewed after this */
 const VECTOR_MAP_STREAM_KEEPALIVE = 4 * 60 * 1000;
+/** How often a visible card checks whether the report stream needs renewing */
+const LIVE_UPDATES_CHECK_INTERVAL = 30000;
+/** After a command the card asks for a report again at these delays, until the mower has switched */
+const LIVE_UPDATES_FOLLOW_UP = [5000, 15000, 30000, 60000];
 /** Space in px covered by the badges and buttons, kept free when the map is fitted */
 const VECTOR_MAP_INSETS = { top: 56, right: 8, bottom: 64, left: 8 };
 /** Positions closer than this in metres count as standing still (heading, "not moving" note) */
@@ -324,6 +328,7 @@ var editor$7 = {
 		default_map_zoom: "Default Map Zoom Level",
 		map_image_bg_auto: "Map Background: Detect Automatically",
 		map_image_bg_color: "Map Background Color",
+		live_updates: "Live Status (keep the mower up to date while the card is visible)",
 		map_show_labels: "Show Zone Names",
 		map_show_path: "Show mown lanes",
 		map_rotation: "Map Rotation",
@@ -529,6 +534,7 @@ var editor$6 = {
 		default_map_zoom: "Standard Zoom-Level der Karte",
 		map_image_bg_auto: "Kartenhintergrund automatisch erkennen",
 		map_image_bg_color: "Kartenhintergrundfarbe",
+		live_updates: "Live-Status (Mäher aktuell halten, solange die Karte sichtbar ist)",
 		map_show_labels: "Zonennamen anzeigen",
 		map_show_path: "Mähspur anzeigen",
 		map_rotation: "Kartendrehung",
@@ -6915,6 +6921,9 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
         ];
         if (hasMammotion) {
             schema.push({
+                name: 'live_updates',
+                selector: { boolean: {} },
+            }, {
                 name: 'map_show_labels',
                 selector: { boolean: {} },
                 disabled: !vectorActive,
@@ -7031,6 +7040,7 @@ let CompactLawnMowerCardEditor = class CompactLawnMowerCardEditor extends i {
             map_show_rtk: this.config.map_show_rtk !== false,
             zone_switches: this.config.zone_switches ?? [],
             map_keep_view: this.config.map_keep_view !== false,
+            live_updates: this.config.live_updates !== false,
             google_maps_api_key: this.config.google_maps_api_key || '',
             map_type: this.config.map_type || 'hybrid',
             use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
@@ -7516,6 +7526,8 @@ const trackerPosition = (tracker) => {
     const lon = Number(tracker?.attributes?.longitude);
     return Number.isFinite(lat) && Number.isFinite(lon) && (lat !== 0 || lon !== 0) ? { lat, lon } : null;
 };
+/** When the report stream was last started per mower, shared by all cards showing it */
+const reportStreamStartedAt = new Map();
 console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
 console.log('Github:', 'https://github.com/Tra1n84/compact-lawn-mower-card');
 console.groupEnd();
@@ -7560,7 +7572,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._vectorLayers = { base: null, trail: null };
         this._vectorStatus = 'idle';
         this._vectorBaseBusy = false;
-        this._vectorStreamAt = 0;
+        this._followUpTimers = [];
         this._trailBusy = false;
         this._trailRefreshedAt = 0;
         this._mowerHeading = null;
@@ -7568,9 +7580,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this._vectorFollow = false;
         this._lastMovedAt = Date.now();
         this._lastReportAt = 0;
+        this._liveTick = () => {
+            if (!this._hasLiveUpdates || !this.isConnected || document.visibilityState !== 'visible')
+                return;
+            this._keepReportStream(this.config.entity);
+        };
     }
     connectedCallback() {
         super.connectedCallback();
+        this._startLiveUpdates();
         this._viewMode = this.config?.default_view ?? 'mower';
         this._restoreImgTransform();
         this._restoreMapBackground();
@@ -7619,6 +7637,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     disconnectedCallback() {
         super.disconnectedCallback();
+        this._stopLiveUpdates();
         this._clearAllTimers();
         this._mainResizeObserver?.disconnect();
         this._mowerResizeObserver?.disconnect();
@@ -7959,6 +7978,15 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (changedProperties.has('_viewMode')) {
             this._setInitialAnimationState(this.mowerState);
         }
+        if (changedProperties.has('hass')) {
+            const oldState = changedProperties.get('hass')?.states[this.config.entity]?.state;
+            // A job started elsewhere (schedule, app, automation): its stream is started at once
+            if (oldState && oldState !== this.mowerState && this._hasLiveUpdates) {
+                const resolved = this._resolveStateBehavior(this.mowerState);
+                if (resolved === 'mowing' || resolved === 'returning')
+                    this._keepReportStream(this.config.entity, true);
+            }
+        }
         if (changedProperties.has('hass') && this._isVectorMap) {
             this._trackMovement();
             if (this._viewMode === 'map') {
@@ -8108,6 +8136,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         this.hass
             .callService(MAMMOTION_DOMAIN, 'start_mow', { areas: [area] }, { entity_id: this.config.entity })
             .catch(() => undefined);
+        this._followUpCommand();
     }
     _renderZoneDialog() {
         const dialog = this._zoneDialog;
@@ -8322,6 +8351,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             }
             this._pendingActionName = null;
             this._actionFeedback = { name: customAction.name, status: feedbackStatus };
+            if (feedbackStatus === 'success')
+                this._followUpCommand();
             this._feedbackTimeout = setTimeout(() => {
                 this._actionFeedback = null;
             }, feedbackStatus === 'error' ? 2500 : 1500);
@@ -8497,7 +8528,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const available = row.clientWidth - this._badgeRowFixedWidth(row);
         if (available <= 0)
             return;
-        const candidates = this._getStatusLabelCandidates(this._getDisplayStatus(this.mowerState));
+        const candidates = this._getStatusLabelCandidates(this.mowerState);
         const iconOnlyWidth = this._statusRingChromeWidth(ring);
         if (iconOnlyWidth <= 0)
             return;
@@ -8632,7 +8663,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     }
     _getStatusIcon(state) {
         if (this.chargingStatus)
-            return 'mdi:lightning-bolt';
+            return this._chargingIcon();
         const resolved = this._resolveStateBehavior(state);
         if (resolved === 'mowing')
             return 'mdi:robot-mower';
@@ -8645,6 +8676,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (resolved === 'docked')
             return 'mdi:home-circle';
         return 'mdi:robot';
+    }
+    /** Charging battery filled to the current level, in steps of ten as MDI has them. */
+    _chargingIcon() {
+        const level = Number(this.batteryLevel);
+        if (!Number.isFinite(level) || level < 5)
+            return 'mdi:battery-charging-outline';
+        return `mdi:battery-charging-${Math.min(100, Math.max(10, Math.round(level / 10) * 10))}`;
     }
     _getLEDColor(state) {
         if (this.chargingStatus)
@@ -9182,7 +9220,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         try {
             const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId);
             setCachedBase(entityId, base);
-            this._vectorStreamAt = Date.now();
+            reportStreamStartedAt.set(entityId, Date.now());
             if (entityId !== this.config.entity)
                 return;
             this._vectorLayers = { ...this._vectorLayers, base };
@@ -9199,15 +9237,51 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         }
     }
     /**
-     * The integration reports the mower's position every few seconds only while its report stream is
-     * running, and `get_geojson` is the service that starts it (for five minutes). Renewed while the
-     * mower works and the map is open, so the recorded trail is dense enough for the mown lanes.
+     * The integration reports status and position every few seconds only while its report stream is
+     * running, and `get_geojson` is the service that starts it (for five minutes). Without it a change
+     * of state shows up late, unless the Mammotion app happens to be open.
      */
-    async _keepReportStream(entityId) {
-        if (Date.now() - this._vectorStreamAt < VECTOR_MAP_STREAM_KEEPALIVE)
+    async _keepReportStream(entityId, force = false) {
+        if (!this.hass)
             return;
-        this._vectorStreamAt = Date.now();
-        await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId).catch(() => undefined);
+        if (!force && Date.now() - (reportStreamStartedAt.get(entityId) ?? 0) < VECTOR_MAP_STREAM_KEEPALIVE)
+            return;
+        reportStreamStartedAt.set(entityId, Date.now());
+        const base = await fetchGeoJson(this.hass, MAMMOTION_DOMAIN, 'get_geojson', entityId).catch(() => undefined);
+        // The zones come along anyway, so the map view does not have to load them again
+        if (base)
+            setCachedBase(entityId, base);
+    }
+    /** Keeps the report stream running while the card is visible, in every view and mower state. */
+    _startLiveUpdates() {
+        this._stopLiveUpdates();
+        this._liveTimer = window.setInterval(this._liveTick, LIVE_UPDATES_CHECK_INTERVAL);
+        document.addEventListener('visibilitychange', this._liveTick);
+        this.updateComplete.then(this._liveTick);
+    }
+    _stopLiveUpdates() {
+        if (this._liveTimer) {
+            clearInterval(this._liveTimer);
+            this._liveTimer = undefined;
+        }
+        document.removeEventListener('visibilitychange', this._liveTick);
+        this._followUpTimers.forEach(timer => clearTimeout(timer));
+        this._followUpTimers = [];
+    }
+    get _hasLiveUpdates() {
+        const entityId = this.config?.entity;
+        return (!!entityId && this.config.live_updates !== false && (this._isVectorMap || isMammotionEntity(this.hass, entityId)));
+    }
+    /**
+     * Away from mowing the integration answers get_geojson with a single report instead of a stream,
+     * so after a command the card asks again until the mower has switched and its stream runs.
+     */
+    _followUpCommand() {
+        if (!this._hasLiveUpdates)
+            return;
+        const entityId = this.config.entity;
+        this._followUpTimers.forEach(timer => clearTimeout(timer));
+        this._followUpTimers = LIVE_UPDATES_FOLLOW_UP.map(delay => window.setTimeout(() => this._keepReportStream(entityId, true), delay));
     }
     _trailLayer(trail) {
         return { lines: trail.lines(), head: trail.head };
@@ -9816,13 +9890,13 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             ? this._renderProgressBadge(Number(this.progressLevel), this._jobDetail())
             : x `<div class="badge-spacer"></div>`}
               ${(() => {
-            const displayStatus = this._getDisplayStatus(this.mowerState);
-            const statusClass = this._statusClass(displayStatus);
-            const label = this._getStatusLabel(displayStatus);
+            // The badge names the mower's state; charging only shows in the icon
+            const statusClass = this._statusClass(this.mowerState);
+            const label = this._getStatusLabel(this.mowerState);
             return x `<div
                   class="status-ring ${isCharging ? 'charging' : ''} ${statusClass} ${label ? '' : 'icon-only'}"
                 >
-                  <div class="badge-icon status-icon ${statusClass}">
+                  <div class="badge-icon status-icon ${isCharging ? 'charging' : statusClass}">
                     <ha-icon icon="${this._getStatusIcon(this.mowerState)}"></ha-icon>
                   </div>
                   ${label ? x `<span class="status-text">${label}</span>` : E}

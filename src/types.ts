@@ -131,6 +131,8 @@ export interface CompactLawnMowerCardConfig extends LovelaceCardConfig {
   map_rotation?: number;
   map_show_rtk?: boolean;
   map_keep_view?: boolean;
+  /** Mammotion: keep the integration's report stream running while the card is visible (Default: true) */
+  live_updates?: boolean;
   google_maps_api_key?: string;
   mower_model?: MowerModel;
   use_google_maps?: boolean;

@@ -220,6 +220,7 @@ custom_actions:
 | `work_zone_entity`   | string   | No           | Sensor with the name of the zone being mown, used for the zone label and the tap-to-mow lock; found on a Mammotion mower's device when empty |
 | `error_entity`       | string   | No           | Sensor with the mower's error message, shown on the Mammotion map; found on a Mammotion mower's device when empty |
 | `zone_switches`      | list     | No           | Mammotion map: area switches the map may start a zone with; the switches on the mower's device when empty |
+| `live_updates`       | boolean  | No           | Mammotion: keep the integration's report stream running while the card is visible, so state and position update within seconds (Default: `true`) |
 | `default_view`       | string   | No           | Default view of the card: `mower`, `camera`, `map` (Default: `mower`)                        |
 | `enable_map`         | boolean  | No           | Enable or disable the map view (Default: `true` if `map_entity` is set)                      |
 | `use_google_maps`    | boolean  | No           | Use Google Maps instead of Home Assistant map (Google Maps API key is required)              |
@@ -255,7 +256,11 @@ map_rotation: 0
 
 The zones are loaded when the map view is opened (cached for 30 minutes). Position offsets set in the integration (`Map offset latitude / longitude`) apply to all layers. The map must be synced once in the Mammotion app.
 
-The mown lanes are the mower's recorded positions joined into lines, as wide as the cutting width (`map_path_width`). Two positions are only joined when they are a few seconds apart, so nothing is drawn where the mower was not seen. The integration reports a position every few seconds only while its report stream is running; the card keeps that stream alive while the map is open and the mower works, so the lanes come out complete when the map is watched. To get dense positions while the map is closed too, let an automation call `mammotion.get_geojson` for the mower every 4 minutes while it is mowing.
+The mown lanes are the mower's recorded positions joined into lines, as wide as the cutting width (`map_path_width`). Two positions are only joined when they are a few seconds apart, so nothing is drawn where the mower was not seen. The integration reports a position every few seconds only while its report stream is running, so the lanes come out complete while the card is watched. To get dense positions while no dashboard is open too, let an automation call `mammotion.get_geojson` for the mower every 4 minutes while it is mowing.
+
+#### Live Status (Mammotion)
+
+Without its report stream the Mammotion integration only polls now and then, so a new state can take a while to show up in Home Assistant, unless the Mammotion app is open. While the card is visible it keeps the stream running (`mammotion.get_geojson` every 4 minutes) in every view. The integration streams only while a job runs; otherwise each call brings a single report. After a command from the card it asks again after 5, 15, 30 and 60 seconds, and a job started elsewhere gets its stream at once, so the new state shows up within seconds. It stops when the dashboard is left or the app goes to the background. Set `live_updates: false` to turn it off, e.g. on a wall tablet that shows the dashboard all day.
 
 #### Custom Action Structure
 

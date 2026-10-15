@@ -65,6 +65,7 @@
       "default_map_zoom": "Default Map Zoom Level",
       "map_image_bg_auto": "Map Background: Detect Automatically",
       "map_image_bg_color": "Map Background Color",
+      "live_updates": "Live Status (keep the mower up to date while the card is visible)",
       "map_show_labels": "Show Zone Names",
       "map_show_path": "Show mown lanes",
       "map_rotation": "Map Rotation",

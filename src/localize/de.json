@@ -65,6 +65,7 @@
       "default_map_zoom": "Standard Zoom-Level der Karte",
       "map_image_bg_auto": "Kartenhintergrund automatisch erkennen",
       "map_image_bg_color": "Kartenhintergrundfarbe",
+      "live_updates": "Live-Status (Mäher aktuell halten, solange die Karte sichtbar ist)",
       "map_show_labels": "Zonennamen anzeigen",
       "map_show_path": "Mähspur anzeigen",
       "map_rotation": "Kartendrehung",

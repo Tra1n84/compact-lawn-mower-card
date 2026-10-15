@@ -1308,6 +1308,10 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
     if (hasMammotion) {
       schema.push(
         {
+          name: 'live_updates',
+          selector: { boolean: {} },
+        },
+        {
           name: 'map_show_labels',
           selector: { boolean: {} },
           disabled: !vectorActive,
@@ -1451,6 +1455,7 @@ export class CompactLawnMowerCardEditor extends LitElement implements LovelaceCa
       map_show_rtk: this.config.map_show_rtk !== false,
       zone_switches: this.config.zone_switches ?? [],
       map_keep_view: this.config.map_keep_view !== false,
+      live_updates: this.config.live_updates !== false,
       google_maps_api_key: this.config.google_maps_api_key || '',
       map_type: this.config.map_type || 'hybrid',
       use_google_maps: this.config.use_google_maps === true && !!this.config.google_maps_api_key,
