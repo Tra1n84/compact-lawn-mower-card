@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.6.4';
+const CARD_VERSION = '1.6.5';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -9326,6 +9326,8 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     setTrail(entityId, trail);
                 }
             }
+            // The open map keeps the stream running during a job even with live_updates off, for dense lanes
+            this._keepReportStream(entityId);
             const trackerId = this._vectorTrackerEntity();
             const [head, extended] = await Promise.all([
                 fetchGeoJson(this.hass, 'get_mow_progress_geojson', entityId).catch(() => null),

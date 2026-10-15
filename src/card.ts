@@ -2133,6 +2133,8 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         }
       }
 
+      // The open map keeps the stream running during a job even with live_updates off, for dense lanes
+      this._keepReportStream(entityId);
       const trackerId = this._vectorTrackerEntity();
       const [head, extended] = await Promise.all([
         fetchGeoJson(this.hass, 'get_mow_progress_geojson', entityId).catch(() => null),
