@@ -12,12 +12,13 @@ Thanks for your interest in the Compact Lawn Mower Card! Bug reports, ideas and 
 
 ```bash
 npm install
-npm run build          # builds dist/compact-lawn-mower-card.js
 npm run format         # formats the code with Prettier
 npm run format:check   # checks the formatting
 ```
 
-Please **do not** include the following in your pull request. They are updated by the maintainer when a release is made:
+Building `dist/`, version bumps and releases are done by the maintainer. If you want to try your changes in your own Home Assistant, you can build the card locally with `npm run build`, but please do not commit the result. Discard it with `git restore dist/` before committing.
+
+In short, please **do not** include the following in your pull request:
 
 - changes to `dist/`
 - version bumps (`package.json`, `package-lock.json`, `manifest.json`, `CARD_VERSION` in `src/constants.ts`)
