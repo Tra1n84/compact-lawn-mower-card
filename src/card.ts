@@ -55,6 +55,9 @@ interface HassWithEntities extends HomeAssistant {
   entities: Record<string, { platform?: string; translation_key?: string }>;
 }
 
+// MapLibre only adds the zoom buttons as a ctrl-group; attribution and scale use their own classes
+const HA_MAP_ZOOM_CONTROL_SELECTOR = '.maplibregl-ctrl-group, .leaflet-control-zoom';
+
 console.groupCollapsed(
   `%c ${CARD_NAME} %c Version ${CARD_VERSION}`,
   'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;',
@@ -1163,19 +1166,33 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     console.error('Compact Lawn Mower Card: Failed to load map image.');
   }
 
+  private _getHaMap(): any {
+    return (this._mapCardElement as any)?.shadowRoot?.querySelector('ha-map') ?? null;
+  }
+
   private _getHaMapShadowRoot(): ShadowRoot | null {
-    const haMap = (this._mapCardElement as any)?.shadowRoot?.querySelector('ha-map');
-    return (haMap as any)?.shadowRoot ?? null;
+    return this._getHaMap()?.shadowRoot ?? null;
+  }
+
+  private _handleHaMapRecenter(e: Event): void {
+    e.stopPropagation();
+    this._getHaMap()?.fitMap({ unpause_autofit: true });
+  }
+
+  // HA 2026.10+ renders with MapLibre and falls back to Leaflet without WebGL2
+  private _clickHaMapZoom(direction: 'in' | 'out'): void {
+    const selector = `.maplibregl-ctrl-zoom-${direction}, .leaflet-control-zoom-${direction}`;
+    (this._getHaMapShadowRoot()?.querySelector(selector) as HTMLElement | null)?.click();
   }
 
   private _handleHaMapZoomIn(e: Event): void {
     e.stopPropagation();
-    (this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-in') as HTMLElement)?.click();
+    this._clickHaMapZoom('in');
   }
 
   private _handleHaMapZoomOut(e: Event): void {
     e.stopPropagation();
-    (this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-out') as HTMLElement)?.click();
+    this._clickHaMapZoom('out');
   }
 
   private _handleZoom(e: Event, direction: 'in' | 'out'): void {
@@ -1622,13 +1639,20 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
       <div class="map-container">
         ${this._mapCardElement}
         <div class="map-controls-wrapper">
-          <div class="map-zoom-control">
-            <button class="map-zoom-button map-zoom-button--in" @click=${this._handleHaMapZoomIn}>
-              <ha-icon icon="mdi:plus"></ha-icon>
-            </button>
-            <button class="map-zoom-button map-zoom-button--out" @click=${this._handleHaMapZoomOut}>
-              <ha-icon icon="mdi:minus"></ha-icon>
-            </button>
+          <div class="map-controls">
+            <div class="map-zoom-control">
+              <button class="map-zoom-button" @click=${this._handleHaMapRecenter}>
+                <ha-icon icon="mdi:image-filter-center-focus"></ha-icon>
+              </button>
+            </div>
+            <div class="map-zoom-control">
+              <button class="map-zoom-button map-zoom-button--in" @click=${this._handleHaMapZoomIn}>
+                <ha-icon icon="mdi:plus"></ha-icon>
+              </button>
+              <button class="map-zoom-button map-zoom-button--out" @click=${this._handleHaMapZoomOut}>
+                <ha-icon icon="mdi:minus"></ha-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1783,10 +1807,6 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
 
     if (this._viewMode === 'map') {
       this._mapUpdateInterval = window.setInterval(() => {
-        if (this._mapCardElement) {
-          (this._mapCardElement as any).hass = this.hass;
-          return;
-        }
         if (!this.config.google_maps_api_key || !this.config.use_google_maps || !this.config.map_entity) return;
         const tracker = this.hass?.states[this.config.map_entity];
         const lat = tracker?.attributes?.latitude;
@@ -1814,6 +1834,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
         dark_mode: false,
         auto_fit: true,
       });
+      (element as any).layout = 'grid';
 
       if (this.hass) {
         (element as any).hass = this.hass;
@@ -1833,7 +1854,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     if (el.shadowRoot && !el.shadowRoot.querySelector('#clm-card-style')) {
       const cardStyle = document.createElement('style');
       cardStyle.id = 'clm-card-style';
-      cardStyle.textContent = `ha-card { height: 100%; } ha-map { flex: 1; min-height: 0; }`;
+      cardStyle.textContent = `ha-card { height: 100%; } ha-map { flex: 1; min-height: 0; } #buttons { display: none !important; }`;
       el.shadowRoot.appendChild(cardStyle);
     }
 
@@ -1855,10 +1876,7 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
           this._applyHaMapStyles(sr);
           return;
         }
-        const zc = sr.querySelector('.leaflet-control-zoom') as HTMLElement | null;
-        if (zc && zc.style.display !== 'none') {
-          zc.style.setProperty('display', 'none', 'important');
-        }
+        this._hideHaMapZoomControl(sr);
       });
       this._haMapShadowObserver.observe(haMap.shadowRoot, { childList: true, subtree: true });
     }
@@ -1869,29 +1887,21 @@ export class CompactLawnMowerCard extends LitElement implements LovelaceCard {
     const style = document.createElement('style');
     style.id = 'clm-leaflet-style';
     style.textContent =
-      `.leaflet-control-zoom { display: none !important; }` +
-      `#buttons { position: absolute !important; bottom: 8px !important; left: 42px !important; top: auto !important; right: auto !important; }` +
-      `#buttons ha-icon-button { --mdc-icon-button-size: 26px !important; --mdc-icon-size: 18px !important; }`;
+      `${HA_MAP_ZOOM_CONTROL_SELECTOR} { display: none !important; }` +
+      `.maplibregl-ctrl-bottom-right, .leaflet-bottom.leaflet-right { left: 42px !important; right: auto !important; bottom: 8px !important; }` +
+      `.maplibregl-ctrl-bottom-right .maplibregl-ctrl, .leaflet-bottom.leaflet-right .leaflet-control { margin: 0 !important; }` +
+      `.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 2px 8px 2px 28px !important; }` +
+      `.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib-button { left: 0 !important; right: auto !important; }`;
     shadowRoot.appendChild(style);
+    this._hideHaMapZoomControl(shadowRoot);
+  }
 
-    const zoomControl = shadowRoot.querySelector('.leaflet-control-zoom') as HTMLElement | null;
-    if (zoomControl) {
-      zoomControl.style.setProperty('display', 'none', 'important');
-    }
-
-    const buttonsEl = shadowRoot.querySelector('#buttons') as HTMLElement | null;
-    if (buttonsEl) {
-      buttonsEl.style.position = 'absolute';
-      buttonsEl.style.bottom = '8px';
-      buttonsEl.style.left = '42px';
-      buttonsEl.style.top = 'auto';
-      buttonsEl.style.right = 'auto';
-      const iconBtn = buttonsEl.querySelector('ha-icon-button') as HTMLElement | null;
-      if (iconBtn) {
-        iconBtn.style.setProperty('--mdc-icon-button-size', '26px');
-        iconBtn.style.setProperty('--mdc-icon-size', '18px');
+  private _hideHaMapZoomControl(shadowRoot: ShadowRoot): void {
+    shadowRoot.querySelectorAll<HTMLElement>(HA_MAP_ZOOM_CONTROL_SELECTOR).forEach(el => {
+      if (el.style.display !== 'none') {
+        el.style.setProperty('display', 'none', 'important');
       }
-    }
+    });
   }
 
   private static _getChargingStatus(hass: HomeAssistant, mowerState: string, chargingEntityId?: string): boolean {

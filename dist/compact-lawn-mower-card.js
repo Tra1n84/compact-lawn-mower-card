@@ -205,7 +205,7 @@ const toggleEntity = (hass, entityId) => {
 };
 
 const CARD_NAME = 'Compact Lawn Mower Card';
-const CARD_VERSION = '1.5.0';
+const CARD_VERSION = '1.5.1';
 const DEFAULT_MAP_ZOOM = 18;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 21;
@@ -6323,6 +6323,8 @@ CameraPopup = __decorate([
 ], CameraPopup);
 
 var CompactLawnMowerCard_1;
+// MapLibre only adds the zoom buttons as a ctrl-group; attribution and scale use their own classes
+const HA_MAP_ZOOM_CONTROL_SELECTOR = '.maplibregl-ctrl-group, .leaflet-control-zoom';
 console.groupCollapsed(`%c ${CARD_NAME} %c Version ${CARD_VERSION}`, 'color: white; background:rgb(90, 135, 91); font-weight: bold; padding: 2px 6px;', 'color: rgb(90, 135, 91); font-weight: bold;');
 console.log('Github:', 'https://github.com/Tra1n84/compact-lawn-mower-card');
 console.groupEnd();
@@ -7280,17 +7282,28 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
     _handleMapError() {
         console.error('Compact Lawn Mower Card: Failed to load map image.');
     }
+    _getHaMap() {
+        return this._mapCardElement?.shadowRoot?.querySelector('ha-map') ?? null;
+    }
     _getHaMapShadowRoot() {
-        const haMap = this._mapCardElement?.shadowRoot?.querySelector('ha-map');
-        return haMap?.shadowRoot ?? null;
+        return this._getHaMap()?.shadowRoot ?? null;
+    }
+    _handleHaMapRecenter(e) {
+        e.stopPropagation();
+        this._getHaMap()?.fitMap({ unpause_autofit: true });
+    }
+    // HA 2026.10+ renders with MapLibre and falls back to Leaflet without WebGL2
+    _clickHaMapZoom(direction) {
+        const selector = `.maplibregl-ctrl-zoom-${direction}, .leaflet-control-zoom-${direction}`;
+        this._getHaMapShadowRoot()?.querySelector(selector)?.click();
     }
     _handleHaMapZoomIn(e) {
         e.stopPropagation();
-        this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-in')?.click();
+        this._clickHaMapZoom('in');
     }
     _handleHaMapZoomOut(e) {
         e.stopPropagation();
-        this._getHaMapShadowRoot()?.querySelector('.leaflet-control-zoom-out')?.click();
+        this._clickHaMapZoom('out');
     }
     _handleZoom(e, direction) {
         e.stopPropagation();
@@ -7657,13 +7670,20 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
       <div class="map-container">
         ${this._mapCardElement}
         <div class="map-controls-wrapper">
-          <div class="map-zoom-control">
-            <button class="map-zoom-button map-zoom-button--in" @click=${this._handleHaMapZoomIn}>
-              <ha-icon icon="mdi:plus"></ha-icon>
-            </button>
-            <button class="map-zoom-button map-zoom-button--out" @click=${this._handleHaMapZoomOut}>
-              <ha-icon icon="mdi:minus"></ha-icon>
-            </button>
+          <div class="map-controls">
+            <div class="map-zoom-control">
+              <button class="map-zoom-button" @click=${this._handleHaMapRecenter}>
+                <ha-icon icon="mdi:image-filter-center-focus"></ha-icon>
+              </button>
+            </div>
+            <div class="map-zoom-control">
+              <button class="map-zoom-button map-zoom-button--in" @click=${this._handleHaMapZoomIn}>
+                <ha-icon icon="mdi:plus"></ha-icon>
+              </button>
+              <button class="map-zoom-button map-zoom-button--out" @click=${this._handleHaMapZoomOut}>
+                <ha-icon icon="mdi:minus"></ha-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -7801,10 +7821,6 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
             return;
         if (this._viewMode === 'map') {
             this._mapUpdateInterval = window.setInterval(() => {
-                if (this._mapCardElement) {
-                    this._mapCardElement.hass = this.hass;
-                    return;
-                }
                 if (!this.config.google_maps_api_key || !this.config.use_google_maps || !this.config.map_entity)
                     return;
                 const tracker = this.hass?.states[this.config.map_entity];
@@ -7831,6 +7847,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                 dark_mode: false,
                 auto_fit: true,
             });
+            element.layout = 'grid';
             if (this.hass) {
                 element.hass = this.hass;
             }
@@ -7848,7 +7865,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         if (el.shadowRoot && !el.shadowRoot.querySelector('#clm-card-style')) {
             const cardStyle = document.createElement('style');
             cardStyle.id = 'clm-card-style';
-            cardStyle.textContent = `ha-card { height: 100%; } ha-map { flex: 1; min-height: 0; }`;
+            cardStyle.textContent = `ha-card { height: 100%; } ha-map { flex: 1; min-height: 0; } #buttons { display: none !important; }`;
             el.shadowRoot.appendChild(cardStyle);
         }
         const haMap = el.shadowRoot?.querySelector('ha-map');
@@ -7868,10 +7885,7 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
                     this._applyHaMapStyles(sr);
                     return;
                 }
-                const zc = sr.querySelector('.leaflet-control-zoom');
-                if (zc && zc.style.display !== 'none') {
-                    zc.style.setProperty('display', 'none', 'important');
-                }
+                this._hideHaMapZoomControl(sr);
             });
             this._haMapShadowObserver.observe(haMap.shadowRoot, { childList: true, subtree: true });
         }
@@ -7881,27 +7895,20 @@ let CompactLawnMowerCard = CompactLawnMowerCard_1 = class CompactLawnMowerCard e
         const style = document.createElement('style');
         style.id = 'clm-leaflet-style';
         style.textContent =
-            `.leaflet-control-zoom { display: none !important; }` +
-                `#buttons { position: absolute !important; bottom: 8px !important; left: 42px !important; top: auto !important; right: auto !important; }` +
-                `#buttons ha-icon-button { --mdc-icon-button-size: 26px !important; --mdc-icon-size: 18px !important; }`;
+            `${HA_MAP_ZOOM_CONTROL_SELECTOR} { display: none !important; }` +
+                `.maplibregl-ctrl-bottom-right, .leaflet-bottom.leaflet-right { left: 42px !important; right: auto !important; bottom: 8px !important; }` +
+                `.maplibregl-ctrl-bottom-right .maplibregl-ctrl, .leaflet-bottom.leaflet-right .leaflet-control { margin: 0 !important; }` +
+                `.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib.maplibregl-compact-show { padding: 2px 8px 2px 28px !important; }` +
+                `.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib-button { left: 0 !important; right: auto !important; }`;
         shadowRoot.appendChild(style);
-        const zoomControl = shadowRoot.querySelector('.leaflet-control-zoom');
-        if (zoomControl) {
-            zoomControl.style.setProperty('display', 'none', 'important');
-        }
-        const buttonsEl = shadowRoot.querySelector('#buttons');
-        if (buttonsEl) {
-            buttonsEl.style.position = 'absolute';
-            buttonsEl.style.bottom = '8px';
-            buttonsEl.style.left = '42px';
-            buttonsEl.style.top = 'auto';
-            buttonsEl.style.right = 'auto';
-            const iconBtn = buttonsEl.querySelector('ha-icon-button');
-            if (iconBtn) {
-                iconBtn.style.setProperty('--mdc-icon-button-size', '26px');
-                iconBtn.style.setProperty('--mdc-icon-size', '18px');
+        this._hideHaMapZoomControl(shadowRoot);
+    }
+    _hideHaMapZoomControl(shadowRoot) {
+        shadowRoot.querySelectorAll(HA_MAP_ZOOM_CONTROL_SELECTOR).forEach(el => {
+            if (el.style.display !== 'none') {
+                el.style.setProperty('display', 'none', 'important');
             }
-        }
+        });
     }
     static _getChargingStatus(hass, mowerState, chargingEntityId) {
         if (chargingEntityId) {
