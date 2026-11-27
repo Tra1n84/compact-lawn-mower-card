@@ -39,7 +39,11 @@
     "power": {
       "battery_entity": "Batterieentität (Optional)",
       "charging_entity": "Ladestatus Entität (Optional, Binärsensor: An/Aus)",
-      "progress_entity": "Fortschritt Entität (Optional)"
+      "progress_entity": "Fortschritt Entität (Optional)",
+      "task_area_entity": "Auftragsfläche (Optional, sonst automatisch)",
+      "remaining_time_entity": "Restzeit in Minuten (Optional, sonst automatisch)",
+      "work_zone_entity": "Aktueller Bereich (Optional, sonst automatisch)",
+      "error_entity": "Fehlermeldung (Optional, sonst automatisch)"
     },
     "options": {
       "default_view": "Standardansicht",
@@ -49,7 +53,8 @@
       "map_source": "Kartenquelle",
       "map_source_label": {
         "gps": "GPS / Karte (Device Tracker)",
-        "image": "Kartenbild (Bild- oder Kamera-Entität)"
+        "image": "Kartenbild (Bild- oder Kamera-Entität)",
+        "mammotion": "Mammotion-Karte (Zonen, Hindernisse & Mähspur)"
       },
       "map_type": "Kartentyp",
       "map_type_label": {
@@ -60,6 +65,14 @@
       "default_map_zoom": "Standard Zoom-Level der Karte",
       "map_image_bg_auto": "Kartenhintergrund automatisch erkennen",
       "map_image_bg_color": "Kartenhintergrundfarbe",
+      "live_updates": "Live-Status (Mäher aktuell halten, solange die Karte sichtbar ist)",
+      "map_show_labels": "Zonennamen anzeigen",
+      "map_show_path": "Mähspur anzeigen",
+      "map_rotation": "Kartendrehung",
+      "map_path_width": "Breite der Mähspur (m)",
+      "zone_switches": "Bereichs-Schalter zum Starten (Optional, sonst automatisch)",
+      "map_show_rtk": "RTK-Basisstation anzeigen",
+      "map_keep_view": "Zoom & Position merken",
       "map_options_title": "Karte",
       "color_options_title": "Farben",
       "model_options_title": "Modell",
@@ -161,7 +174,15 @@
     "no_gps_coordinates": "Keine GPS-Daten",
     "image_not_available": "Kartenbild nicht verfügbar",
     "image_unavailable": "Kartenbild nicht erreichbar",
-    "image_load_error": "Kartenbild konnte nicht geladen werden"
+    "image_load_error": "Kartenbild konnte nicht geladen werden",
+    "vector_load_error": "Mäherkarte konnte nicht geladen werden",
+    "area": "Bereich",
+    "vector_empty": "Keine Kartendaten – Karte in der Mammotion-App synchronisieren",
+    "follow": "Mäher folgen",
+    "mow_zone": "Mähen",
+    "cancel": "Abbrechen",
+    "zone_not_found": "Zonen-Schalter nicht gefunden",
+    "not_moving": "Steht seit {n} min"
   },
   "view": {
     "mower": "Mähroboter",
